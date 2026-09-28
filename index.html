@@ -45,6 +45,8 @@
       background:var(--asphalt);
       color:#fff;
       padding:22px 20px 54px;
+      /* iPhone (atalho na tela inicial): desce o conteúdo abaixo da hora/bateria. No Android e no navegador comum vale 0. */
+      padding-top:calc(22px + env(safe-area-inset-top, 0px));
       position:relative;
     }
     header .brand{display:flex;align-items:center;gap:10px;padding-right:44px;}
@@ -54,7 +56,7 @@
 
     .gear-btn{
       position:absolute;
-      top:20px;right:18px;
+      top:calc(20px + env(safe-area-inset-top, 0px));right:18px;
       width:38px;height:38px;
       border-radius:10px;
       border:1px solid rgba(255,255,255,0.16);
@@ -275,7 +277,7 @@
     .btn-ghost{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);margin-top:8px;}
 
     .toast{
-      position:fixed;left:16px;right:16px;bottom:16px;
+      position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom, 0px));
       background:var(--asphalt);color:#fff;
       padding:13px 16px;border-radius:12px;
       font-size:13.5px;font-weight:600;
@@ -339,9 +341,47 @@
       background:#fff;display:flex;align-items:center;justify-content:center;
       cursor:pointer;color:var(--ink-soft);font-size:16px;line-height:1;
     }
+    /* Abertura (splash) — aparece ao abrir o site e some quando as configurações carregam */
+    #abertura{
+      position:fixed;inset:0;z-index:100;
+      background:var(--asphalt);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:14px;
+      padding:env(safe-area-inset-top, 0px) 24px env(safe-area-inset-bottom, 0px);
+      transition:opacity 0.45s ease, visibility 0.45s ease;
+    }
+    #abertura.saindo{opacity:0;visibility:hidden;}
+    #abertura svg{width:104px;height:104px;margin-bottom:6px;}
+    #abertura .ab-pin{animation:abPin 0.7s cubic-bezier(.2,.9,.3,1.25) both;transform-origin:32px 53px;}
+    #abertura .ab-rota{animation:abRota 1.2s ease-in-out infinite;opacity:0.25;}
+    #abertura .ab-rota:nth-of-type(2){animation-delay:0.2s;}
+    #abertura .ab-rota:nth-of-type(3){animation-delay:0.4s;}
+    #abertura h1{color:#fff;font-size:24px;font-weight:700;letter-spacing:-0.01em;animation:abTexto 0.5s ease 0.35s both;}
+    #abertura p{margin:0;color:#B9C0CC;font-size:13.5px;text-align:center;animation:abTexto 0.5s ease 0.5s both;}
+    @keyframes abPin{from{transform:translateY(-26px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    @keyframes abRota{0%,100%{opacity:0.25;}50%{opacity:1;}}
+    @keyframes abTexto{from{transform:translateY(8px);opacity:0;}to{transform:none;opacity:1;}}
+    @media (prefers-reduced-motion: reduce){
+      #abertura .ab-pin,#abertura .ab-rota,#abertura h1,#abertura p{animation:none;opacity:1;}
+    }
   </style>
 </head>
 <body>
+
+  <!-- ===================== ABERTURA ===================== -->
+  <div id="abertura" aria-hidden="true">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <g class="ab-pin">
+        <path d="M32 11c-8.5 0-15 6.6-15 14.7 0 10.8 15 27.3 15 27.3s15-16.5 15-27.3C47 17.6 40.5 11 32 11z" fill="#F2B705"/>
+        <circle cx="32" cy="25.5" r="6.4" fill="#1C2430"/>
+      </g>
+      <rect class="ab-rota" x="8" y="57" width="11" height="4" rx="2" fill="#F2B705"/>
+      <rect class="ab-rota" x="26.5" y="57" width="11" height="4" rx="2" fill="#F2B705"/>
+      <rect class="ab-rota" x="45" y="57" width="11" height="4" rx="2" fill="#F2B705"/>
+    </svg>
+    <h1>Painel de Entregas</h1>
+    <p>Registre rotas e veja na hora se compensa rodar.</p>
+  </div>
 
   <header>
     <div class="brand"><span class="brand-dot"></span><h1>Painel de Entregas</h1></div>
@@ -604,7 +644,7 @@
       var codigo = null;
       try { codigo = localStorage.getItem(CHAVE_CODIGO); } catch (e) {}
       if (!codigo){
-        codigo = window.prompt('Digite o código de acesso do Painel de Entregas:') || '';
+        codigo = (window.prompt('Digite o código de acesso do Painel de Entregas:') || '').trim();
         try { if (codigo) localStorage.setItem(CHAVE_CODIGO, codigo); } catch (e) {}
       }
       return codigo;
@@ -620,6 +660,10 @@
       return fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify({ acao: acao, dados: dados, codigo: obterCodigoAcesso() })
+      })
+      .catch(function(){
+        // Sem resposta do Apps Script (URL errada, implantação sem acesso "Qualquer pessoa" ou sem nova versão).
+        throw new Error('Não foi possível conectar ao Apps Script. Confira a URL /exec e a implantação.');
       })
       .then(function(r){ return r.json(); })
       .then(function(resp){
@@ -643,6 +687,7 @@
             .catch(function(err){
               if (aoFalhar) aoFalhar(err);
               else if (typeof toast === 'function') toast(err.message, true);
+              if (typeof esconderAbertura === 'function') esconderAbertura();
             });
         };
       });
@@ -941,6 +986,16 @@
         .getRecentEntregas();
     }
 
+    /* ---------- Abertura ---------- */
+    var ABERTURA_INICIO = Date.now();
+    function esconderAbertura(){
+      var el = document.getElementById('abertura');
+      if (!el || el.classList.contains('saindo')) return;
+      var espera = Math.max(0, 2000 - (Date.now() - ABERTURA_INICIO));
+      setTimeout(function(){ el.classList.add('saindo'); }, espera);
+    }
+    setTimeout(esconderAbertura, 6000); // nunca fica presa se a conexão falhar
+
     /* ---------- Inicialização ---------- */
     function hoje(){
       var d = new Date();
@@ -978,6 +1033,7 @@
         document.getElementById('rap-preco').value = cfg.ultimoPreco;
         recalcRegistrar();
         recalcRapido();
+        esconderAbertura();
       }).getConfig();
       carregarHistorico();
     };
