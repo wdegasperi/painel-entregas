@@ -343,26 +343,58 @@
       cursor:pointer;color:var(--ink-soft);font-size:16px;line-height:1;
     }
     /* Calculadora (campo Valor) */
+    .calc-backdrop{
+      position:fixed;inset:0;z-index:30;
+      background:rgba(20,24,32,0.25);
+      display:none;
+    }
+    .calc-backdrop.show{display:block;}
+    .calc-pop{
+      position:fixed;
+      width:264px;max-width:calc(100vw - 32px);
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px;
+      box-shadow:0 12px 32px rgba(28,36,48,0.28);
+    }
+    .calc-pop .modal-header{margin-bottom:8px;}
+    .calc-pop .modal-header h2{font-size:14px;}
+    .calc-pop .modal-close{width:26px;height:26px;font-size:13px;}
     .calc-visor{
       background:var(--asphalt);color:#fff;
-      border-radius:14px;padding:12px 16px;margin-bottom:12px;
-      text-align:right;min-height:78px;
+      border-radius:12px;padding:8px 12px;margin-bottom:8px;
+      text-align:right;min-height:56px;
       display:flex;flex-direction:column;justify-content:flex-end;
     }
-    .calc-expressao{font-size:13px;color:#B9C0CC;min-height:18px;word-break:break-all;}
-    .calc-resultado{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;word-break:break-all;}
-    .calc-teclas{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .calc-expressao{font-size:11.5px;color:#B9C0CC;min-height:18px;word-break:break-all;}
+    .calc-resultado{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;word-break:break-all;}
+    .calc-teclas{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
     .calc-teclas button{
-      height:54px;border-radius:12px;border:1.5px solid var(--line);
+      height:42px;border-radius:10px;border:1.5px solid var(--line);
       background:#fff;color:var(--ink);
-      font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;
+      font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;
       cursor:pointer;
     }
     .calc-teclas button:active{background:var(--paper-2);}
     .calc-teclas .op{background:var(--paper-2);}
-    .calc-teclas .limpar{color:var(--bad);font-size:16px;}
+    .calc-teclas .limpar{color:var(--bad);font-size:15px;}
     .calc-teclas .igual{background:var(--asphalt);border-color:var(--asphalt);color:#fff;grid-row:span 2;height:auto;}
     .calc-teclas .zero{grid-column:span 2;}
+
+    /* Botões dentro do campo Distância (rota + Google Maps) */
+    .maps-btn-inline.compacto{padding:0 8px;}
+    .field input.dist-input{padding-left:10px;padding-right:4px;}
+    .maps-btn-inline:disabled{opacity:0.35;cursor:not-allowed;}
+    .maps-btn-inline.ativo{color:var(--asphalt);background:var(--route);}
+    /* Popup de Km */
+    .km-pop{width:320px;}
+    .km-pop .field{margin-top:0;}
+    .km-pop .field input{font-size:15px;}
+    .km-pop .hint{margin:8px 0 0;}
+    .km-previa{margin:10px 0;font-size:13.5px;font-weight:700;color:var(--ink);}
+    .km-previa.erro{color:var(--bad);}
+    .km-salvar{padding:11px;font-size:14.5px;}
 
     /* Abertura (splash) — aparece ao abrir o site e some quando as configurações carregam */
     #abertura{
@@ -445,34 +477,19 @@
             </div>
           </div>
           <div class="field">
-            <label for="reg-distancia">Distância</label>
+            <label for="reg-distancia">Distância (km)</label>
             <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="reg-distancia" placeholder="0,0">
-              <span class="suffix">km</span>
-              <button type="button" class="maps-btn-inline" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
+              <input type="number" inputmode="decimal" step="0.1" id="reg-distancia" class="dist-input" placeholder="0,0">
+              <button type="button" class="maps-btn-inline compacto" id="reg-km-btn" onclick="abrirKm('reg')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>
+              </button>
+              <button type="button" class="maps-btn-inline compacto" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               </button>
             </div>
           </div>
         </div>
 
-        <div class="row2">
-          <div class="field">
-            <label for="reg-km-inicial">Km inicial</label>
-            <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="reg-km-inicial" placeholder="0,0">
-              <span class="suffix">km</span>
-            </div>
-          </div>
-          <div class="field">
-            <label for="reg-km-final">Km final</label>
-            <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="reg-km-final" placeholder="0,0">
-              <span class="suffix">km</span>
-            </div>
-          </div>
-        </div>
-        <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
 
         <div class="row2">
           <div class="field">
@@ -532,34 +549,19 @@
             </div>
           </div>
           <div class="field">
-            <label for="rap-distancia">Distância</label>
+            <label for="rap-distancia">Distância (km)</label>
             <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="rap-distancia" placeholder="0,0">
-              <span class="suffix">km</span>
-              <button type="button" class="maps-btn-inline" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
+              <input type="number" inputmode="decimal" step="0.1" id="rap-distancia" class="dist-input" placeholder="0,0">
+              <button type="button" class="maps-btn-inline compacto" id="rap-km-btn" onclick="abrirKm('rap')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>
+              </button>
+              <button type="button" class="maps-btn-inline compacto" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               </button>
             </div>
           </div>
         </div>
 
-        <div class="row2">
-          <div class="field">
-            <label for="rap-km-inicial">Km inicial</label>
-            <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="rap-km-inicial" placeholder="0,0">
-              <span class="suffix">km</span>
-            </div>
-          </div>
-          <div class="field">
-            <label for="rap-km-final">Km final</label>
-            <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="rap-km-final" placeholder="0,0">
-              <span class="suffix">km</span>
-            </div>
-          </div>
-        </div>
-        <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
 
         <div class="row2">
           <div class="field">
@@ -652,9 +654,55 @@
     </div>
   </div>
 
+  <!-- ===================== POPUP: KM (Nova Entrega) ===================== -->
+  <div class="calc-backdrop" id="reg-km-backdrop" onclick="if(event.target===this) cancelarKm()">
+    <div class="calc-pop km-pop" id="reg-km-pop">
+      <div class="modal-header">
+        <h2>KM do percurso</h2>
+        <button class="modal-close" onclick="cancelarKm()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="reg-km-inicial">Km inicial</label>
+          <div class="input-wrap"><input type="number" inputmode="decimal" step="0.1" id="reg-km-inicial" placeholder="0,0"></div>
+        </div>
+        <div class="field">
+          <label for="reg-km-final">Km final</label>
+          <div class="input-wrap"><input type="number" inputmode="decimal" step="0.1" id="reg-km-final" placeholder="0,0"></div>
+        </div>
+      </div>
+      <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
+      <div class="km-previa" id="reg-km-previa">Distância: —</div>
+      <button type="button" class="btn btn-primary km-salvar" onclick="salvarKm()">✔ Salvar</button>
+    </div>
+  </div>
+
+  <!-- ===================== POPUP: KM (Verificação Rápida) ===================== -->
+  <div class="calc-backdrop" id="rap-km-backdrop" onclick="if(event.target===this) cancelarKm()">
+    <div class="calc-pop km-pop" id="rap-km-pop">
+      <div class="modal-header">
+        <h2>KM do percurso</h2>
+        <button class="modal-close" onclick="cancelarKm()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="rap-km-inicial">Km inicial</label>
+          <div class="input-wrap"><input type="number" inputmode="decimal" step="0.1" id="rap-km-inicial" placeholder="0,0"></div>
+        </div>
+        <div class="field">
+          <label for="rap-km-final">Km final</label>
+          <div class="input-wrap"><input type="number" inputmode="decimal" step="0.1" id="rap-km-final" placeholder="0,0"></div>
+        </div>
+      </div>
+      <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
+      <div class="km-previa" id="rap-km-previa">Distância: —</div>
+      <button type="button" class="btn btn-primary km-salvar" onclick="salvarKm()">✔ Salvar</button>
+    </div>
+  </div>
+
   <!-- ===================== MODAL: CALCULADORA ===================== -->
-  <div class="modal-backdrop" id="calc-backdrop" onclick="if(event.target===this) fecharCalculadora()">
-    <div class="modal-sheet">
+  <div class="calc-backdrop" id="calc-backdrop" onclick="if(event.target===this) fecharCalculadora()">
+    <div class="calc-pop" id="calc-pop">
       <div class="modal-header">
         <h2>Calculadora</h2>
         <button class="modal-close" onclick="fecharCalculadora()" aria-label="Fechar">✕</button>
@@ -697,7 +745,7 @@
        precisou mudar.
     =================================================================== */
     // Cole aqui a URL da implantação do Apps Script (termina em /exec).
-    var API_URL = 'https://script.google.com/macros/s/AKfycbz6Xn_x1vXu00FCGyYFX4W74fe18ppezEeWcKrEQ65qZ5KvwMmxeVaMZ4HmcjGQiZ-Trg/exec';
+    var API_URL = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
 
     var CHAVE_CODIGO = 'painel_entregas_codigo';
 
@@ -898,6 +946,7 @@
           distEl.value = '';
         }
       }
+      atualizarPreviaKm(prefixo);
       if (prefixo === 'reg') recalcRegistrar(); else recalcRapido();
     }
 
@@ -910,6 +959,7 @@
       var distPreenchida = distEl.value !== '';
       kmIniEl.disabled = distPreenchida;
       kmFimEl.disabled = distPreenchida;
+      document.getElementById(prefixo + '-km-btn').disabled = distPreenchida;
       if (prefixo === 'reg') recalcRegistrar(); else recalcRapido();
     }
 
@@ -919,6 +969,82 @@
         el.value = '';
         el.disabled = false;
       });
+      var btn = document.getElementById(prefixo + '-km-btn');
+      btn.disabled = false;
+      btn.classList.remove('ativo');
+      atualizarPreviaKm(prefixo);
+    }
+
+    /* ---------- Popup de Km inicial / Km final ---------- */
+    // Guarda os valores de quando o popup abriu, pra desfazer se fechar sem salvar.
+    var KM_POP = { prefixo: null, antes: null };
+
+    function atualizarPreviaKm(prefixo){
+      var ini = document.getElementById(prefixo + '-km-inicial').value;
+      var fim = document.getElementById(prefixo + '-km-final').value;
+      var el = document.getElementById(prefixo + '-km-previa');
+      el.classList.remove('erro');
+      if (ini !== '' && fim !== ''){
+        var d = parseFloat(fim) - parseFloat(ini);
+        if (d < 0){ el.textContent = 'Km final menor que o inicial'; el.classList.add('erro'); return; }
+        el.textContent = 'Distância: ' + (Math.round(d * 10) / 10).toLocaleString('pt-BR') + ' km';
+      } else {
+        el.textContent = 'Distância: —';
+      }
+    }
+
+    function abrirKm(prefixo){
+      KM_POP.prefixo = prefixo;
+      KM_POP.antes = {
+        ini: document.getElementById(prefixo + '-km-inicial').value,
+        fim: document.getElementById(prefixo + '-km-final').value
+      };
+      atualizarPreviaKm(prefixo);
+      document.getElementById(prefixo + '-km-backdrop').classList.add('show');
+      posicionarKm(true);
+      var campo = document.getElementById(prefixo + '-km-inicial');
+      if (!campo.value) campo.focus();
+    }
+
+    // Abre logo abaixo do campo Distância, alinhado à direita dele
+    function posicionarKm(rolarSePreciso){
+      var p = KM_POP.prefixo;
+      if (!p || !document.getElementById(p + '-km-backdrop').classList.contains('show')) return;
+      var pop = document.getElementById(p + '-km-pop');
+      var wrap = document.getElementById(p + '-distancia').closest('.input-wrap');
+      var r = wrap.getBoundingClientRect();
+      if (rolarSePreciso && r.bottom + 8 + pop.offsetHeight > window.innerHeight - 8){
+        window.scrollBy(0, r.bottom + 8 + pop.offsetHeight - window.innerHeight + 16);
+        r = wrap.getBoundingClientRect();
+      }
+      var esquerda = Math.min(Math.max(8, r.right - pop.offsetWidth), window.innerWidth - pop.offsetWidth - 8);
+      pop.style.left = esquerda + 'px';
+      pop.style.top = Math.max(8, Math.min(r.bottom + 8, window.innerHeight - pop.offsetHeight - 8)) + 'px';
+    }
+    window.addEventListener('resize', function(){ posicionarKm(false); });
+    window.addEventListener('scroll', function(){ posicionarKm(false); }, { passive: true });
+
+    function fecharKmPop(){
+      if (KM_POP.prefixo) document.getElementById(KM_POP.prefixo + '-km-backdrop').classList.remove('show');
+    }
+
+    function salvarKm(){
+      var p = KM_POP.prefixo;
+      var ini = document.getElementById(p + '-km-inicial').value;
+      var fim = document.getElementById(p + '-km-final').value;
+      if ((ini !== '') !== (fim !== '')){ toast('Preencha Km inicial e Km final', true); return; }
+      if (ini !== '' && parseFloat(fim) < parseFloat(ini)){ toast('Km final menor que o inicial', true); return; }
+      document.getElementById(p + '-km-btn').classList.toggle('ativo', ini !== '');
+      fecharKmPop();
+    }
+
+    // Fechou sem salvar: volta como estava antes de abrir
+    function cancelarKm(){
+      var p = KM_POP.prefixo;
+      document.getElementById(p + '-km-inicial').value = KM_POP.antes.ini;
+      document.getElementById(p + '-km-final').value = KM_POP.antes.fim;
+      atualizarKm(p);
+      fecharKmPop();
     }
 
     /* ---------- Limpar campos ---------- */
@@ -1061,7 +1187,28 @@
       CALC.expr = atual ? String(atual).replace('.', ',') : '';
       atualizarVisorCalc();
       document.getElementById('calc-backdrop').classList.add('show');
+      // Se não couber abaixo do campo, rola a página pra deixar o campo mais no alto
+      var wrap = document.getElementById(prefixo + '-valor').closest('.input-wrap');
+      var alturaPop = document.getElementById('calc-pop').offsetHeight;
+      var r = wrap.getBoundingClientRect();
+      if (r.bottom + 8 + alturaPop > window.innerHeight - 8){
+        window.scrollBy(0, r.bottom + 8 + alturaPop - window.innerHeight + 16);
+      }
+      posicionarCalculadora();
     }
+
+    // Coloca a calculadora logo abaixo do campo Valor, alinhada à esquerda dele
+    function posicionarCalculadora(){
+      if (!CALC.prefixo) return;
+      var pop = document.getElementById('calc-pop');
+      var r = document.getElementById(CALC.prefixo + '-valor').closest('.input-wrap').getBoundingClientRect();
+      var esquerda = Math.min(Math.max(8, r.left), window.innerWidth - pop.offsetWidth - 8);
+      var topo = Math.min(r.bottom + 8, window.innerHeight - pop.offsetHeight - 8);
+      pop.style.left = esquerda + 'px';
+      pop.style.top = Math.max(8, topo) + 'px';
+    }
+    window.addEventListener('resize', posicionarCalculadora);
+    window.addEventListener('scroll', posicionarCalculadora, { passive: true });
     function fecharCalculadora(){
       document.getElementById('calc-backdrop').classList.remove('show');
     }
@@ -1138,6 +1285,13 @@
       }
       atualizarVisorCalc();
     }
+
+    document.addEventListener('keydown', function(ev){
+      var p = KM_POP.prefixo;
+      if (!p || !document.getElementById(p + '-km-backdrop').classList.contains('show')) return;
+      if (ev.key === 'Enter'){ salvarKm(); ev.preventDefault(); }
+      else if (ev.key === 'Escape'){ cancelarKm(); ev.preventDefault(); }
+    });
 
     // Teclado do computador quando a calculadora está aberta
     document.addEventListener('keydown', function(ev){
