@@ -395,35 +395,6 @@
     .km-previa{margin:10px 0;font-size:13.5px;font-weight:700;color:var(--ink);}
     .km-previa.erro{color:var(--bad);}
     .km-salvar{padding:11px;font-size:14.5px;}
-    .km-limpar{padding:10px;font-size:14px;margin-top:8px;}
-
-    /* Verificação Rápida: seletor de modo */
-    .modo-toggle{display:flex;gap:6px;background:var(--paper-2);border-radius:12px;padding:4px;margin-bottom:16px;}
-    .modo-toggle button{
-      flex:1;border:none;background:transparent;padding:10px 6px;border-radius:9px;
-      font-size:12.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;
-    }
-    .modo-toggle button.active{background:var(--asphalt);color:#fff;}
-
-    /* Pills de categoria (modo "Quanto devo cobrar") */
-    .categorias{display:flex;flex-direction:column;gap:8px;}
-    .cat-pill{
-      display:flex;align-items:center;justify-content:space-between;
-      border:1.5px solid var(--line);background:var(--paper);
-      padding:12px 14px;border-radius:12px;cursor:pointer;user-select:none;
-    }
-    .cat-pill .nome{font-size:14px;font-weight:700;color:var(--ink-soft);}
-    .cat-pill .faixa{font-size:11.5px;color:var(--ink-soft);margin-top:1px;}
-    .cat-pill .marcador{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;}
-    .cat-pill.sel-ok.selected{border-color:var(--ok);background:var(--ok-bg);}
-    .cat-pill.sel-ok.selected .nome{color:var(--ink);}
-    .cat-pill.sel-ok.selected .marcador{background:var(--ok);border-color:var(--ok);}
-    .cat-pill.sel-good.selected{border-color:var(--good);background:var(--good-bg);}
-    .cat-pill.sel-good.selected .nome{color:var(--ink);}
-    .cat-pill.sel-good.selected .marcador{background:var(--good);border-color:var(--good);}
-    .cat-pill.sel-great.selected{border-color:var(--great);background:var(--great-bg);}
-    .cat-pill.sel-great.selected .nome{color:var(--ink);}
-    .cat-pill.sel-great.selected .marcador{background:var(--great);border-color:var(--great);}
 
     /* Abertura (splash) — aparece ao abrir o site e some quando as configurações carregam */
     #abertura{
@@ -544,10 +515,10 @@
         <div class="verdict" id="reg-verdict">Preencha os dados acima</div>
         <div class="lucro-km" id="reg-lucro-km">—</div>
         <div class="breakdown">
-          <div class="item"><div class="label">Lucro total</div><div class="value" id="reg-lucro-total">—</div></div>
-          <div class="item"><div class="label">Custo total</div><div class="value" id="reg-custo-total">—</div></div>
-          <div class="item"><div class="label">Distância</div><div class="value" id="reg-dist-echo">—</div></div>
           <div class="item"><div class="label">Custo por km</div><div class="value" id="reg-custo-km">—</div></div>
+          <div class="item"><div class="label">Custo total</div><div class="value" id="reg-custo-total">—</div></div>
+          <div class="item"><div class="label">Lucro total</div><div class="value" id="reg-lucro-total">—</div></div>
+          <div class="item"><div class="label">Distância</div><div class="value" id="reg-dist-echo">—</div></div>
         </div>
       </div>
 
@@ -562,99 +533,26 @@
 
     <!-- ===================== TAB: VERIFICAÇÃO RÁPIDA ===================== -->
     <section id="panel-rapido" class="panel">
+      <div class="card">
+        <h2>Vale a pena essa rota?</h2>
+        <p class="config-desc">Calcula na hora, sem salvar nada na planilha. Ideal pra decidir se aceita a corrida.</p>
 
-      <div class="modo-toggle">
-        <button type="button" id="rap-modo-btn-lucro" class="active" onclick="mudarModoRap('lucro')">Quanto vou lucrar</button>
-        <button type="button" id="rap-modo-btn-cobrar" onclick="mudarModoRap('cobrar')">Quanto devo cobrar</button>
-      </div>
-
-      <!-- ---------- Modo: Quanto vou lucrar ---------- -->
-      <div id="rap-bloco-lucro">
-        <div class="card">
-          <h2>Vale a pena essa rota?</h2>
-          <p class="config-desc">Calcula na hora, sem salvar nada na planilha. Ideal pra decidir se aceita a corrida.</p>
-
-          <div class="row2">
-            <div class="field">
-              <label for="rap-valor">Valor oferecido</label>
-              <div class="input-wrap">
-                <span class="prefix">R$</span>
-                <input type="number" inputmode="decimal" step="0.01" id="rap-valor" placeholder="0,00">
-                <button type="button" class="maps-btn-inline" onclick="abrirCalculadora('rap')" aria-label="Abrir calculadora" title="Abrir calculadora">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="11" x2="8" y2="11.01"></line><line x1="12" y1="11" x2="12" y2="11.01"></line><line x1="16" y1="11" x2="16" y2="11.01"></line><line x1="8" y1="15" x2="8" y2="15.01"></line><line x1="12" y1="15" x2="12" y2="15.01"></line><line x1="16" y1="15" x2="16" y2="18"></line><line x1="8" y1="18" x2="12" y2="18"></line></svg>
-                </button>
-              </div>
-            </div>
-            <div class="field">
-              <label for="rap-distancia">Distância (km)</label>
-              <div class="input-wrap">
-                <input type="number" inputmode="decimal" step="0.1" id="rap-distancia" class="dist-input" placeholder="0,0">
-                <button type="button" class="maps-btn-inline compacto" id="rap-km-btn" onclick="abrirKm('rap')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>
-                </button>
-                <button type="button" class="maps-btn-inline compacto" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="row2">
-            <div class="field">
-              <label for="rap-consumo">Consumo</label>
-              <div class="input-wrap">
-                <input type="number" inputmode="decimal" step="0.1" id="rap-consumo" placeholder="0,0">
-                <span class="suffix">km/L</span>
-              </div>
-            </div>
-            <div class="field">
-              <label for="rap-preco">Preço do combustível</label>
-              <div class="input-wrap">
-                <span class="prefix">R$</span>
-                <input type="number" inputmode="decimal" step="0.01" id="rap-preco" placeholder="0,00">
-                <span class="suffix">/L</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="result state-empty" id="rap-result">
-          <div class="verdict" id="rap-verdict">Preencha os dados acima</div>
-          <div class="lucro-km" id="rap-lucro-km">—</div>
-          <div class="breakdown">
-            <div class="item"><div class="label">Lucro total</div><div class="value" id="rap-lucro-total">—</div></div>
-            <div class="item"><div class="label">Custo total</div><div class="value" id="rap-custo-total">—</div></div>
-            <div class="item"><div class="label">Distância</div><div class="value" id="rap-dist-echo">—</div></div>
-            <div class="item"><div class="label">Custo por km</div><div class="value" id="rap-custo-km">—</div></div>
-          </div>
-        </div>
-        <button class="btn btn-ghost" onclick="limparRapido()">Limpar campos</button>
-      </div>
-
-      <!-- ---------- Modo: Quanto devo cobrar ---------- -->
-      <div id="rap-bloco-cobrar" style="display:none;">
-        <div class="card">
-          <h2>Quero que essa entrega seja...</h2>
-          <div class="categorias">
-            <div class="cat-pill sel-ok" data-valor="aceitavel" onclick="selecionarCategoria('aceitavel')">
-              <div><div class="nome">Aceitável</div><div class="faixa" id="cobrar-faixa-aceitavel"></div></div>
-              <div class="marcador"></div>
-            </div>
-            <div class="cat-pill sel-good" data-valor="boa" onclick="selecionarCategoria('boa')">
-              <div><div class="nome">Boa Entrega</div><div class="faixa" id="cobrar-faixa-boa"></div></div>
-              <div class="marcador"></div>
-            </div>
-            <div class="cat-pill sel-great" data-valor="excelente" onclick="selecionarCategoria('excelente')">
-              <div><div class="nome">Excelente Entrega</div><div class="faixa" id="cobrar-faixa-excelente"></div></div>
-              <div class="marcador"></div>
-            </div>
-          </div>
-
+        <div class="row2">
           <div class="field">
-            <label for="cobrar-distancia">Distância (km)</label>
+            <label for="rap-valor">Valor oferecido</label>
             <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="cobrar-distancia" class="dist-input" placeholder="0,0">
-              <button type="button" class="maps-btn-inline compacto" id="cobrar-km-btn" onclick="abrirKm('cobrar')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
+              <span class="prefix">R$</span>
+              <input type="number" inputmode="decimal" step="0.01" id="rap-valor" placeholder="0,00">
+              <button type="button" class="maps-btn-inline" onclick="abrirCalculadora('rap')" aria-label="Abrir calculadora" title="Abrir calculadora">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="11" x2="8" y2="11.01"></line><line x1="12" y1="11" x2="12" y2="11.01"></line><line x1="16" y1="11" x2="16" y2="11.01"></line><line x1="8" y1="15" x2="8" y2="15.01"></line><line x1="12" y1="15" x2="12" y2="15.01"></line><line x1="16" y1="15" x2="16" y2="18"></line><line x1="8" y1="18" x2="12" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="rap-distancia">Distância (km)</label>
+            <div class="input-wrap">
+              <input type="number" inputmode="decimal" step="0.1" id="rap-distancia" class="dist-input" placeholder="0,0">
+              <button type="button" class="maps-btn-inline compacto" id="rap-km-btn" onclick="abrirKm('rap')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>
               </button>
               <button type="button" class="maps-btn-inline compacto" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
@@ -662,38 +560,39 @@
               </button>
             </div>
           </div>
+        </div>
 
-          <div class="row2">
-            <div class="field">
-              <label for="cobrar-consumo">Consumo</label>
-              <div class="input-wrap">
-                <input type="number" inputmode="decimal" step="0.1" id="cobrar-consumo" placeholder="0,0">
-                <span class="suffix">km/L</span>
-              </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="rap-consumo">Consumo</label>
+            <div class="input-wrap">
+              <input type="number" inputmode="decimal" step="0.1" id="rap-consumo" placeholder="0,0">
+              <span class="suffix">km/L</span>
             </div>
-            <div class="field">
-              <label for="cobrar-preco">Preço do combustível</label>
-              <div class="input-wrap">
-                <span class="prefix">R$</span>
-                <input type="number" inputmode="decimal" step="0.01" id="cobrar-preco" placeholder="0,00">
-                <span class="suffix">/L</span>
-              </div>
+          </div>
+          <div class="field">
+            <label for="rap-preco">Preço do combustível</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input type="number" inputmode="decimal" step="0.01" id="rap-preco" placeholder="0,00">
+              <span class="suffix">/L</span>
             </div>
           </div>
         </div>
-
-        <div class="result state-empty" id="cobrar-result">
-          <div class="verdict" id="cobrar-verdict">Escolha a classificação e preencha os dados</div>
-          <div class="lucro-km" id="cobrar-valor-ideal">—</div>
-          <div class="breakdown">
-            <div class="item"><div class="label">Lucro total</div><div class="value" id="cobrar-lucro-total">—</div></div>
-            <div class="item"><div class="label">Custo total</div><div class="value" id="cobrar-custo-total">—</div></div>
-            <div class="item"><div class="label">Lucro/km obtido</div><div class="value" id="cobrar-lucro-km">—</div></div>
-            <div class="item"><div class="label">Custo por km</div><div class="value" id="cobrar-custo-km">—</div></div>
-          </div>
-        </div>
-        <button class="btn btn-ghost" onclick="limparCobrar()">Limpar campos</button>
       </div>
+
+      <div class="result state-empty" id="rap-result">
+        <div class="verdict" id="rap-verdict">Preencha os dados acima</div>
+        <div class="lucro-km" id="rap-lucro-km">—</div>
+        <div class="breakdown">
+          <div class="item"><div class="label">Custo por km</div><div class="value" id="rap-custo-km">—</div></div>
+          <div class="item"><div class="label">Custo total</div><div class="value" id="rap-custo-total">—</div></div>
+          <div class="item"><div class="label">Lucro total</div><div class="value" id="rap-lucro-total">—</div></div>
+          <div class="item"><div class="label">Distância</div><div class="value" id="rap-dist-echo">—</div></div>
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="limparRapido()">Limpar campos</button>
     </section>
 
   </main>
@@ -775,7 +674,6 @@
       <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
       <div class="km-previa" id="reg-km-previa">Distância: —</div>
       <button type="button" class="btn btn-primary km-salvar" onclick="salvarKm()">✔ Salvar</button>
-      <button type="button" class="btn btn-ghost km-limpar" onclick="limparKmPopup()">Limpar</button>
     </div>
   </div>
 
@@ -799,31 +697,6 @@
       <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
       <div class="km-previa" id="rap-km-previa">Distância: —</div>
       <button type="button" class="btn btn-primary km-salvar" onclick="salvarKm()">✔ Salvar</button>
-      <button type="button" class="btn btn-ghost km-limpar" onclick="limparKmPopup()">Limpar</button>
-    </div>
-  </div>
-
-  <!-- ===================== POPUP: KM (Verificação Rápida — Quanto devo cobrar) ===================== -->
-  <div class="calc-backdrop" id="cobrar-km-backdrop" onclick="if(event.target===this) cancelarKm()">
-    <div class="calc-pop km-pop" id="cobrar-km-pop">
-      <div class="modal-header">
-        <h2>KM do percurso</h2>
-        <button class="modal-close" onclick="cancelarKm()" aria-label="Fechar">✕</button>
-      </div>
-      <div class="row2">
-        <div class="field">
-          <label for="cobrar-km-inicial">Km inicial</label>
-          <div class="input-wrap"><input type="number" inputmode="decimal" step="0.1" id="cobrar-km-inicial" placeholder="0,0"></div>
-        </div>
-        <div class="field">
-          <label for="cobrar-km-final">Km final</label>
-          <div class="input-wrap"><input type="number" inputmode="decimal" step="0.1" id="cobrar-km-final" placeholder="0,0"></div>
-        </div>
-      </div>
-      <p class="hint">Preencha Km inicial/final pra calcular sozinho, ou digite a distância direto.</p>
-      <div class="km-previa" id="cobrar-km-previa">Distância: —</div>
-      <button type="button" class="btn btn-primary km-salvar" onclick="salvarKm()">✔ Salvar</button>
-      <button type="button" class="btn btn-ghost km-limpar" onclick="limparKmPopup()">Limpar</button>
     </div>
   </div>
 
@@ -1074,7 +947,7 @@
         }
       }
       atualizarPreviaKm(prefixo);
-      recalcularPorPrefixo(prefixo);
+      if (prefixo === 'reg') recalcRegistrar(); else recalcRapido();
     }
 
     // Preencheu a Distância direto: trava Km inicial/final.
@@ -1087,15 +960,7 @@
       kmIniEl.disabled = distPreenchida;
       kmFimEl.disabled = distPreenchida;
       document.getElementById(prefixo + '-km-btn').disabled = distPreenchida;
-      recalcularPorPrefixo(prefixo);
-    }
-
-    // 'reg' → Nova Entrega; 'rap' → Verificação Rápida (Quanto vou lucrar);
-    // 'cobrar' → Verificação Rápida (Quanto devo cobrar).
-    function recalcularPorPrefixo(prefixo){
-      if (prefixo === 'reg') recalcRegistrar();
-      else if (prefixo === 'rap') recalcRapido();
-      else if (prefixo === 'cobrar') recalcularCobrar();
+      if (prefixo === 'reg') recalcRegistrar(); else recalcRapido();
     }
 
     function resetarKmDistancia(prefixo){
@@ -1254,92 +1119,6 @@
       var r = calcularLocal(valor, distancia, consumo, preco, STATE.config);
       if (r) r.distanciaEcho = distancia.toLocaleString('pt-BR') + ' km';
       pintarResultado('rap', r);
-    }
-
-    /* ---------- Verificação Rápida: "Quanto devo cobrar" (calculadora reversa) ---------- */
-    var categoriaSelecionada = null;
-
-    function mudarModoRap(modo){
-      document.getElementById('rap-modo-btn-lucro').classList.toggle('active', modo === 'lucro');
-      document.getElementById('rap-modo-btn-cobrar').classList.toggle('active', modo === 'cobrar');
-      document.getElementById('rap-bloco-lucro').style.display = modo === 'lucro' ? 'block' : 'none';
-      document.getElementById('rap-bloco-cobrar').style.display = modo === 'cobrar' ? 'block' : 'none';
-      if (modo === 'cobrar') atualizarFaixasCobrar();
-    }
-
-    function selecionarCategoria(valor){
-      categoriaSelecionada = valor;
-      document.querySelectorAll('.cat-pill').forEach(function(p){
-        p.classList.toggle('selected', p.dataset.valor === valor);
-      });
-      recalcularCobrar();
-    }
-
-    // Mostra as faixas de cada categoria (vêm das Configurações, por isso só
-    // dá pra preencher depois que STATE.config carregar).
-    function atualizarFaixasCobrar(){
-      var cfg = STATE.config;
-      if (!cfg) return;
-      document.getElementById('cobrar-faixa-aceitavel').textContent =
-        fmt(cfg.limiteNaoCompensa + 0.01) + ' a ' + fmt(cfg.limiteAceitavel) + ' /km';
-      document.getElementById('cobrar-faixa-boa').textContent =
-        fmt(cfg.limiteAceitavel + 0.01) + ' a ' + fmt(cfg.limiteBoa) + ' /km';
-      document.getElementById('cobrar-faixa-excelente').textContent =
-        'acima de ' + fmt(cfg.limiteBoa) + ' /km';
-    }
-
-    // Dado o alvo de lucro/km da categoria escolhida, calcula o valor mínimo
-    // a cobrar pra essa entrega cair naquela faixa.
-    function calcularValorIdeal(distancia, consumo, preco, alvoLucroPorKm, cfg){
-      if (!(distancia > 0) || !(consumo > 0) || !(preco > 0)) return null;
-      var custoPorKm = (preco / consumo) + cfg.manutencao + cfg.depreciacao;
-      var custoTotal = custoPorKm * distancia;
-      var lucroTotal = alvoLucroPorKm * distancia;
-      var valorIdeal = custoTotal + lucroTotal;
-      return { custoPorKm: custoPorKm, custoTotal: custoTotal, lucroTotal: lucroTotal, valorIdeal: valorIdeal };
-    }
-
-    var LABEL_CATEGORIA = { aceitavel: 'Aceitável', boa: 'Boa Entrega', excelente: 'Excelente Entrega' };
-    var ESTADO_CATEGORIA = { aceitavel: 'ok', boa: 'good', excelente: 'great' };
-
-    function recalcularCobrar(){
-      var box = document.getElementById('cobrar-result');
-      var distancia = parseFloat(document.getElementById('cobrar-distancia').value);
-      var consumo = parseFloat(document.getElementById('cobrar-consumo').value);
-      var preco = parseFloat(document.getElementById('cobrar-preco').value);
-      var cfg = STATE.config;
-
-      if (!categoriaSelecionada || !cfg || !(distancia > 0) || !(consumo > 0) || !(preco > 0)){
-        box.className = 'result state-empty';
-        document.getElementById('cobrar-verdict').textContent = 'Escolha a classificação e preencha os dados';
-        document.getElementById('cobrar-valor-ideal').textContent = '—';
-        ['cobrar-custo-total', 'cobrar-custo-km', 'cobrar-lucro-km', 'cobrar-lucro-total'].forEach(function(id){
-          document.getElementById(id).textContent = '—';
-        });
-        return;
-      }
-
-      var limites = { aceitavel: cfg.limiteNaoCompensa + 0.01, boa: cfg.limiteAceitavel + 0.01, excelente: cfg.limiteBoa + 0.01 };
-      var alvoLucroPorKm = limites[categoriaSelecionada];
-      var r = calcularValorIdeal(distancia, consumo, preco, alvoLucroPorKm, cfg);
-
-      box.className = 'result state-' + ESTADO_CATEGORIA[categoriaSelecionada];
-      document.getElementById('cobrar-verdict').textContent = 'Pra ficar em "' + LABEL_CATEGORIA[categoriaSelecionada] + '", cobre a partir de:';
-      document.getElementById('cobrar-valor-ideal').innerHTML = fmt(r.valorIdeal);
-      document.getElementById('cobrar-custo-total').textContent = fmt(r.custoTotal);
-      document.getElementById('cobrar-custo-km').textContent = fmt(r.custoPorKm) + '/km';
-      document.getElementById('cobrar-lucro-km').textContent = fmt(alvoLucroPorKm) + '/km';
-      document.getElementById('cobrar-lucro-total').textContent = fmt(r.lucroTotal);
-    }
-
-    function limparCobrar(){
-      resetarKmDistancia('cobrar');
-      var cfg = STATE.config;
-      document.getElementById('cobrar-consumo').value = cfg ? cfg.ultimoConsumo : '';
-      document.getElementById('cobrar-preco').value = cfg ? cfg.ultimoPreco : '';
-      categoriaSelecionada = null;
-      document.querySelectorAll('.cat-pill').forEach(function(p){ p.classList.remove('selected'); });
-      recalcularCobrar();
     }
 
     /* ---------- Aba: Configurações ---------- */
@@ -1553,12 +1332,6 @@
         atualizarKm('rap');
       } else if (id === 'rap-distancia') {
         atualizarDistanciaManual('rap');
-      } else if (id === 'cobrar-km-inicial' || id === 'cobrar-km-final') {
-        atualizarKm('cobrar');
-      } else if (id === 'cobrar-distancia') {
-        atualizarDistanciaManual('cobrar');
-      } else if (id === 'cobrar-consumo' || id === 'cobrar-preco') {
-        recalcularCobrar();
       } else if (e.target.closest('#panel-registrar')) {
         recalcRegistrar();
       } else if (e.target.closest('#panel-rapido')) {
@@ -1576,9 +1349,6 @@
         document.getElementById('reg-preco').value = cfg.ultimoPreco;
         document.getElementById('rap-consumo').value = cfg.ultimoConsumo;
         document.getElementById('rap-preco').value = cfg.ultimoPreco;
-        document.getElementById('cobrar-consumo').value = cfg.ultimoConsumo;
-        document.getElementById('cobrar-preco').value = cfg.ultimoPreco;
-        atualizarFaixasCobrar();
         recalcRegistrar();
         recalcRapido();
         esconderAbertura();
