@@ -1204,6 +1204,16 @@
       fecharKmPop();
     }
 
+    // Limpa Km inicial/final sem fechar o popup (não mexe no "antes" — se o
+    // usuário fechar sem clicar em Salvar depois, cancelarKm ainda desfaz tudo).
+    function limparKmPopup(){
+      var p = KM_POP.prefixo;
+      if (!p) return;
+      document.getElementById(p + '-km-inicial').value = '';
+      document.getElementById(p + '-km-final').value = '';
+      atualizarKm(p);
+    }
+
     /* ---------- Limpar campos ---------- */
     function limparCamposComuns(prefixo){
       document.getElementById(prefixo + '-valor').value = '';
