@@ -107,7 +107,8 @@
     .card h2{font-size:15px;margin-bottom:14px;}
 
     /* Platform pills */
-    .pills{display:flex;flex-wrap:wrap;gap:8px;}
+    .pills{display:flex;flex-direction:column;gap:8px;}
+    .pills-linha{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;}
     .pill{
       display:inline-flex;
       align-items:center;
@@ -995,9 +996,18 @@
       pill.style.setProperty('--pill-color', cor);
     }
 
+    // Monta em duas linhas fixas (até 3 na primeira, o resto na segunda),
+    // cada linha centralizada — evita quebras erradas em telas estreitas.
     function renderPlataformas(lista){
       var wrap = document.getElementById('plataformas-registrar');
       wrap.innerHTML = '';
+      var linha1 = document.createElement('div');
+      linha1.className = 'pills-linha';
+      var linha2 = document.createElement('div');
+      linha2.className = 'pills-linha';
+      wrap.appendChild(linha1);
+      wrap.appendChild(linha2);
+
       lista.forEach(function(nome, i){
         var b = document.createElement('div');
         b.className = 'pill' + (i===0 ? ' selected' : '');
@@ -1011,7 +1021,7 @@
           wrap.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('selected'); });
           b.classList.add('selected');
         };
-        wrap.appendChild(b);
+        (i < 3 ? linha1 : linha2).appendChild(b);
       });
     }
     function plataformaSelecionada(){
