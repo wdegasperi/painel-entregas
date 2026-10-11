@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiMxQzI0MzAiLz4KICA8cGF0aCBkPSJNMzIgMTFjLTguNSAwLTE1IDYuNi0xNSAxNC43IDAgMTAuOCAxNSAyNy4zIDE1IDI3LjNzMTUtMTYuNSAxNS0yNy4zQzQ3IDE3LjYgNDAuNSAxMSAzMiAxMXoiIGZpbGw9IiNGMkI3MDUiLz4KICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjI1LjUiIHI9IjYuNCIgZmlsbD0iIzFDMjQzMCIvPgogIDxyZWN0IHg9IjgiIHk9IjUwIiB3aWR0aD0iMTEiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9IiNGMkI3MDUiIG9wYWNpdHk9IjAuNTUiLz4KICA8cmVjdCB4PSIyNi41IiB5PSI1MCIgd2lkdGg9IjExIiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSIjRjJCNzA1IiBvcGFjaXR5PSIwLjU1Ii8+CiAgPHJlY3QgeD0iNDUiIHk9IjUwIiB3aWR0aD0iOSIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iI0YyQjcwNSIgb3BhY2l0eT0iMC41NSIvPgo8L3N2Zz4K">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Painel de Entregas</title>
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
@@ -174,7 +174,7 @@
       border:none;
       background:transparent;
       padding:11px 12px;
-      font-size:15px;
+      font-size:16px;
       width:100%;
       color:var(--ink);
       outline:none;
@@ -391,7 +391,7 @@
     /* Popup de Km */
     .km-pop{width:320px;}
     .km-pop .field{margin-top:0;}
-    .km-pop .field input{font-size:15px;}
+    .km-pop .field input{font-size:16px;}
     .km-pop .hint{margin:8px 0 0;}
     .km-previa{margin:10px 0;font-size:13.5px;font-weight:700;color:var(--ink);}
     .km-previa.erro{color:var(--bad);}
@@ -453,6 +453,8 @@
     @media (prefers-reduced-motion: reduce){
       #abertura .ab-pin,#abertura .ab-rota,#abertura h1,#abertura p{animation:none;opacity:1;}
     }
+    /* Sem zoom por toque duplo / pinça */
+    html, body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
   </style>
 </head>
 <body>
@@ -876,6 +878,17 @@
 
   <div class="toast" id="toast"></div>
 
+  <script>
+    // Bloqueia zoom por pinça (o Safari/iOS ignora o meta viewport). Toque duplo: touch-action no CSS.
+    (function(){
+      ['gesturestart','gesturechange','gestureend'].forEach(function(ev){
+        document.addEventListener(ev, function(e){ e.preventDefault(); }, { passive: false });
+      });
+      document.addEventListener('touchmove', function(e){
+        if (e.touches && e.touches.length > 1) e.preventDefault();
+      }, { passive: false });
+    })();
+  </script>
   <script>
     /* ===================================================================
        PONTE COM O APPS SCRIPT (versão GitHub Pages)
