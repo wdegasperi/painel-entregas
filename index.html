@@ -284,7 +284,7 @@
       font-size:13.5px;font-weight:600;
       display:none;
       box-shadow:0 8px 20px rgba(0,0,0,0.25);
-      z-index:20;
+      z-index:60;
       max-width:488px;margin:0 auto;
     }
     .toast.show{display:block;}
@@ -453,6 +453,85 @@
     @media (prefers-reduced-motion: reduce){
       #abertura .ab-pin,#abertura .ab-rota,#abertura h1,#abertura p{animation:none;opacity:1;}
     }
+    /* ===== Tela de Entregas (dados da planilha) ===== */
+    :root{ --recebido:#3E9B5F; --recebido-bg:#E6F4E9; }
+    .btn-nova{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;box-shadow:0 4px 12px rgba(28,36,48,0.22);}
+    .btn-nova svg{width:18px;height:18px;}
+    .btn-nova .plat{font-weight:600;opacity:.75;}
+
+    .totais{background:var(--asphalt);color:#fff;border-radius:16px;padding:16px 18px;margin:14px 0;}
+    .totais .topo{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+    .totais .plat-nome{font-size:14px;font-weight:700;color:#fff;margin-top:2px;}
+    .totais .rotulo{font-size:12px;font-weight:600;color:#B9C0CC;}
+    .totais .grande{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;line-height:1.1;text-align:right;}
+    .totais .barra{display:flex;gap:8px;margin-bottom:12px;}
+    .totais .bloco{flex:1;border-radius:10px;padding:8px 10px;background:rgba(255,255,255,0.08);}
+    .totais .bloco.rec{background:rgba(62,155,95,0.28);}
+    .totais .bloco .t{font-size:11px;font-weight:600;color:#B9C0CC;}
+    .totais .bloco .v{font-size:15px;font-weight:700;margin-top:1px;}
+    .totais .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+    .totais .mini .t{font-size:11px;font-weight:600;color:#B9C0CC;}
+    .totais .mini .v{font-size:13.5px;font-weight:700;margin-top:1px;}
+
+    .lista-topo{display:flex;flex-direction:column;gap:8px;margin:4px 2px 10px;}
+    .lista-topo h3{font-size:15px;}
+    .atualizando{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--ink-soft);margin-left:6px;}
+    .lista-linha1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 8px;min-height:32px;}
+    .pagin{display:none;align-items:center;gap:5px;margin-left:auto;}
+    .pagin.show{display:flex;}
+    .pagin button{width:32px;height:32px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:18px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+    .pagin button:disabled{opacity:.35;cursor:default;}
+    .pagin .info{font-size:12.5px;font-weight:700;color:var(--ink-soft);min-width:46px;text-align:center;white-space:nowrap;}
+    .pp{position:relative;margin-right:3px;}
+    .pagin .pp-btn{width:auto;height:32px;border-radius:10px;border:1.5px solid var(--line);background:#fff;padding:0 7px 0 10px;font-size:12.5px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;line-height:1;}
+    .pagin .pp-btn svg{width:12px;height:12px;color:var(--ink-soft);transition:transform .15s;}
+    .pagin .pp-btn.aberto svg{transform:rotate(180deg);}
+    .pp-menu{position:absolute;right:0;top:37px;background:#fff;border:1.5px solid var(--line);border-radius:12px;box-shadow:0 8px 20px rgba(28,36,48,.18);padding:4px;z-index:10;min-width:150px;}
+    .pp-menu .tit{font-size:10.5px;font-weight:700;color:var(--ink-soft);padding:6px 10px 3px;white-space:nowrap;}
+    .pagin .pp-menu button{display:block;width:100%;height:auto;text-align:left;border:none;background:transparent;padding:9px 10px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;}
+    .pagin .pp-menu button.sel{background:var(--paper-2);font-weight:700;}
+    .filtro{display:flex;background:var(--paper-2);border-radius:999px;padding:3px;}
+    .filtro button{flex:1;white-space:nowrap;border:none;background:transparent;padding:7px 6px;border-radius:999px;font-size:12px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
+    .filtro button.active{background:#fff;color:var(--asphalt);box-shadow:0 2px 6px rgba(0,0,0,.12);}
+
+    .e-row{background:#fff;border:1px solid var(--line);border-left:5px solid var(--line);border-radius:12px;margin-bottom:7px;overflow:hidden;}
+    .e-row.recebido{background:var(--recebido-bg);border-color:#BFE0C8;border-left-color:var(--recebido);}
+    .e-head{display:flex;align-items:center;gap:5px;padding:10px 6px 10px 9px;cursor:pointer;}
+    .e-data{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
+    .e-meio{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink-soft);line-height:1.35;}
+    .e-meio .seg{white-space:nowrap;}
+    .e-meio .sep{margin:0 2px;}
+    .e-valor{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:700;white-space:nowrap;flex-shrink:0;margin-left:3px;}
+    @media (max-width:430px){ .e-meio .rs{display:none;} }
+    @media (max-width:380px){ .e-data,.e-meio{font-size:12px;} }
+    @media (max-width:360px){ .e-data,.e-meio{font-size:11.5px;} }
+    .e-seta{width:12px;height:12px;color:var(--ink-soft);flex-shrink:0;transition:transform .2s;}
+    .e-row.open .e-seta{transform:rotate(180deg);}
+    .e-det{display:none;padding:0 12px 12px;}
+    .e-row.open .e-det{display:block;}
+    .grade{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 10px;padding:9px 0;border-top:1px dashed var(--line);}
+    .recebido .grade{border-color:#BFE0C8;}
+    .grade .t{font-size:10.5px;font-weight:600;color:var(--ink-soft);}
+    .grade .v{font-size:13px;font-weight:700;margin-top:1px;}
+    .grade .cheio{grid-column:1 / -1;}
+    .c-bad{color:var(--bad);} .c-ok{color:var(--ok);} .c-good{color:var(--good);} .c-great{color:var(--great);}
+    .acoes{display:flex;gap:6px;margin-top:2px;}
+    .acoes button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:9px 4px;font-size:12.5px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;}
+    .acoes button:disabled{opacity:.55;cursor:default;}
+    .acoes button svg{width:14px;height:14px;}
+    .acoes .b-rec{border-color:var(--recebido);color:var(--recebido);}
+    .recebido .acoes .b-rec{background:var(--recebido);color:#fff;}
+    .acoes .b-del{color:var(--bad);border-color:#EBC7C4;}
+    .vazio{text-align:center;color:var(--ink-soft);font-size:13px;padding:26px 8px;}
+
+    .folha-bd{z-index:25;}
+    .conf-bd{z-index:28;align-items:center;}
+    .plat-tag{font-size:12px;font-weight:700;color:#fff;padding:3px 10px;border-radius:999px;margin-left:8px;vertical-align:middle;}
+    .confirma{background:#fff;border-radius:16px;padding:20px;width:min(86vw,340px);margin:auto;}
+    .confirma h3{font-size:16px;margin-bottom:6px;}
+    .confirma p{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;line-height:1.45;}
+    .btn-perigo{background:var(--bad);color:#fff;}
+
     /* Sem zoom por toque duplo / pinça */
     html, body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
   </style>
@@ -483,88 +562,37 @@
   </header>
 
   <nav class="tabs">
-    <button id="tab-btn-registrar" class="active" onclick="showTab('registrar')">Nova Entrega</button>
+    <button id="tab-btn-registrar" class="active" onclick="showTab('registrar')">Entregas</button>
     <button id="tab-btn-rapido" onclick="showTab('rapido')">Verificação Rápida</button>
   </nav>
 
   <main>
 
-    <!-- ===================== TAB: NOVA ENTREGA ===================== -->
+    <!-- ===================== TAB: ENTREGAS ===================== -->
     <section id="panel-registrar" class="panel active">
-
       <div class="card">
         <h2>Plataforma</h2>
         <div class="pills" id="plataformas-registrar"></div>
-
-        <div class="field">
-          <label for="reg-data">Data</label>
-          <div class="input-wrap"><input type="date" id="reg-data"></div>
-        </div>
-
-        <div class="row2">
-          <div class="field">
-            <label for="reg-valor">Valor recebido</label>
-            <div class="input-wrap">
-              <span class="prefix">R$</span>
-              <input type="number" inputmode="decimal" step="0.01" id="reg-valor" placeholder="0,00">
-              <button type="button" class="maps-btn-inline" onclick="abrirCalculadora('reg')" aria-label="Abrir calculadora" title="Abrir calculadora">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="11" x2="8" y2="11.01"></line><line x1="12" y1="11" x2="12" y2="11.01"></line><line x1="16" y1="11" x2="16" y2="11.01"></line><line x1="8" y1="15" x2="8" y2="15.01"></line><line x1="12" y1="15" x2="12" y2="15.01"></line><line x1="16" y1="15" x2="16" y2="18"></line><line x1="8" y1="18" x2="12" y2="18"></line></svg>
-              </button>
-            </div>
-          </div>
-          <div class="field">
-            <label for="reg-distancia">Distância (km)</label>
-            <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="reg-distancia" class="dist-input" placeholder="0,0">
-              <button type="button" class="maps-btn-inline compacto" id="reg-km-btn" onclick="abrirKm('reg')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>
-              </button>
-              <button type="button" class="maps-btn-inline compacto" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="row2">
-          <div class="field">
-            <label for="reg-consumo">Consumo</label>
-            <div class="input-wrap">
-              <input type="number" inputmode="decimal" step="0.1" id="reg-consumo" placeholder="0,0">
-              <span class="suffix">km/L</span>
-            </div>
-          </div>
-          <div class="field">
-            <label for="reg-preco">Preço do combustível</label>
-            <div class="input-wrap">
-              <span class="prefix">R$</span>
-              <input type="number" inputmode="decimal" step="0.01" id="reg-preco" placeholder="0,00">
-              <span class="suffix">/L</span>
-            </div>
-          </div>
-        </div>
-        <p class="hint" id="reg-fixos-hint"></p>
       </div>
 
-      <div class="result state-empty" id="reg-result">
-        <div class="verdict" id="reg-verdict">Preencha os dados acima</div>
-        <div class="lucro-km" id="reg-lucro-km">—</div>
-        <div class="breakdown">
-          <div class="item"><div class="label">Lucro total</div><div class="value" id="reg-lucro-total">—</div></div>
-          <div class="item"><div class="label">Custo total</div><div class="value" id="reg-custo-total">—</div></div>
-          <div class="item"><div class="label">Distância</div><div class="value" id="reg-dist-echo">—</div></div>
-          <div class="item"><div class="label">Custo por km</div><div class="value" id="reg-custo-km">—</div></div>
+      <button class="btn btn-primary btn-nova" id="btn-nova" onclick="abrirFolha(null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nova entrega <span class="plat" id="btn-nova-plat"></span>
+      </button>
+
+      <div class="lista-topo">
+        <div class="lista-linha1">
+          <h3 id="lista-titulo">Entregas</h3>
+          <div class="pagin" id="paginacao"></div>
+        </div>
+        <div class="filtro" id="filtro">
+          <button data-f="todas" class="active">Todas</button>
+          <button data-f="areceber">A receber</button>
+          <button data-f="recebidas">Recebidas</button>
         </div>
       </div>
-
-      <button class="btn btn-primary" id="reg-salvar" onclick="salvarEntrega()">Salvar entrega</button>
-      <button class="btn btn-ghost" onclick="limparRegistrar()">Limpar campos</button>
-
-      <div class="card" style="margin-top:14px;">
-        <h2>Últimas entregas</h2>
-        <div id="historico-lista"><p class="empty-note">Carregando…</p></div>
-      </div>
+      <div id="lista"><div class="vazio">Carregando lançamentos…</div></div>
+      <div class="totais" id="totais" style="display:none;"></div>
     </section>
 
     <!-- ===================== TAB: VERIFICAÇÃO RÁPIDA ===================== -->
@@ -770,6 +798,92 @@
     </div>
   </div>
 
+  <!-- ===================== FOLHA: NOVA / EDITAR ENTREGA ===================== -->
+  <div class="modal-backdrop folha-bd" id="folha-bd" onclick="if(event.target===this) fecharFolha()">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2><span id="folha-titulo">Nova entrega</span><span class="plat-tag" id="folha-plat"></span></h2>
+        <button class="modal-close" onclick="fecharFolha()" aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label for="reg-data">Data</label>
+          <div class="input-wrap"><input type="date" id="reg-data"></div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="reg-valor">Valor recebido</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input type="number" inputmode="decimal" step="0.01" id="reg-valor" placeholder="0,00">
+              <button type="button" class="maps-btn-inline" onclick="abrirCalculadora('reg')" aria-label="Abrir calculadora" title="Abrir calculadora">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="11" x2="8" y2="11.01"></line><line x1="12" y1="11" x2="12" y2="11.01"></line><line x1="16" y1="11" x2="16" y2="11.01"></line><line x1="8" y1="15" x2="8" y2="15.01"></line><line x1="12" y1="15" x2="12" y2="15.01"></line><line x1="16" y1="15" x2="16" y2="18"></line><line x1="8" y1="18" x2="12" y2="18"></line></svg>
+              </button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="reg-distancia">Distância (km)</label>
+            <div class="input-wrap">
+              <input type="number" inputmode="decimal" step="0.1" id="reg-distancia" class="dist-input" placeholder="0,0">
+              <button type="button" class="maps-btn-inline compacto" id="reg-km-btn" onclick="abrirKm('reg')" aria-label="Calcular pela quilometragem" title="Km inicial / Km final">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>
+              </button>
+              <button type="button" class="maps-btn-inline compacto" onclick="abrirGoogleMaps()" aria-label="Abrir Google Maps" title="Abrir Google Maps">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row2">
+          <div class="field">
+            <label for="reg-consumo">Consumo</label>
+            <div class="input-wrap">
+              <input type="number" inputmode="decimal" step="0.1" id="reg-consumo" placeholder="0,0">
+              <span class="suffix">km/L</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="reg-preco">Preço do combustível</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input type="number" inputmode="decimal" step="0.01" id="reg-preco" placeholder="0,00">
+              <span class="suffix">/L</span>
+            </div>
+          </div>
+        </div>
+        <p class="hint" id="reg-fixos-hint"></p>
+      </div>
+
+      <div class="result state-empty" id="reg-result">
+        <div class="verdict" id="reg-verdict">Preencha os dados acima</div>
+        <div class="lucro-km" id="reg-lucro-km">—</div>
+        <div class="breakdown">
+          <div class="item"><div class="label">Lucro total</div><div class="value" id="reg-lucro-total">—</div></div>
+          <div class="item"><div class="label">Custo total</div><div class="value" id="reg-custo-total">—</div></div>
+          <div class="item"><div class="label">Distância</div><div class="value" id="reg-dist-echo">—</div></div>
+          <div class="item"><div class="label">Custo por km</div><div class="value" id="reg-custo-km">—</div></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="reg-salvar" onclick="salvarEntrega()">Salvar entrega</button>
+      <button class="btn btn-ghost" onclick="limparRegistrar()">Limpar campos</button>
+    </div>
+  </div>
+
+  <!-- ===================== CONFIRMAR EXCLUSÃO ===================== -->
+  <div class="modal-backdrop conf-bd" id="conf-bd" onclick="if(event.target===this) fecharConf()">
+    <div class="confirma">
+      <h3>Excluir esta entrega?</h3>
+      <p id="conf-txt"></p>
+      <button class="btn btn-perigo" id="conf-excluir" onclick="confirmarExcluir()">Excluir</button>
+      <button class="btn btn-ghost" onclick="fecharConf()">Cancelar</button>
+    </div>
+  </div>
+
   <!-- ===================== POPUP: KM (Nova Entrega) ===================== -->
   <div class="calc-backdrop" id="reg-km-backdrop" onclick="if(event.target===this) cancelarKm()">
     <div class="calc-pop km-pop" id="reg-km-pop">
@@ -944,7 +1058,7 @@
         withSuccessHandler: function(fn){ return criarRunner_(fn, aoFalhar); },
         withFailureHandler: function(fn){ return criarRunner_(aoSucesso, fn); }
       };
-      ['getConfig', 'saveConfig', 'saveEntrega', 'getRecentEntregas'].forEach(function(acao){
+      ['getConfig', 'saveConfig', 'saveEntrega', 'getRecentEntregas', 'listarEntregas', 'novaEntrega', 'editarEntrega', 'excluirEntrega', 'marcarRecebido'].forEach(function(acao){
         runner[acao] = function(dados){
           chamarApi(acao, dados)
             .then(function(res){ if (aoSucesso) aoSucesso(res); })
@@ -1033,6 +1147,7 @@
         b.onclick = function(){
           wrap.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('selected'); });
           b.classList.add('selected');
+          aoTrocarPlataforma(nome);
         };
         (i < 3 ? linha1 : linha2).appendChild(b);
       });
@@ -1171,28 +1286,48 @@
       };
       atualizarPreviaKm(prefixo);
       document.getElementById(prefixo + '-km-backdrop').classList.add('show');
-      posicionarKm(true);
+      posicionarKm();
       var campo = document.getElementById(prefixo + '-km-inicial');
       if (!campo.value) campo.focus();
+      // O teclado do iPhone abre com animação: reposiciona enquanto ele sobe.
+      [120, 300, 600].forEach(function(ms){ setTimeout(posicionarKm, ms); });
     }
 
     // Abre logo abaixo do campo Distância, alinhado à direita dele
-    function posicionarKm(rolarSePreciso){
+    // Área realmente visível. No iPhone o teclado encolhe só a "visual viewport"
+    // (window.innerHeight não muda) e a página é deslocada (offsetTop), então
+    // o popup precisa ser posicionado em relação a ela, não à janela inteira.
+    function areaVisivel(){
+      var vv = window.visualViewport;
+      if (vv) return { top: vv.offsetTop, left: vv.offsetLeft, width: vv.width, height: vv.height };
+      return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+    }
+
+    function posicionarKm(){
       var p = KM_POP.prefixo;
       if (!p || !document.getElementById(p + '-km-backdrop').classList.contains('show')) return;
       var pop = document.getElementById(p + '-km-pop');
       var wrap = document.getElementById(p + '-distancia').closest('.input-wrap');
       var r = wrap.getBoundingClientRect();
-      if (rolarSePreciso && r.bottom + 8 + pop.offsetHeight > window.innerHeight - 8){
-        window.scrollBy(0, r.bottom + 8 + pop.offsetHeight - window.innerHeight + 16);
-        r = wrap.getBoundingClientRect();
-      }
-      var esquerda = Math.min(Math.max(8, r.right - pop.offsetWidth), window.innerWidth - pop.offsetWidth - 8);
+      var v = areaVisivel();
+      var margem = 8;
+
+      var esquerda = Math.min(Math.max(v.left + margem, r.right - pop.offsetWidth), v.left + v.width - pop.offsetWidth - margem);
+      // Prefere logo abaixo do campo; se não couber (teclado aberto), sobe só o
+      // necessário pra ficar inteiro dentro da área visível.
+      var topoMin = v.top + margem;
+      var topoMax = v.top + v.height - pop.offsetHeight - margem;
+      var topo = Math.max(topoMin, Math.min(r.bottom + margem, topoMax));
+
       pop.style.left = esquerda + 'px';
-      pop.style.top = Math.max(8, Math.min(r.bottom + 8, window.innerHeight - pop.offsetHeight - 8)) + 'px';
+      pop.style.top = topo + 'px';
     }
-    window.addEventListener('resize', function(){ posicionarKm(false); });
-    window.addEventListener('scroll', function(){ posicionarKm(false); }, { passive: true });
+    window.addEventListener('resize', posicionarKm);
+    window.addEventListener('scroll', posicionarKm, { passive: true });
+    if (window.visualViewport){
+      window.visualViewport.addEventListener('resize', posicionarKm);
+      window.visualViewport.addEventListener('scroll', posicionarKm);
+    }
 
     function fecharKmPop(){
       if (KM_POP.prefixo) document.getElementById(KM_POP.prefixo + '-km-backdrop').classList.remove('show');
@@ -1239,9 +1374,6 @@
     function limparRegistrar(){
       limparCamposComuns('reg');
       document.getElementById('reg-data').value = hoje();
-      var pills = document.querySelectorAll('#plataformas-registrar .pill');
-      pills.forEach(function(p){ p.classList.remove('selected'); });
-      if (pills.length) pills[0].classList.add('selected');
       recalcRegistrar();
     }
 
@@ -1259,35 +1391,6 @@
       if (r) r.distanciaEcho = distancia.toLocaleString('pt-BR') + ' km';
       pintarResultado('reg', r);
       document.getElementById('reg-salvar').disabled = !r;
-    }
-
-    function salvarEntrega(){
-      var entrega = {
-        plataforma: plataformaSelecionada(),
-        data: document.getElementById('reg-data').value,
-        valorRecebido: document.getElementById('reg-valor').value,
-        distancia: document.getElementById('reg-distancia').value,
-        consumo: document.getElementById('reg-consumo').value,
-        precoCombustivel: document.getElementById('reg-preco').value
-      };
-      var btn = document.getElementById('reg-salvar');
-      btn.disabled = true;
-      btn.textContent = 'Salvando…';
-      google.script.run
-        .withSuccessHandler(function(){
-          toast('Entrega salva na planilha ✓');
-          btn.textContent = 'Salvar entrega';
-          document.getElementById('reg-valor').value = '';
-          resetarKmDistancia('reg');
-          recalcRegistrar();
-          carregarHistorico();
-        })
-        .withFailureHandler(function(err){
-          toast(err.message || 'Erro ao salvar', true);
-          btn.disabled = false;
-          btn.textContent = 'Salvar entrega';
-        })
-        .saveEntrega(entrega);
     }
 
     /* ---------- Aba: Verificação Rápida ---------- */
@@ -1418,27 +1521,310 @@
         .saveConfig(novo);
     }
 
-    /* ---------- Histórico ---------- */
-    var BADGE_CLASS = { 'Não Compensa':'b-bad', 'Aceitável':'b-ok', 'Boa Entrega':'b-good', 'Excelente Entrega':'b-great' };
+    /* ---------- Tela de Entregas (dados da planilha) ---------- */
+    var LISTA = {
+      plat: null, cache: {}, carregando: false, erro: null, reqId: 0,
+      filtro: 'todas', pagina: 1, porPagina: 10, menuPP: false,
+      abertos: {}, editando: null, excluir: null, ocupado: false, ocupadoLinha: null
+    };
+    var OPCOES_PP = [10, 20, 50];
 
-    function carregarHistorico(){
+    var ICO_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    var ICO_ED = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+    var ICO_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>';
+    var ICO_SETA = '<svg class="e-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+    var ICO_SETA_PP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+
+    function mo(n){ return n == null ? '—' : fmt(n); }
+    // moeda com o "R$" separado: some só em telas estreitas (ver CSS .rs)
+    function moRs(n){ return n == null ? '—' : fmt(n).replace(/R\$\s/, '<span class="rs">R$\u00a0</span>'); }
+    function kmTxt(n){ return n == null ? '—' : n.toLocaleString('pt-BR', { maximumFractionDigits: 1 }); }
+    function dataBR(iso){ var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+    function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+    // Cor da entrega: vem do texto da coluna "Compensa ou Não" da planilha
+    // (assim bate com o que você vê lá); se estiver vazio, usa as faixas das Configurações.
+    function classeDe(e){
+      var t = (e.classificacao || '').toLowerCase();
+      if (/excelente/.test(t)) return 'great';
+      if (/boa/.test(t)) return 'good';
+      if (/aceit/.test(t)) return 'ok';
+      if (/n[ãa]o/.test(t)) return 'bad';
+      var c = STATE.config, lk = e.lucroKm;
+      if (lk == null || !c) return '';
+      return lk <= c.limiteNaoCompensa ? 'bad' : lk <= c.limiteAceitavel ? 'ok' : lk <= c.limiteBoa ? 'good' : 'great';
+    }
+
+    function entregasDaPlataforma(){ var c = LISTA.cache[LISTA.plat]; return c ? c.entregas : null; }
+    function achar(linha){
+      var l = entregasDaPlataforma() || [];
+      for (var i = 0; i < l.length; i++) if (l[i].linha === linha) return l[i];
+      return null;
+    }
+    function esperadoDe(e){ return { data: e.data, valor: e.valor }; }
+    function erroDeSincronia(err){ return /planilha mudou|n[ãa]o existe|n[ãa]o [ée] uma/i.test((err && err.message) || ''); }
+
+    function aoTrocarPlataforma(nome){
+      LISTA.plat = nome; LISTA.filtro = 'todas'; LISTA.pagina = 1; LISTA.abertos = {}; LISTA.menuPP = false;
+      atualizarBotaoNova();
+      renderEntregas();
+      carregarEntregas();
+    }
+    function atualizarBotaoNova(){
+      document.getElementById('btn-nova-plat').textContent = LISTA.plat ? '· ' + LISTA.plat : '';
+    }
+
+    function carregarEntregas(){
+      var plat = LISTA.plat;
+      if (!plat) return;
+      var meuId = ++LISTA.reqId;
+      LISTA.carregando = true; LISTA.erro = null;
+      renderEntregas();
       google.script.run
-        .withSuccessHandler(function(lista){
-          var el = document.getElementById('historico-lista');
-          if (!lista || lista.length === 0){
-            el.innerHTML = '<p class="empty-note">Nenhuma entrega registrada ainda.</p>';
-            return;
-          }
-          el.innerHTML = lista.map(function(e){
-            return '<div class="history-item">' +
-              '<div><div>' + e.plataforma + '<span class="badge ' + (BADGE_CLASS[e.resultado]||'') + '">' + e.resultado + '</span></div>' +
-              '<div class="meta">' + e.data + ' · ' + e.distancia + ' km</div></div>' +
-              '<div class="lucro">' + fmt(e.lucroPorKm) + '/km</div>' +
-            '</div>';
-          }).join('');
+        .withSuccessHandler(function(res){
+          LISTA.cache[plat] = { entregas: (res && res.entregas) || [] };
+          if (meuId !== LISTA.reqId) return; // o usuário já trocou de plataforma
+          LISTA.carregando = false; LISTA.abertos = {};
+          renderEntregas();
         })
-        .withFailureHandler(function(){ document.getElementById('historico-lista').innerHTML = '<p class="empty-note">Não foi possível carregar o histórico.</p>'; })
-        .getRecentEntregas();
+        .withFailureHandler(function(err){
+          if (meuId !== LISTA.reqId) return;
+          LISTA.carregando = false;
+          LISTA.erro = (err && err.message) || 'Não foi possível carregar as entregas.';
+          if (LISTA.cache[plat]) toast(LISTA.erro, true);
+          renderEntregas();
+        })
+        .listarEntregas({ plataforma: plat });
+    }
+
+    function renderPaginacao(totalPaginas, totalItens){
+      var el = document.getElementById('paginacao');
+      // só aparece quando passa da menor opção (10): até 10 lançamentos cabem numa página
+      if (totalItens <= OPCOES_PP[0]){ el.className = 'pagin'; el.innerHTML = ''; LISTA.menuPP = false; return; }
+      el.className = 'pagin show';
+      var menu = LISTA.menuPP ? '<div class="pp-menu"><div class="tit">Lançamentos por página</div>' + OPCOES_PP.map(function(n){
+        return '<button class="' + (n === LISTA.porPagina ? 'sel' : '') + '" onclick="escolherPorPagina(' + n + ')">' + n + (n === LISTA.porPagina ? ' ✓' : '') + '</button>';
+      }).join('') + '</div>' : '';
+      el.innerHTML =
+        '<div class="pp"><button class="pp-btn' + (LISTA.menuPP ? ' aberto' : '') + '" onclick="alternarMenuPP(event)" aria-label="Lançamentos por página">' + LISTA.porPagina + ' / pág.' + ICO_SETA_PP + '</button>' + menu + '</div>' +
+        '<button onclick="irPagina(-1)" aria-label="Página anterior"' + (LISTA.pagina <= 1 ? ' disabled' : '') + '>‹</button>' +
+        '<span class="info">' + LISTA.pagina + ' / ' + totalPaginas + '</span>' +
+        '<button onclick="irPagina(1)" aria-label="Próxima página"' + (LISTA.pagina >= totalPaginas ? ' disabled' : '') + '>›</button>';
+    }
+    function irPagina(delta){ LISTA.pagina += delta; renderEntregas(); }
+    function alternarMenuPP(ev){ ev.stopPropagation(); LISTA.menuPP = !LISTA.menuPP; renderEntregas(); }
+    // Troca a quantidade por página mantendo na tela o primeiro lançamento que já estava visível
+    function escolherPorPagina(n){
+      var primeiro = (LISTA.pagina - 1) * LISTA.porPagina;
+      LISTA.porPagina = n; LISTA.pagina = Math.floor(primeiro / n) + 1; LISTA.menuPP = false; renderEntregas();
+    }
+    document.addEventListener('click', function(ev){
+      if (LISTA.menuPP && !ev.target.closest('.pp')){ LISTA.menuPP = false; renderEntregas(); }
+    });
+    document.getElementById('filtro').addEventListener('click', function(ev){
+      var b = ev.target.closest('button'); if (!b) return;
+      LISTA.filtro = b.dataset.f; LISTA.pagina = 1; renderEntregas();
+    });
+
+    function alternarAberto(linha){ LISTA.abertos[linha] = !LISTA.abertos[linha]; renderEntregas(); }
+
+    function renderTotais(todas){
+      var tv = 0, td = 0, tc = 0, tl = 0, rec = 0;
+      todas.forEach(function(e){
+        tv += e.valor || 0; td += e.distancia || 0; tc += e.custoTotal || 0; tl += e.lucro || 0;
+        if (e.recebido) rec += e.valor || 0;
+      });
+      var el = document.getElementById('totais');
+      el.style.display = 'block';
+      el.innerHTML =
+        '<div class="topo"><div><div class="rotulo">TOTAL · ' + todas.length + (todas.length === 1 ? ' entrega' : ' entregas') + '</div>' +
+        '<div class="plat-nome">' + esc(LISTA.plat) + '</div></div>' +
+        '<div class="grande">' + fmt(tv) + '</div></div>' +
+        '<div class="barra">' +
+          '<div class="bloco rec"><div class="t">✓ Recebido</div><div class="v">' + fmt(rec) + '</div></div>' +
+          '<div class="bloco"><div class="t">A receber</div><div class="v">' + fmt(tv - rec) + '</div></div>' +
+        '</div>' +
+        '<div class="mini">' +
+          '<div><div class="t">Distância</div><div class="v">' + kmTxt(td) + ' km</div></div>' +
+          '<div><div class="t">Custo total</div><div class="v">' + fmt(tc) + '</div></div>' +
+          '<div><div class="t">Lucro total</div><div class="v">' + fmt(tl) + '</div></div>' +
+        '</div>';
+    }
+
+    function renderEntregas(){
+      var elLista = document.getElementById('lista'), elTot = document.getElementById('totais');
+      document.getElementById('lista-titulo').innerHTML = 'Entregas' + (LISTA.plat ? ' · ' + esc(LISTA.plat) : '') +
+        (LISTA.carregando && entregasDaPlataforma() ? '<span class="atualizando">atualizando…</span>' : '');
+      document.querySelectorAll('#filtro button').forEach(function(b){ b.classList.toggle('active', b.dataset.f === LISTA.filtro); });
+
+      var todas = entregasDaPlataforma();
+      if (!todas){
+        renderPaginacao(1, 0);
+        elTot.style.display = 'none';
+        elLista.innerHTML = LISTA.erro
+          ? '<div class="vazio">' + esc(LISTA.erro) + '<br><br><button class="btn btn-ghost" style="width:auto;display:inline-block;padding:9px 18px;" onclick="carregarEntregas()">Tentar de novo</button></div>'
+          : '<div class="vazio">Carregando lançamentos…</div>';
+        return;
+      }
+
+      renderTotais(todas);
+
+      // mais novos primeiro (empate na data: a linha mais embaixo na planilha primeiro)
+      var ordenada = todas.slice().sort(function(a, b){
+        return a.data < b.data ? 1 : a.data > b.data ? -1 : b.linha - a.linha;
+      });
+      var filtrada = ordenada.filter(function(e){
+        return LISTA.filtro === 'todas' || (LISTA.filtro === 'recebidas' ? e.recebido : !e.recebido);
+      });
+      var totalPaginas = Math.max(1, Math.ceil(filtrada.length / LISTA.porPagina));
+      if (LISTA.pagina > totalPaginas) LISTA.pagina = totalPaginas;
+      if (LISTA.pagina < 1) LISTA.pagina = 1;
+      renderPaginacao(totalPaginas, filtrada.length);
+      var pagina = filtrada.slice((LISTA.pagina - 1) * LISTA.porPagina, LISTA.pagina * LISTA.porPagina);
+
+      if (!pagina.length){
+        elLista.innerHTML = '<div class="vazio">Nenhuma entrega ' + (LISTA.filtro === 'todas' ? 'lançada nessa plataforma ainda.' : 'nesse filtro.') + '</div>';
+        return;
+      }
+      elLista.innerHTML = pagina.map(function(e){
+        var k = classeDe(e), cor = k ? ' c-' + k : '', ocupada = LISTA.ocupado;
+        var rotuloRec = LISTA.ocupadoLinha === e.linha && ocupada ? '…' : (e.recebido ? 'Recebido' : 'Receber');
+        var dis = ocupada ? ' disabled' : '';
+        return '<div class="e-row' + (e.recebido ? ' recebido' : '') + (LISTA.abertos[e.linha] ? ' open' : '') + '">' +
+          '<div class="e-head" onclick="alternarAberto(' + e.linha + ')">' +
+            '<span class="e-data">' + dataBR(e.data) + '</span>' +
+            '<span class="e-meio"><span class="seg">' + (e.distancia == null ? '—' : kmTxt(e.distancia)) + 'km</span><wbr>' +
+              '<span class="sep">·</span><span class="seg"><b class="' + cor.trim() + '">' + moRs(e.lucroKm) + '/km</b></span><wbr>' +
+              '<span class="sep">·</span><span class="seg"><b class="' + cor.trim() + '">' + moRs(e.lucro) + '</b></span></span>' +
+            '<span class="e-valor">' + mo(e.valor) + '</span>' + ICO_SETA +
+          '</div>' +
+          '<div class="e-det">' +
+            '<div class="grade">' +
+              '<div><div class="t">Distância</div><div class="v">' + kmTxt(e.distancia) + ' km</div></div>' +
+              '<div><div class="t">Consumo</div><div class="v">' + kmTxt(e.consumo) + ' km/L</div></div>' +
+              '<div><div class="t">Combustível</div><div class="v">' + (e.preco == null ? '—' : fmt(e.preco) + '/L') + '</div></div>' +
+              '<div><div class="t">Custo comb.</div><div class="v c-bad">' + mo(e.combustivel) + '</div></div>' +
+              '<div><div class="t">Manutenção</div><div class="v c-bad">' + mo(e.manutencao) + '</div></div>' +
+              '<div><div class="t">Custo/km</div><div class="v c-bad">' + mo(e.custoKm) + '</div></div>' +
+              '<div><div class="t">Custo total</div><div class="v c-bad">' + mo(e.custoTotal) + '</div></div>' +
+              '<div><div class="t">Lucro/km</div><div class="v' + cor + '">' + mo(e.lucroKm) + '</div></div>' +
+              '<div><div class="t">Lucro total</div><div class="v' + cor + '">' + mo(e.lucro) + '</div></div>' +
+              (e.classificacao ? '<div class="cheio"><div class="t">Compensa ou não</div><div class="v' + cor + '">' + esc(e.classificacao) + '</div></div>' : '') +
+            '</div>' +
+            '<div class="acoes">' +
+              '<button class="b-rec" onclick="alternarRecebido(' + e.linha + ')"' + dis + '>' + ICO_OK + rotuloRec + '</button>' +
+              '<button onclick="abrirFolha(' + e.linha + ')"' + dis + '>' + ICO_ED + 'Editar</button>' +
+              '<button class="b-del" onclick="pedirExcluir(' + e.linha + ')"' + dis + '>' + ICO_DEL + 'Excluir</button>' +
+            '</div>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    /* ---------- Receber / Excluir ---------- */
+    function alternarRecebido(linha){
+      if (LISTA.ocupado) return;
+      var e = achar(linha); if (!e) return;
+      var novo = !e.recebido;
+      LISTA.ocupado = true; LISTA.ocupadoLinha = linha; renderEntregas();
+      google.script.run
+        .withSuccessHandler(function(){
+          LISTA.ocupado = false; LISTA.ocupadoLinha = null;
+          e.recebido = novo; renderEntregas();
+          toast(novo ? 'Marcada como recebida ✓' : 'Voltou para "a receber"');
+        })
+        .withFailureHandler(function(err){
+          LISTA.ocupado = false; LISTA.ocupadoLinha = null; renderEntregas();
+          toast((err && err.message) || 'Erro ao atualizar', true);
+          if (erroDeSincronia(err)) carregarEntregas();
+        })
+        .marcarRecebido({ plataforma: LISTA.plat, linha: e.linha, esperado: esperadoDe(e), recebido: novo });
+    }
+
+    function pedirExcluir(linha){
+      var e = achar(linha); if (!e) return;
+      LISTA.excluir = linha;
+      document.getElementById('conf-txt').textContent =
+        dataBR(e.data) + ' · ' + mo(e.valor) + ' · ' + kmTxt(e.distancia) + ' km. A linha será removida da planilha e não dá pra desfazer por aqui.';
+      document.getElementById('conf-bd').classList.add('show');
+    }
+    function fecharConf(){ document.getElementById('conf-bd').classList.remove('show'); }
+    function confirmarExcluir(){
+      var e = achar(LISTA.excluir); if (!e) { fecharConf(); return; }
+      var btn = document.getElementById('conf-excluir');
+      btn.disabled = true; btn.textContent = 'Excluindo…';
+      google.script.run
+        .withSuccessHandler(function(){
+          btn.disabled = false; btn.textContent = 'Excluir';
+          fecharConf(); toast('Entrega excluída');
+          carregarEntregas();
+        })
+        .withFailureHandler(function(err){
+          btn.disabled = false; btn.textContent = 'Excluir';
+          fecharConf(); toast((err && err.message) || 'Erro ao excluir', true);
+          if (erroDeSincronia(err)) carregarEntregas();
+        })
+        .excluirEntrega({ plataforma: LISTA.plat, linha: e.linha, esperado: esperadoDe(e) });
+    }
+
+    /* ---------- Folha: Nova entrega / Editar entrega ---------- */
+    function abrirFolha(linha){
+      var e = linha == null ? null : achar(linha);
+      LISTA.editando = e ? e.linha : null;
+      document.getElementById('folha-titulo').textContent = e ? 'Editar entrega' : 'Nova entrega';
+      var tag = document.getElementById('folha-plat');
+      tag.textContent = LISTA.plat; tag.style.background = PLATFORM_COLORS[LISTA.plat] || 'var(--asphalt)';
+      document.getElementById('reg-salvar').textContent = e ? 'Salvar alterações' : 'Salvar entrega';
+
+      resetarKmDistancia('reg');
+      var cfg = STATE.config;
+      if (e){
+        document.getElementById('reg-data').value = e.data;
+        document.getElementById('reg-valor').value = e.valor == null ? '' : e.valor;
+        document.getElementById('reg-distancia').value = e.distancia == null ? '' : e.distancia;
+        document.getElementById('reg-consumo').value = e.consumo == null ? '' : e.consumo;
+        document.getElementById('reg-preco').value = e.preco == null ? '' : e.preco;
+      } else {
+        document.getElementById('reg-data').value = hoje();
+        document.getElementById('reg-valor').value = '';
+        document.getElementById('reg-consumo').value = cfg ? cfg.ultimoConsumo : '';
+        document.getElementById('reg-preco').value = cfg ? cfg.ultimoPreco : '';
+      }
+      recalcRegistrar();
+      document.getElementById('folha-bd').classList.add('show');
+    }
+    function fecharFolha(){ document.getElementById('folha-bd').classList.remove('show'); }
+
+    function salvarEntrega(){
+      var e = LISTA.editando == null ? null : achar(LISTA.editando);
+      var dados = {
+        plataforma: LISTA.plat,
+        data: document.getElementById('reg-data').value,
+        valorRecebido: document.getElementById('reg-valor').value,
+        distancia: document.getElementById('reg-distancia').value,
+        consumo: document.getElementById('reg-consumo').value,
+        precoCombustivel: document.getElementById('reg-preco').value
+      };
+      if (e){ dados.linha = e.linha; dados.esperado = esperadoDe(e); }
+
+      var btn = document.getElementById('reg-salvar'), rotulo = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Salvando…';
+      var run = google.script.run
+        .withSuccessHandler(function(){
+          btn.textContent = rotulo; recalcRegistrar();
+          if (STATE.config){
+            STATE.config.ultimoConsumo = parseFloat(dados.consumo);
+            STATE.config.ultimoPreco = parseFloat(dados.precoCombustivel);
+          }
+          fecharFolha();
+          toast(e ? 'Entrega atualizada ✓' : 'Entrega salva na planilha ✓');
+          carregarEntregas();
+        })
+        .withFailureHandler(function(err){
+          btn.textContent = rotulo; recalcRegistrar();
+          toast((err && err.message) || 'Erro ao salvar', true);
+          if (erroDeSincronia(err)){ fecharFolha(); carregarEntregas(); }
+        });
+      if (e) run.editarEntrega(dados); else run.novaEntrega(dados);
     }
 
     /* ---------- Calculadora (campo Valor) ---------- */
@@ -1616,6 +2002,9 @@
       google.script.run.withSuccessHandler(function(cfg){
         STATE.config = cfg;
         renderPlataformas(cfg.plataformas);
+        LISTA.plat = cfg.plataformas[0];
+        atualizarBotaoNova();
+        carregarEntregas();
         preencherConfigForm(cfg);
         document.getElementById('reg-consumo').value = cfg.ultimoConsumo;
         document.getElementById('reg-preco').value = cfg.ultimoPreco;
@@ -1628,7 +2017,6 @@
         recalcRapido();
         esconderAbertura();
       }).getConfig();
-      carregarHistorico();
     };
   </script>
 </body>
