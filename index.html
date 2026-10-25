@@ -455,9 +455,11 @@
     }
     /* ===== Tela de Entregas (dados da planilha) ===== */
     :root{ --recebido:#3E9B5F; --recebido-bg:#E6F4E9; }
-    .btn-nova{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;box-shadow:0 4px 12px rgba(28,36,48,0.22);}
-    .btn-nova svg{width:18px;height:18px;}
-    .btn-nova .plat{font-weight:600;opacity:.75;}
+    .btn-nova-mini{height:32px;border:none;border-radius:10px;background:var(--asphalt);color:#fff;padding:0 12px 0 10px;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 8px rgba(28,36,48,0.22);}
+    .btn-nova-mini svg{width:14px;height:14px;}
+    .btn-nova-mini.compacto{width:34px;padding:0;}
+    .btn-nova-mini.compacto svg{width:17px;height:17px;}
+    .btn-nova-mini.compacto .txt{display:none;}
 
     .totais{background:var(--asphalt);color:#fff;border-radius:16px;padding:16px 18px;margin:14px 0;}
     .totais .topo{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
@@ -475,9 +477,12 @@
 
     .lista-topo{display:flex;flex-direction:column;gap:8px;margin:4px 2px 10px;}
     .lista-topo h3{font-size:15px;}
-    .atualizando{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--ink-soft);margin-left:6px;}
-    .lista-linha1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 8px;min-height:32px;}
-    .pagin{display:none;align-items:center;gap:5px;margin-left:auto;}
+    .atualizando{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--route);margin-left:7px;vertical-align:middle;animation:pulsa 1s ease-in-out infinite;}
+    @keyframes pulsa{0%,100%{opacity:.25;}50%{opacity:1;}}
+    .lista-linha1{display:flex;align-items:center;gap:8px;min-height:34px;}
+    .lista-linha1 h3{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .lista-linha1.sem-plat .tit-plat{display:none;}
+    .pagin{display:none;align-items:center;gap:5px;flex-shrink:0;}
     .pagin.show{display:flex;}
     .pagin button{width:32px;height:32px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:18px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
     .pagin button:disabled{opacity:.35;cursor:default;}
@@ -575,15 +580,14 @@
         <div class="pills" id="plataformas-registrar"></div>
       </div>
 
-      <button class="btn btn-primary btn-nova" id="btn-nova" onclick="abrirFolha(null)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        Nova entrega <span class="plat" id="btn-nova-plat"></span>
-      </button>
-
       <div class="lista-topo">
-        <div class="lista-linha1">
+        <div class="lista-linha1" id="lista-linha1">
           <h3 id="lista-titulo">Entregas</h3>
           <div class="pagin" id="paginacao"></div>
+          <button type="button" class="btn-nova-mini" id="btn-nova" onclick="abrirFolha(null)" aria-label="Nova entrega" title="Nova entrega">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            <span class="txt">Nova Entrega</span>
+          </button>
         </div>
         <div class="filtro" id="filtro">
           <button data-f="todas" class="active">Todas</button>
@@ -1086,6 +1090,7 @@
         document.getElementById('panel-'+t).classList.toggle('active', t===name);
         document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
       });
+      if (name === 'registrar') ajustarLinhaTopo();
     }
 
     function abrirConfig(){ document.getElementById('config-backdrop').classList.add('show'); }
@@ -1571,8 +1576,23 @@
       carregarEntregas();
     }
     function atualizarBotaoNova(){
-      document.getElementById('btn-nova-plat').textContent = LISTA.plat ? '· ' + LISTA.plat : '';
+      var b = document.getElementById('btn-nova');
+      var rotulo = LISTA.plat ? 'Nova entrega em ' + LISTA.plat : 'Nova entrega';
+      b.setAttribute('aria-label', rotulo); b.title = rotulo;
     }
+
+    // Cabe tudo na mesma linha? Tenta, nesta ordem: "+ Nova Entrega" -> só "+" ->
+    // título encurtado pra "Entregas". (Mede o espaço de verdade a cada atualização.)
+    function ajustarLinhaTopo(){
+      var linha = document.getElementById('lista-linha1'), btn = document.getElementById('btn-nova'), tit = document.getElementById('lista-titulo');
+      if (!linha || !btn || !linha.offsetWidth) return; // aba escondida: mede quando aparecer
+      btn.classList.remove('compacto'); linha.classList.remove('sem-plat');
+      function estoura(){ return tit.scrollWidth > tit.clientWidth + 1 || linha.scrollWidth > linha.clientWidth + 1; }
+      if (estoura()) btn.classList.add('compacto');
+      if (estoura()) linha.classList.add('sem-plat');
+    }
+    window.addEventListener('resize', ajustarLinhaTopo);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustarLinhaTopo);
 
     function carregarEntregas(){
       var plat = LISTA.plat;
@@ -1606,7 +1626,7 @@
         return '<button class="' + (n === LISTA.porPagina ? 'sel' : '') + '" onclick="escolherPorPagina(' + n + ')">' + n + (n === LISTA.porPagina ? ' ✓' : '') + '</button>';
       }).join('') + '</div>' : '';
       el.innerHTML =
-        '<div class="pp"><button class="pp-btn' + (LISTA.menuPP ? ' aberto' : '') + '" onclick="alternarMenuPP(event)" aria-label="Lançamentos por página">' + LISTA.porPagina + ' / pág.' + ICO_SETA_PP + '</button>' + menu + '</div>' +
+        '<div class="pp"><button class="pp-btn' + (LISTA.menuPP ? ' aberto' : '') + '" onclick="alternarMenuPP(event)" aria-label="Lançamentos por página">' + LISTA.porPagina + ICO_SETA_PP + '</button>' + menu + '</div>' +
         '<button onclick="irPagina(-1)" aria-label="Página anterior"' + (LISTA.pagina <= 1 ? ' disabled' : '') + '>‹</button>' +
         '<span class="info">' + LISTA.pagina + ' / ' + totalPaginas + '</span>' +
         '<button onclick="irPagina(1)" aria-label="Próxima página"' + (LISTA.pagina >= totalPaginas ? ' disabled' : '') + '>›</button>';
@@ -1651,10 +1671,11 @@
         '</div>';
     }
 
-    function renderEntregas(){
+    function renderEntregas(){ renderEntregasInterno(); ajustarLinhaTopo(); }
+    function renderEntregasInterno(){
       var elLista = document.getElementById('lista'), elTot = document.getElementById('totais');
-      document.getElementById('lista-titulo').innerHTML = 'Entregas' + (LISTA.plat ? ' · ' + esc(LISTA.plat) : '') +
-        (LISTA.carregando && entregasDaPlataforma() ? '<span class="atualizando">atualizando…</span>' : '');
+      document.getElementById('lista-titulo').innerHTML = 'Entregas' + (LISTA.plat ? '<span class="tit-plat"> · ' + esc(LISTA.plat) + '</span>' : '') +
+        (LISTA.carregando && entregasDaPlataforma() ? '<span class="atualizando" title="atualizando…"></span>' : '');
       document.querySelectorAll('#filtro button').forEach(function(b){ b.classList.toggle('active', b.dataset.f === LISTA.filtro); });
 
       var todas = entregasDaPlataforma();
