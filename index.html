@@ -580,6 +580,201 @@
 
     /* Sem zoom por toque duplo / pinça */
     html, body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
+
+    /* ===================================================================
+       VERSÃO PC (telas a partir de 900px de largura)
+       No celular nada muda. Em telas largas o mesmo conteúdo é reorganizado:
+       - Lateral à esquerda (plataformas / período / totais, ou modo / faixas)
+       - Entregas em tabela, com cabeçalho escuro e ações em ícones
+       - Verificação Rápida com campos em linha e resultado em faixa
+       - Nova/Editar entrega e Configurações: janelas mais largas, em 2 colunas
+    =================================================================== */
+    /* Peças que só aparecem no PC */
+    .so-pc{display:none;}
+    .tabela-pc-wrap{display:none;}
+
+    @media (min-width:900px){
+      :root{ --largura-pc:1440px; --margem-pc:max(24px, calc((100% - var(--largura-pc)) / 2 + 24px)); }
+      .so-pc{display:block;}
+      .lista-cel{display:none;}
+      .tabela-pc-wrap{display:block;}
+      .ponto{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:7px;vertical-align:1px;}
+
+      header{ padding-left:var(--margem-pc); padding-right:var(--margem-pc); }
+      .gear-btn{ right:var(--margem-pc); }
+      /* Abas Entregas / Verificação Rápida: no topo da coluna da esquerda, uma embaixo
+         da outra, com 86px de altura = mesma altura do bloco ao lado (título + filtros
+         em Entregas; faixa dos botões de modo na Verificação Rápida).
+         A margem negativa (-86px) faz a área principal começar na mesma altura das abas. */
+      header{ padding-bottom:22px; }
+      nav.tabs{
+        flex-direction:column; width:260px; height:86px;
+        margin:24px 0 -86px var(--margem-pc);
+        border:1px solid var(--line); box-shadow:none;
+      }
+      nav.tabs button{ padding:0 8px; }
+      main{ max-width:var(--largura-pc); padding:0 24px 8px; }
+      /* 86px (abas) + 14px = topo do quadro Plataforma alinhado ao topo da tabela */
+      #panel-registrar > .card:first-child{ margin-top:100px; }
+
+      /* ---- Estrutura: lateral (260px) + área principal ---- */
+      #panel-registrar.active, #panel-rapido.active{
+        display:grid;
+        grid-template-columns:260px minmax(0,1fr);
+        grid-template-rows:auto auto auto 1fr;
+        column-gap:24px;
+        align-items:start;
+      }
+
+      /* ---- Entregas: lateral ---- */
+      #panel-registrar.active{ grid-template-areas:"plat main" ". main" ". main" ". main"; }
+      #panel-registrar > .card:first-child{ grid-area:plat; }
+      #panel-registrar > .col-principal{ grid-area:main; }
+
+      #plataformas-registrar .pills-linha{ flex-direction:column; align-items:stretch; }
+      #plataformas-registrar .pill{ width:100%; padding:7px 12px 7px 7px; font-size:14px; }
+      #plataformas-registrar .pill-badge{ width:26px; height:26px; }
+
+      /* Total: logo abaixo da tabela, numa faixa horizontal (movido pra cá em posicionarLayoutPC).
+         "TOTAL · N entregas / plataforma" e o valor total na mesma linha, antes de "Recebido". */
+      .col-principal > .totais{ display:flex; align-items:center; gap:28px; margin:14px 0 0; padding:16px 22px; }
+      .col-principal > .totais .topo{ flex:0 0 auto; align-items:center; gap:18px; margin:0; }
+      .col-principal > .totais .barra{ flex:1 1 0; margin:0; }
+      .col-principal > .totais .mini{ flex:1.2 1 0; }
+
+      /* ---- Entregas: área principal ----
+         Linha 1: título
+         Linha 2: Todas/A receber/Recebidas + período + paginação ... Nova Entrega (à direita, colado na tabela)
+         Altura fixa (36 + 12 + 38 = 86px) = altura das abas da esquerda. */
+      #panel-registrar .lista-topo{
+        display:grid; grid-template-columns:auto auto auto 1fr auto; align-items:center;
+        grid-template-rows:36px 38px;
+        grid-template-areas:"tit tit tit tit tit" "filtro datas pagin . nova";
+        row-gap:12px; column-gap:16px; margin:0 0 14px;
+      }
+      /* linha1 e linha2 "somem" como caixa: título, botão, filtros e paginação viram itens da grade */
+      #panel-registrar .lista-linha1, #panel-registrar .lista-linha2{ display:contents; }
+      #panel-registrar #lista-titulo{ grid-area:tit; font-size:19px; }
+      #panel-registrar #btn-nova{ grid-area:nova; }
+      #panel-registrar .filtro{ grid-area:filtro; width:310px; }
+      #panel-registrar .dt-grupo{ grid-area:datas; align-items:center; gap:14px; }
+      #panel-registrar .field.dt-campo{ display:flex; align-items:center; gap:6px; width:auto; }
+      #panel-registrar .dt-campo label{ margin:0; font-size:12px; }
+      #panel-registrar .dt-campo .input-wrap{ width:104px; }
+      #panel-registrar #paginacao{ grid-area:pagin; }
+      .btn-nova-mini{ height:38px; padding:0 16px 0 14px; font-size:13.5px; }
+      /* no PC sempre cabe tudo: ignora o modo compacto usado no celular */
+      .btn-nova-mini.compacto{ width:auto; padding:0 16px 0 14px; }
+      .btn-nova-mini.compacto .txt{ display:inline; }
+      .lista-linha1.sem-plat .tit-plat{ display:inline; }
+
+      /* ---- Entregas: tabela ---- */
+      .tabela-pc-wrap{ background:#fff; border:1px solid var(--line); border-radius:14px; overflow:auto; }
+      .tabela-pc{ width:100%; border-collapse:collapse; font-size:12.5px; white-space:nowrap; }
+      .tabela-pc th{ background:var(--asphalt); color:#fff; font-size:11px; font-weight:700; text-align:right; padding:11px 6px; }
+      .tabela-pc td{ padding:0 6px; height:38px; text-align:right; font-weight:600; color:var(--ink); border-top:1px solid var(--line); }
+      .tabela-pc tbody tr:first-child td{ border-top:none; }
+      .tabela-pc th:first-child, .tabela-pc td:first-child{ text-align:left; padding-left:10px; }
+      .tabela-pc td.t-data{ color:var(--ink-soft); }
+      .tabela-pc td.forte{ font-weight:700; font-size:13.5px; }
+      .tabela-pc td.c-bad{ color:var(--bad); } .tabela-pc td.c-ok{ color:var(--ok); }
+      .tabela-pc td.c-good{ color:var(--good); } .tabela-pc td.c-great{ color:var(--great); }
+      .tabela-pc .t-res{ text-align:left; padding-left:12px; font-weight:700; }
+      .tabela-pc .t-acoes{ text-align:center; padding-right:8px; }
+      .tabela-pc td.t-acoes div{ display:inline-flex; gap:4px; vertical-align:middle; }
+      .tabela-pc .t-acoes button{
+        width:28px; height:28px; padding:0; border-radius:8px;
+        border:1.5px solid var(--line); background:#fff; color:var(--ink-soft);
+        display:flex; align-items:center; justify-content:center; cursor:pointer;
+        font-size:13px; font-weight:700;
+      }
+      .tabela-pc .t-acoes button svg{ width:15px; height:15px; }
+      .tabela-pc .t-acoes button:disabled{ opacity:.55; cursor:default; }
+      .tabela-pc .t-acoes .b-rec{ border-color:var(--recebido); color:var(--recebido); }
+      .tabela-pc .t-acoes .b-del{ border-color:#EBC7C4; color:var(--bad); }
+      .tabela-pc tr.recebido td{ background:var(--recebido-bg); }
+      .tabela-pc tr.recebido td:first-child{ box-shadow:inset 4px 0 0 var(--recebido); }
+      .tabela-pc tr.recebido .b-rec{ background:var(--recebido); color:#fff; }
+      .tabela-pc tbody tr:not(.recebido):hover td{ background:#FAF9F6; }
+
+      /* ---- Verificação Rápida: lateral ---- */
+      /* Linha 1: (esquerda vazia, ocupada pelas abas) | botões de modo, centralizados
+         Linha 2: Faixas de lucro | formulário + resultado */
+      #panel-rapido.active{ grid-template-rows:auto auto 1fr; grid-template-areas:". modo" "faixas main" ". main"; }
+      #panel-rapido > .modo-toggle{
+        grid-area:modo; height:86px; margin-bottom:14px;
+        display:flex; align-items:center; justify-content:center;
+      }
+      /* Botões no mesmo estilo do celular (fundo cinza arredondado, opção ativa em branco),
+         só um pouco maiores pra tela do PC */
+      .modo-toggle-pills{ flex:0 1 480px; }
+      .modo-toggle-pills button{ padding:10px 14px; font-size:13.5px; }
+      .modo-toggle-pills button svg{ width:15px; height:15px; }
+      #faixas-pc{ grid-area:faixas; }
+      .faixa-linha{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-top:1px solid var(--line); font-size:13px; font-weight:700; }
+      .faixa-linha:first-child{ border-top:none; padding-top:0; }
+      .faixa-linha .lim{ color:var(--ink-soft); font-weight:600; font-size:12px; white-space:nowrap; }
+      #faixas-pc .hint{ margin-top:10px; line-height:1.45; }
+
+      /* ---- Verificação Rápida: área principal ---- */
+      #rap-bloco-lucro, #rap-bloco-cobrar{ grid-area:main; }
+      #rap-bloco-lucro > .card, #rap-bloco-cobrar > .card{ display:grid; column-gap:12px; align-items:end; }
+      #rap-bloco-lucro > .card{ grid-template-columns:repeat(4, minmax(0,1fr)); }
+      #rap-bloco-cobrar > .card{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+      #panel-rapido .card > h2, #panel-rapido .card > .config-desc, #rap-bloco-cobrar .categorias{ grid-column:1 / -1; }
+      #rap-bloco-lucro > .card > h2{ margin-bottom:6px; }
+      #rap-bloco-lucro > .card > .config-desc{ margin-bottom:0; }
+      #panel-rapido .row2{ display:contents; }
+      #rap-bloco-cobrar .categorias{ flex-direction:row; }
+      #rap-bloco-cobrar .cat-pill{ flex:1; }
+
+      #panel-rapido .result{
+        display:grid; grid-template-columns:minmax(230px, 0.8fr) minmax(0, 2fr);
+        grid-template-areas:"verd brk" "lk brk"; column-gap:24px; align-items:center;
+        padding:20px 22px;
+      }
+      #panel-rapido .result .verdict{ grid-area:verd; align-self:end; }
+      #panel-rapido .result .lucro-km{ grid-area:lk; align-self:start; margin:4px 0 0; }
+      #panel-rapido .result .breakdown{ grid-area:brk; grid-template-columns:repeat(4, minmax(0,1fr)); }
+      #panel-rapido .btn-ghost{ width:220px; margin:0 0 0 auto; }
+
+      /* ---- Janela Nova / Editar entrega ---- */
+      #folha-bd .modal-sheet{
+        max-width:860px;
+        display:grid;
+        grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+        grid-template-rows:auto auto auto 1fr;
+        grid-template-areas:"head head" "form res" "form salvar" "form limpar";
+        column-gap:20px;
+        align-items:start;
+      }
+      #folha-bd .modal-header{ grid-area:head; }
+      #folha-bd .card{ grid-area:form; margin-bottom:0; }
+      #folha-bd .result{ grid-area:res; }
+      #folha-bd #reg-salvar{ grid-area:salvar; }
+      #folha-bd .btn-ghost{ grid-area:limpar; }
+
+      /* ---- Janela Configurações ---- */
+      #config-backdrop .modal-sheet{
+        max-width:860px;
+        display:grid; grid-template-columns:1fr 1fr; column-gap:16px; align-items:start;
+      }
+      #config-backdrop .modal-header{ grid-column:1 / -1; }
+
+      /* ---- Mouse: destaque ao passar por cima ---- */
+      .pill:not(.selected):hover{ border-color:var(--ink-soft); }
+      .modo-toggle-pills button:not(.active):hover{ color:var(--asphalt); }
+    }
+
+    /* PC com tela mais estreita (900 a 1179px): o período não cabe na mesma linha
+       dos filtros e desce para uma terceira linha. */
+    @media (min-width:900px) and (max-width:1179px){
+      #panel-registrar .lista-topo{
+        grid-template-columns:auto auto 1fr auto; grid-template-rows:36px 38px 32px;
+        grid-template-areas:"tit tit tit tit" "filtro pagin . nova" "datas datas datas datas";
+      }
+      #panel-registrar > .card:first-child{ margin-top:144px; }
+    }
   </style>
 </head>
 <body>
@@ -621,6 +816,7 @@
         <div class="pills" id="plataformas-registrar"></div>
       </div>
 
+      <div class="col-principal">
       <div class="lista-topo">
         <div class="lista-linha1" id="lista-linha1">
           <h3 id="lista-titulo">Entregas</h3>
@@ -649,6 +845,7 @@
         </div>
       </div>
       <div id="lista"><div class="vazio">Carregando lançamentos…</div></div>
+      </div>
       <div class="totais" id="totais" style="display:none;"></div>
     </section>
 
@@ -666,6 +863,13 @@
             Quanto devo cobrar
           </button>
         </div>
+      </div>
+
+      <!-- Só no PC: referência das faixas (preenchida em preencherConfigForm) -->
+      <div class="card so-pc" id="faixas-pc">
+        <h2>Faixas de lucro por km</h2>
+        <div id="faixas-pc-lista"></div>
+        <p class="hint" id="faixas-pc-fixos"></p>
       </div>
 
       <!-- ---------- Modo: Quanto vou lucrar ---------- -->
@@ -1484,8 +1688,9 @@
     function mudarModoRap(modo){
       document.getElementById('rap-modo-btn-lucro').classList.toggle('active', modo === 'lucro');
       document.getElementById('rap-modo-btn-cobrar').classList.toggle('active', modo === 'cobrar');
-      document.getElementById('rap-bloco-lucro').style.display = modo === 'lucro' ? 'block' : 'none';
-      document.getElementById('rap-bloco-cobrar').style.display = modo === 'cobrar' ? 'block' : 'none';
+      // '' (e não 'block'): deixa o CSS decidir o layout — no PC os blocos viram 2 colunas
+      document.getElementById('rap-bloco-lucro').style.display = modo === 'lucro' ? '' : 'none';
+      document.getElementById('rap-bloco-cobrar').style.display = modo === 'cobrar' ? '' : 'none';
       if (modo === 'cobrar') atualizarFaixasCobrar();
     }
 
@@ -1573,6 +1778,18 @@
       document.getElementById('cfg-limite3').value = cfg.limiteBoa;
       document.getElementById('reg-fixos-hint').textContent =
         'Manutenção R$ ' + cfg.manutencao.toFixed(2) + '/km + Depreciação R$ ' + cfg.depreciacao.toFixed(2) + '/km já entram no cálculo automaticamente.';
+
+      // Card "Faixas de lucro por km" (só aparece no PC, na Verificação Rápida)
+      document.getElementById('faixas-pc-lista').innerHTML = [
+        ['c-bad',   'Não Compensa',      'até ' + fmt(cfg.limiteNaoCompensa)],
+        ['c-ok',    'Aceitável',         fmt(cfg.limiteNaoCompensa + 0.01) + ' a ' + fmt(cfg.limiteAceitavel)],
+        ['c-good',  'Boa Entrega',       fmt(cfg.limiteAceitavel + 0.01) + ' a ' + fmt(cfg.limiteBoa)],
+        ['c-great', 'Excelente Entrega', 'acima de ' + fmt(cfg.limiteBoa)]
+      ].map(function(f){
+        return '<div class="faixa-linha"><span class="' + f[0] + '"><span class="ponto"></span>' + f[1] + '</span><span class="lim">' + f[2] + '/km</span></div>';
+      }).join('');
+      document.getElementById('faixas-pc-fixos').textContent =
+        'Custos fixos: manutenção ' + fmt(cfg.manutencao) + '/km + depreciação ' + fmt(cfg.depreciacao) + '/km, além do combustível.';
     }
 
     function salvarConfig(){
@@ -1892,7 +2109,7 @@
         if (e.recebido) rec += e.valor || 0;
       });
       var el = document.getElementById('totais');
-      el.style.display = 'block';
+      el.style.display = ''; // '' (e não 'block'): no PC o CSS deixa o total em faixa horizontal
       el.innerHTML =
         '<div class="topo"><div><div class="rotulo">TOTAL · ' + todas.length + (todas.length === 1 ? ' entrega' : ' entregas') + '</div>' +
         '<div class="plat-nome">' + esc(LISTA.plat) + '</div>' +
@@ -1952,7 +2169,8 @@
         elLista.innerHTML = '<div class="vazio">' + msg + '</div>';
         return;
       }
-      elLista.innerHTML = pagina.map(function(e){
+      // Celular: lista de cartões (.lista-cel) | PC: tabela (o CSS mostra só uma das duas)
+      elLista.innerHTML = '<div class="lista-cel">' + pagina.map(function(e){
         var k = classeDe(e), cor = k ? ' c-' + k : '', ocupada = LISTA.ocupado;
         var rotuloRec = LISTA.ocupadoLinha === e.linha && ocupada ? '…' : (e.recebido ? 'Recebido' : 'Receber');
         var dis = ocupada ? ' disabled' : '';
@@ -1983,7 +2201,56 @@
               '<button class="b-del" onclick="pedirExcluir(' + e.linha + ')"' + dis + '>' + ICO_DEL + 'Excluir</button>' +
             '</div>' +
           '</div></div>';
-      }).join('');
+      }).join('') + '</div>' + renderTabelaPC(pagina);
+    }
+
+    /* ---------- Versão PC: tabela de entregas ---------- */
+    var TEXTO_CLASSE = { bad: 'Não Compensa', ok: 'Aceitável', good: 'Boa Entrega', great: 'Excelente Entrega' };
+
+    function renderTabelaPC(pagina){
+      var cab = ['Data', 'Valor', 'Dist.', 'Consumo', 'Preço', 'Comb.', 'Manut.', 'Custo/km', 'Custo', 'Lucro/km', 'Lucro'];
+      var linhas = pagina.map(function(e){
+        var k = classeDe(e), cor = k ? 'c-' + k : '';
+        var dis = LISTA.ocupado ? ' disabled' : '';
+        var rec = LISTA.ocupado && LISTA.ocupadoLinha === e.linha ? '…' : ICO_OK;
+        var resultado = e.classificacao || TEXTO_CLASSE[k] || '—';
+        return '<tr class="' + (e.recebido ? 'recebido' : '') + '">' +
+          '<td class="t-data">' + dataBR(e.data) + '</td>' +
+          '<td class="forte">' + mo(e.valor) + '</td>' +
+          '<td>' + (e.distancia == null ? '—' : kmTxt(e.distancia) + ' km') + '</td>' +
+          '<td>' + (e.consumo == null ? '—' : kmTxt(e.consumo) + ' km/L') + '</td>' +
+          '<td>' + mo(e.preco) + '</td>' +
+          '<td class="c-bad">' + mo(e.combustivel) + '</td>' +
+          '<td class="c-bad">' + mo(e.manutencao) + '</td>' +
+          '<td class="c-bad">' + mo(e.custoKm) + '</td>' +
+          '<td class="c-bad">' + mo(e.custoTotal) + '</td>' +
+          '<td class="' + cor + '">' + mo(e.lucroKm) + '</td>' +
+          '<td class="' + cor + '">' + mo(e.lucro) + '</td>' +
+          '<td class="t-res ' + cor + '"><span class="ponto"></span>' + esc(resultado) + '</td>' +
+          '<td class="t-acoes"><div>' +
+            '<button class="b-rec" onclick="alternarRecebido(' + e.linha + ')"' + dis + ' title="' + (e.recebido ? 'Recebido (clique pra desfazer)' : 'Marcar como recebido') + '" aria-label="Recebido">' + rec + '</button>' +
+            '<button onclick="abrirFolha(' + e.linha + ')"' + dis + ' title="Editar" aria-label="Editar">' + ICO_ED + '</button>' +
+            '<button class="b-del" onclick="pedirExcluir(' + e.linha + ')"' + dis + ' title="Excluir" aria-label="Excluir">' + ICO_DEL + '</button>' +
+          '</div></td>' +
+        '</tr>';
+      });
+      return '<div class="tabela-pc-wrap"><table class="tabela-pc"><thead><tr>' +
+        cab.map(function(c){ return '<th>' + c + '</th>'; }).join('') +
+        '<th class="t-res">Resultado</th><th class="t-acoes">Ações</th>' +
+        '</tr></thead><tbody>' + linhas.join('') + '</tbody></table></div>';
+    }
+
+    /* ---------- Versão PC: posição do total ---------- */
+    // No celular o total fica onde sempre esteve; no PC vai para logo abaixo da tabela.
+    var MQ_PC = window.matchMedia ? window.matchMedia('(min-width:900px)') : null;
+    function posicionarLayoutPC(){
+      var pc = !!(MQ_PC && MQ_PC.matches);
+
+      var totais = document.getElementById('totais');
+      var destinoTotal = pc ? document.querySelector('#panel-registrar .col-principal') : document.getElementById('panel-registrar');
+      if (totais.parentNode !== destinoTotal) destinoTotal.appendChild(totais);
+
+      ajustarLinhaTopo();
     }
 
     /* ---------- Receber / Excluir ---------- */
@@ -2264,6 +2531,11 @@
     });
 
     window.onload = function(){
+      posicionarLayoutPC();
+      if (MQ_PC){
+        if (MQ_PC.addEventListener) MQ_PC.addEventListener('change', posicionarLayoutPC);
+        else if (MQ_PC.addListener) MQ_PC.addListener(posicionarLayoutPC); // Safari antigo
+      }
       document.getElementById('reg-data').value = hoje();
       google.script.run.withSuccessHandler(function(cfg){
         STATE.config = cfg;
