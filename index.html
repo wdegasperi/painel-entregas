@@ -594,7 +594,7 @@
     .tabela-pc-wrap{display:none;}
 
     @media (min-width:900px){
-      :root{ --largura-pc:1440px; --margem-pc:max(24px, calc((100% - var(--largura-pc)) / 2 + 24px)); }
+      :root{ --largura-pc:1840px; --margem-pc:max(24px, calc((100% - var(--largura-pc)) / 2 + 24px)); }
       .so-pc{display:block;}
       .lista-cel{display:none;}
       .tabela-pc-wrap{display:block;}
@@ -650,16 +650,22 @@
         display:grid; grid-template-columns:auto auto auto 1fr auto; align-items:center;
         grid-template-rows:36px 38px;
         grid-template-areas:"tit tit tit tit tit" "filtro datas pagin . nova";
-        row-gap:12px; column-gap:16px; margin:0 0 14px;
+        row-gap:12px; column-gap:32px; margin:0 0 14px;
       }
       /* linha1 e linha2 "somem" como caixa: título, botão, filtros e paginação viram itens da grade */
       #panel-registrar .lista-linha1, #panel-registrar .lista-linha2{ display:contents; }
       #panel-registrar #lista-titulo{ grid-area:tit; font-size:19px; }
       #panel-registrar #btn-nova{ grid-area:nova; }
       #panel-registrar .filtro{ grid-area:filtro; width:310px; }
-      #panel-registrar .dt-grupo{ grid-area:datas; align-items:center; gap:14px; }
-      #panel-registrar .field.dt-campo{ display:flex; align-items:center; gap:6px; width:auto; }
-      #panel-registrar .dt-campo label{ margin:0; font-size:12px; }
+      /* Período: um rótulo só ("Período") antes das duas datas, tudo na mesma linha.
+         Os rótulos "Data de Início/Fim" continuam no HTML (leitores de tela), só escondidos. */
+      #panel-registrar .dt-grupo{ grid-area:datas; align-items:center; gap:8px; }
+      #panel-registrar .periodo-rotulo{ font-size:12px; font-weight:600; color:var(--ink-soft); white-space:nowrap; margin-right:2px; }
+      #panel-registrar .field.dt-campo{ display:flex; align-items:center; width:auto; }
+      #panel-registrar .dt-campo label{
+        position:absolute; width:1px; height:1px; margin:0; padding:0; overflow:hidden;
+        clip:rect(0 0 0 0); white-space:nowrap; border:0;
+      }
       #panel-registrar .dt-campo .input-wrap{ width:104px; }
       #panel-registrar #paginacao{ grid-area:pagin; }
       .btn-nova-mini{ height:38px; padding:0 16px 0 14px; font-size:13.5px; }
@@ -671,15 +677,24 @@
       /* ---- Entregas: tabela ---- */
       .tabela-pc-wrap{ background:#fff; border:1px solid var(--line); border-radius:14px; overflow:auto; }
       .tabela-pc{ width:100%; border-collapse:collapse; font-size:12.5px; white-space:nowrap; }
-      .tabela-pc th{ background:var(--asphalt); color:#fff; font-size:11px; font-weight:700; text-align:right; padding:11px 6px; }
-      .tabela-pc td{ padding:0 6px; height:38px; text-align:right; font-weight:600; color:var(--ink); border-top:1px solid var(--line); }
+      /* Tudo alinhado à esquerda; só Ações centralizado */
+      .tabela-pc th{ background:var(--asphalt); color:#fff; font-size:11px; font-weight:700; text-align:left; padding:11px 6px; }
+      .tabela-pc td{ padding:0 6px; height:38px; text-align:left; font-weight:600; color:var(--ink); border-top:1px solid var(--line); }
       .tabela-pc tbody tr:first-child td{ border-top:none; }
-      .tabela-pc th:first-child, .tabela-pc td:first-child{ text-align:left; padding-left:10px; }
+      .tabela-pc th:first-child, .tabela-pc td:first-child{ padding-left:12px; }
+      /* Cabeçalhos clicáveis para ordenar */
+      .tabela-pc th .ord{
+        background:none; border:none; padding:0; margin:0; color:inherit; font:inherit; cursor:pointer;
+        display:inline-flex; align-items:center; gap:3px; white-space:nowrap;
+      }
+      .tabela-pc th .ord svg{ width:11px; height:11px; opacity:.4; flex-shrink:0; }
+      .tabela-pc th .ord:hover svg{ opacity:.8; }
+      .tabela-pc th .ord.ativo svg{ opacity:1; color:var(--route); }
       .tabela-pc td.t-data{ color:var(--ink-soft); }
       .tabela-pc td.forte{ font-weight:700; font-size:13.5px; }
       .tabela-pc td.c-bad{ color:var(--bad); } .tabela-pc td.c-ok{ color:var(--ok); }
       .tabela-pc td.c-good{ color:var(--good); } .tabela-pc td.c-great{ color:var(--great); }
-      .tabela-pc .t-res{ text-align:left; padding-left:12px; font-weight:700; }
+      .tabela-pc .t-res{ text-align:left; font-weight:700; }
       .tabela-pc .t-acoes{ text-align:center; padding-right:8px; }
       .tabela-pc td.t-acoes div{ display:inline-flex; gap:4px; vertical-align:middle; }
       .tabela-pc .t-acoes button{
@@ -699,8 +714,13 @@
 
       /* ---- Verificação Rápida: lateral ---- */
       /* Linha 1: (esquerda vazia, ocupada pelas abas) | botões de modo, centralizados
-         Linha 2: Faixas de lucro | formulário + resultado */
-      #panel-rapido.active{ grid-template-rows:auto auto 1fr; grid-template-areas:". modo" "faixas main" ". main"; }
+         Linhas 2-3: Faixas de lucro (ocupa as duas) | formulário, depois resultado
+         Linha 4: botão Limpar campos
+         Assim o quadro de Faixas termina exatamente na mesma altura do resultado. */
+      #panel-rapido.active{
+        grid-template-rows:auto auto 1fr auto;
+        grid-template-areas:". modo" "faixas form" "faixas res" ". limpar";
+      }
       #panel-rapido > .modo-toggle{
         grid-area:modo; height:86px; margin-bottom:14px;
         display:flex; align-items:center; justify-content:center;
@@ -710,15 +730,16 @@
       .modo-toggle-pills{ flex:0 1 480px; }
       .modo-toggle-pills button{ padding:10px 14px; font-size:13.5px; }
       .modo-toggle-pills button svg{ width:15px; height:15px; }
-      #faixas-pc{ grid-area:faixas; }
+      #faixas-pc{ grid-area:faixas; align-self:stretch; }
       .faixa-linha{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-top:1px solid var(--line); font-size:13px; font-weight:700; }
       .faixa-linha:first-child{ border-top:none; padding-top:0; }
       .faixa-linha .lim{ color:var(--ink-soft); font-weight:600; font-size:12px; white-space:nowrap; }
       #faixas-pc .hint{ margin-top:10px; line-height:1.45; }
 
       /* ---- Verificação Rápida: área principal ---- */
-      #rap-bloco-lucro, #rap-bloco-cobrar{ grid-area:main; }
-      #rap-bloco-lucro > .card, #rap-bloco-cobrar > .card{ display:grid; column-gap:12px; align-items:end; }
+      /* o bloco visível "some" como caixa: formulário, resultado e botão viram itens da grade do painel */
+      #rap-bloco-lucro, #rap-bloco-cobrar{ display:contents; }
+      #rap-bloco-lucro > .card, #rap-bloco-cobrar > .card{ grid-area:form; display:grid; column-gap:12px; align-items:end; }
       #rap-bloco-lucro > .card{ grid-template-columns:repeat(4, minmax(0,1fr)); }
       #rap-bloco-cobrar > .card{ grid-template-columns:repeat(3, minmax(0,1fr)); }
       #panel-rapido .card > h2, #panel-rapido .card > .config-desc, #rap-bloco-cobrar .categorias{ grid-column:1 / -1; }
@@ -729,6 +750,7 @@
       #rap-bloco-cobrar .cat-pill{ flex:1; }
 
       #panel-rapido .result{
+        grid-area:res; align-self:stretch; align-content:center;
         display:grid; grid-template-columns:minmax(230px, 0.8fr) minmax(0, 2fr);
         grid-template-areas:"verd brk" "lk brk"; column-gap:24px; align-items:center;
         padding:20px 22px;
@@ -736,7 +758,7 @@
       #panel-rapido .result .verdict{ grid-area:verd; align-self:end; }
       #panel-rapido .result .lucro-km{ grid-area:lk; align-self:start; margin:4px 0 0; }
       #panel-rapido .result .breakdown{ grid-area:brk; grid-template-columns:repeat(4, minmax(0,1fr)); }
-      #panel-rapido .btn-ghost{ width:220px; margin:0 0 0 auto; }
+      #panel-rapido .btn-ghost{ grid-area:limpar; width:220px; margin:0 0 0 auto; }
 
       /* ---- Janela Nova / Editar entrega ---- */
       #folha-bd .modal-sheet{
@@ -749,10 +771,11 @@
         align-items:start;
       }
       #folha-bd .modal-header{ grid-area:head; }
-      #folha-bd .card{ grid-area:form; margin-bottom:0; }
+      /* quadro dos campos estica até o fim do botão "Limpar campos" (nova entrega e edição) */
+      #folha-bd .card{ grid-area:form; margin-bottom:0; align-self:stretch; }
       #folha-bd .result{ grid-area:res; }
       #folha-bd #reg-salvar{ grid-area:salvar; }
-      #folha-bd .btn-ghost{ grid-area:limpar; }
+      #folha-bd .btn-ghost{ grid-area:limpar; align-self:end; }
 
       /* ---- Janela Configurações ---- */
       #config-backdrop .modal-sheet{
@@ -766,14 +789,50 @@
       .modo-toggle-pills button:not(.active):hover{ color:var(--asphalt); }
     }
 
-    /* PC com tela mais estreita (900 a 1179px): o período não cabe na mesma linha
-       dos filtros e desce para uma terceira linha. */
-    @media (min-width:900px) and (max-width:1179px){
+    /* Até 1439px (notebooks): coluna da esquerda e espaçamento da tabela mais estreitos,
+       pra listagem caber inteira sem rolagem lateral a partir de ~1260px */
+    @media (min-width:900px) and (max-width:1439px){
+      nav.tabs{ width:220px; }
+      #panel-registrar.active, #panel-rapido.active{ grid-template-columns:220px minmax(0,1fr); }
+      .tabela-pc th{ padding:11px 4px; }
+      .tabela-pc td{ padding:0 4px; }
+      .tabela-pc th:first-child, .tabela-pc td:first-child{ padding-left:10px; }
+      /* Faixas de lucro: nome em cima, valores embaixo (não cabem lado a lado em 220px) */
+      .faixa-linha{ flex-direction:column; align-items:flex-start; gap:2px; }
+      .faixa-linha > span:first-child{ white-space:nowrap; }
+    }
+
+    /* Notebook estreito (1260 a 1319px): não cabe tudo numa linha só. A paginação sobe
+       para a linha do título (à direita); a altura continua 86px (alinhada às abas). */
+    @media (min-width:1260px) and (max-width:1319px){
       #panel-registrar .lista-topo{
-        grid-template-columns:auto auto 1fr auto; grid-template-rows:36px 38px 32px;
-        grid-template-areas:"tit tit tit tit" "filtro pagin . nova" "datas datas datas datas";
+        grid-template-columns:auto auto 1fr auto; column-gap:24px;
+        grid-template-areas:"tit tit . pagin" "filtro datas . nova";
       }
+      #panel-registrar #paginacao{ justify-self:end; }
+    }
+
+    /* PC com tela mais estreita (900 a 1259px): o período desce para uma terceira linha. */
+    @media (min-width:900px) and (max-width:1259px){
+      #panel-registrar .lista-topo{
+        grid-template-columns:auto 1fr auto; grid-template-rows:36px 38px 32px; column-gap:24px;
+        grid-template-areas:"tit . pagin" "filtro . nova" "datas datas datas";
+      }
+      #panel-registrar #paginacao{ justify-self:end; }
       #panel-registrar > .card:first-child{ margin-top:144px; }
+    }
+
+    /* Telas grandes (a partir de 1600px): mais espaço entre as colunas, letras quase iguais */
+    @media (min-width:1600px){
+      nav.tabs{ width:280px; }
+      #panel-registrar.active, #panel-rapido.active{ grid-template-columns:280px minmax(0,1fr); column-gap:32px; }
+      .tabela-pc{ font-size:13px; }
+      .tabela-pc th{ font-size:11.5px; padding:12px 14px; }
+      .tabela-pc td{ padding:0 14px; height:42px; }
+      .tabela-pc th:first-child, .tabela-pc td:first-child{ padding-left:18px; }
+      .tabela-pc td.forte{ font-size:14px; }
+      #panel-rapido .card, #panel-rapido .result{ padding:22px 26px; }
+      #rap-bloco-lucro > .card, #rap-bloco-cobrar > .card{ column-gap:18px; }
     }
   </style>
 </head>
@@ -827,6 +886,7 @@
         </div>
         <div class="lista-linha2" id="lista-linha2">
           <div class="dt-grupo">
+            <span class="so-pc periodo-rotulo">Período</span>
             <div class="field dt-campo">
               <label for="dt-ini">Data de Início</label>
               <div class="input-wrap"><input type="text" id="dt-ini" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" aria-haspopup="dialog"></div>
@@ -883,7 +943,7 @@
               <label for="rap-valor">Valor oferecido</label>
               <div class="input-wrap">
                 <span class="prefix">R$</span>
-                <input type="number" inputmode="decimal" step="0.01" id="rap-valor" placeholder="0,00">
+                <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="rap-valor" placeholder="0,00">
                 <button type="button" class="maps-btn-inline" onclick="abrirCalculadora('rap')" aria-label="Abrir calculadora" title="Abrir calculadora">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="11" x2="8" y2="11.01"></line><line x1="12" y1="11" x2="12" y2="11.01"></line><line x1="16" y1="11" x2="16" y2="11.01"></line><line x1="8" y1="15" x2="8" y2="15.01"></line><line x1="12" y1="15" x2="12" y2="15.01"></line><line x1="16" y1="15" x2="16" y2="18"></line><line x1="8" y1="18" x2="12" y2="18"></line></svg>
                 </button>
@@ -915,7 +975,7 @@
               <label for="rap-preco">Preço do combustível</label>
               <div class="input-wrap">
                 <span class="prefix">R$</span>
-                <input type="number" inputmode="decimal" step="0.01" id="rap-preco" placeholder="0,00">
+                <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="rap-preco" placeholder="0,00">
                 <span class="suffix">/L</span>
               </div>
             </div>
@@ -979,7 +1039,7 @@
               <label for="cobrar-preco">Preço do combustível</label>
               <div class="input-wrap">
                 <span class="prefix">R$</span>
-                <input type="number" inputmode="decimal" step="0.01" id="cobrar-preco" placeholder="0,00">
+                <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cobrar-preco" placeholder="0,00">
                 <span class="suffix">/L</span>
               </div>
             </div>
@@ -1019,7 +1079,7 @@
             <label for="cfg-manutencao">Manutenção</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input type="number" inputmode="decimal" step="0.01" id="cfg-manutencao">
+              <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cfg-manutencao">
               <span class="suffix">/km</span>
             </div>
           </div>
@@ -1027,7 +1087,7 @@
             <label for="cfg-depreciacao">Depreciação</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input type="number" inputmode="decimal" step="0.01" id="cfg-depreciacao">
+              <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cfg-depreciacao">
               <span class="suffix">/km</span>
             </div>
           </div>
@@ -1040,15 +1100,15 @@
 
         <div class="field">
           <label for="cfg-limite1">Não Compensa até</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" step="0.01" id="cfg-limite1"><span class="suffix">/km</span></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cfg-limite1"><span class="suffix">/km</span></div>
         </div>
         <div class="field">
           <label for="cfg-limite2">Aceitável até</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" step="0.01" id="cfg-limite2"><span class="suffix">/km</span></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cfg-limite2"><span class="suffix">/km</span></div>
         </div>
         <div class="field">
           <label for="cfg-limite3">Boa Entrega até</label>
-          <div class="input-wrap"><span class="prefix">R$</span><input type="number" step="0.01" id="cfg-limite3"><span class="suffix">/km</span></div>
+          <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cfg-limite3"><span class="suffix">/km</span></div>
         </div>
         <p class="hint">Acima do último valor, a rota é classificada como Excelente Entrega.</p>
 
@@ -1078,7 +1138,7 @@
             <label for="reg-valor">Valor recebido</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input type="number" inputmode="decimal" step="0.01" id="reg-valor" placeholder="0,00">
+              <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="reg-valor" placeholder="0,00">
               <button type="button" class="maps-btn-inline" onclick="abrirCalculadora('reg')" aria-label="Abrir calculadora" title="Abrir calculadora">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="11" x2="8" y2="11.01"></line><line x1="12" y1="11" x2="12" y2="11.01"></line><line x1="16" y1="11" x2="16" y2="11.01"></line><line x1="8" y1="15" x2="8" y2="15.01"></line><line x1="12" y1="15" x2="12" y2="15.01"></line><line x1="16" y1="15" x2="16" y2="18"></line><line x1="8" y1="18" x2="12" y2="18"></line></svg>
               </button>
@@ -1111,7 +1171,7 @@
             <label for="reg-preco">Preço do combustível</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input type="number" inputmode="decimal" step="0.01" id="reg-preco" placeholder="0,00">
+              <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="reg-preco" placeholder="0,00">
               <span class="suffix">/L</span>
             </div>
           </div>
@@ -1640,13 +1700,42 @@
       atualizarKm(p);
     }
 
+    /* ---------- Máscara dos campos de valor (R$) ----------
+       Estilo "centavos": os números entram pela direita, os 2 últimos são os centavos
+       e o milhar ganha ponto. Ex.: 1 -> 0,01 · 100 -> 1,00 · 1000 -> 10,00 · 659 -> 6,59 */
+    function lerValor(id){
+      var v = document.getElementById(id).value;
+      return v === '' ? NaN : parseFloat(v.replace(/\./g, '').replace(',', '.'));
+    }
+    function moedaTxt(n){
+      return (n == null || n === '' || isNaN(n)) ? '' : Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function escreverValor(id, n){ document.getElementById(id).value = moedaTxt(n); }
+
+    function formatarDigitando(el){
+      var d = el.value.replace(/\D/g, '').replace(/^0+/, ''); // só os números, sem zeros à esquerda
+      if (d === ''){ el.value = ''; return; }                 // apagou tudo: campo vazio
+      while (d.length < 3) d = '0' + d;                        // 5 -> 005 -> 0,05
+      var novo = d.slice(0, -2).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + d.slice(-2);
+      if (novo !== el.value) el.value = novo;
+      try { el.setSelectionRange(novo.length, novo.length); } catch (e) {} // cursor sempre no fim
+    }
+
+    document.querySelectorAll('input.moeda').forEach(function(el){
+      // vírgula e ponto não são necessários (os centavos entram sozinhos): ignora
+      el.addEventListener('beforeinput', function(ev){
+        if (ev.inputType === 'insertText' && ev.data && /[^\d]/.test(ev.data)) ev.preventDefault();
+      });
+      el.addEventListener('input', function(){ formatarDigitando(el); });
+    });
+
     /* ---------- Limpar campos ---------- */
     function limparCamposComuns(prefixo){
       document.getElementById(prefixo + '-valor').value = '';
       resetarKmDistancia(prefixo);
       var cfg = STATE.config;
       document.getElementById(prefixo + '-consumo').value = cfg ? cfg.ultimoConsumo : '';
-      document.getElementById(prefixo + '-preco').value = cfg ? cfg.ultimoPreco : '';
+      escreverValor(prefixo + '-preco', cfg ? cfg.ultimoPreco : null);
     }
 
     function limparRegistrar(){
@@ -1661,10 +1750,10 @@
     }
 
     function recalcRegistrar(){
-      var valor = parseFloat(document.getElementById('reg-valor').value);
+      var valor = lerValor('reg-valor');
       var distancia = parseFloat(document.getElementById('reg-distancia').value);
       var consumo = parseFloat(document.getElementById('reg-consumo').value);
-      var preco = parseFloat(document.getElementById('reg-preco').value);
+      var preco = lerValor('reg-preco');
       var r = calcularLocal(valor, distancia, consumo, preco, STATE.config);
       if (r) r.distanciaEcho = distancia.toLocaleString('pt-BR') + ' km';
       pintarResultado('reg', r);
@@ -1673,10 +1762,10 @@
 
     /* ---------- Aba: Verificação Rápida ---------- */
     function recalcRapido(){
-      var valor = parseFloat(document.getElementById('rap-valor').value);
+      var valor = lerValor('rap-valor');
       var distancia = parseFloat(document.getElementById('rap-distancia').value);
       var consumo = parseFloat(document.getElementById('rap-consumo').value);
-      var preco = parseFloat(document.getElementById('rap-preco').value);
+      var preco = lerValor('rap-preco');
       var r = calcularLocal(valor, distancia, consumo, preco, STATE.config);
       if (r) r.distanciaEcho = distancia.toLocaleString('pt-BR') + ' km';
       pintarResultado('rap', r);
@@ -1733,7 +1822,7 @@
       var box = document.getElementById('cobrar-result');
       var distancia = parseFloat(document.getElementById('cobrar-distancia').value);
       var consumo = parseFloat(document.getElementById('cobrar-consumo').value);
-      var preco = parseFloat(document.getElementById('cobrar-preco').value);
+      var preco = lerValor('cobrar-preco');
       var cfg = STATE.config;
 
       if (!categoriaSelecionada || !cfg || !(distancia > 0) || !(consumo > 0) || !(preco > 0)){
@@ -1763,7 +1852,7 @@
       resetarKmDistancia('cobrar');
       var cfg = STATE.config;
       document.getElementById('cobrar-consumo').value = cfg ? cfg.ultimoConsumo : '';
-      document.getElementById('cobrar-preco').value = cfg ? cfg.ultimoPreco : '';
+      escreverValor('cobrar-preco', cfg ? cfg.ultimoPreco : null);
       categoriaSelecionada = null;
       document.querySelectorAll('.cat-pill').forEach(function(p){ p.classList.remove('selected'); });
       recalcularCobrar();
@@ -1771,11 +1860,11 @@
 
     /* ---------- Aba: Configurações ---------- */
     function preencherConfigForm(cfg){
-      document.getElementById('cfg-manutencao').value = cfg.manutencao;
-      document.getElementById('cfg-depreciacao').value = cfg.depreciacao;
-      document.getElementById('cfg-limite1').value = cfg.limiteNaoCompensa;
-      document.getElementById('cfg-limite2').value = cfg.limiteAceitavel;
-      document.getElementById('cfg-limite3').value = cfg.limiteBoa;
+      escreverValor('cfg-manutencao', cfg.manutencao);
+      escreverValor('cfg-depreciacao', cfg.depreciacao);
+      escreverValor('cfg-limite1', cfg.limiteNaoCompensa);
+      escreverValor('cfg-limite2', cfg.limiteAceitavel);
+      escreverValor('cfg-limite3', cfg.limiteBoa);
       document.getElementById('reg-fixos-hint').textContent =
         'Manutenção R$ ' + cfg.manutencao.toFixed(2) + '/km + Depreciação R$ ' + cfg.depreciacao.toFixed(2) + '/km já entram no cálculo automaticamente.';
 
@@ -1794,11 +1883,11 @@
 
     function salvarConfig(){
       var novo = {
-        manutencao: document.getElementById('cfg-manutencao').value,
-        depreciacao: document.getElementById('cfg-depreciacao').value,
-        limiteNaoCompensa: document.getElementById('cfg-limite1').value,
-        limiteAceitavel: document.getElementById('cfg-limite2').value,
-        limiteBoa: document.getElementById('cfg-limite3').value
+        manutencao: lerValor('cfg-manutencao'),
+        depreciacao: lerValor('cfg-depreciacao'),
+        limiteNaoCompensa: lerValor('cfg-limite1'),
+        limiteAceitavel: lerValor('cfg-limite2'),
+        limiteBoa: lerValor('cfg-limite3')
       };
       google.script.run
         .withSuccessHandler(function(cfg){
@@ -1816,7 +1905,8 @@
     var LISTA = {
       plat: null, cache: {}, carregando: false, erro: null, reqId: 0,
       filtro: 'todas', dtIni: '', dtFim: '', pagina: 1, porPagina: 10, menuPP: false,
-      abertos: {}, editando: null, excluir: null, ocupado: false, ocupadoLinha: null
+      abertos: {}, editando: null, excluir: null, ocupado: false, ocupadoLinha: null,
+      ordem: { campo: 'data', dir: 'desc' } // ordenação da listagem (cabeçalhos da tabela no PC)
     };
     var OPCOES_PP = [10, 20, 50];
 
@@ -2146,15 +2236,20 @@
       // período (Data de Início / Fim): vale para a lista e para o total
       sincronizarCamposData();
       var doPeriodo = todas.filter(noPeriodo);
-      renderTotais(doPeriodo, periodoTxt());
 
-      // mais novos primeiro (empate na data: a linha mais embaixo na planilha primeiro)
-      var ordenada = doPeriodo.slice().sort(function(a, b){
-        return a.data < b.data ? 1 : a.data > b.data ? -1 : b.linha - a.linha;
-      });
+      // ordem escolhida (padrão: mais novos primeiro) — ver compararEntregas
+      var ordenada = doPeriodo.slice().sort(compararEntregas);
       var filtrada = ordenada.filter(function(e){
         return LISTA.filtro === 'todas' || (LISTA.filtro === 'recebidas' ? e.recebido : !e.recebido);
       });
+
+      // Total: segue o período E o filtro (Todas / A receber / Recebidas); some se não houver entregas
+      if (filtrada.length){
+        var filtroTxt = { areceber: 'A receber', recebidas: 'Recebidas' }[LISTA.filtro] || '';
+        renderTotais(filtrada, [filtroTxt, periodoTxt()].filter(Boolean).join(' · '));
+      } else {
+        elTot.style.display = 'none';
+      }
       var totalPaginas = Math.max(1, Math.ceil(filtrada.length / LISTA.porPagina));
       if (LISTA.pagina > totalPaginas) LISTA.pagina = totalPaginas;
       if (LISTA.pagina < 1) LISTA.pagina = 1;
@@ -2207,8 +2302,48 @@
     /* ---------- Versão PC: tabela de entregas ---------- */
     var TEXTO_CLASSE = { bad: 'Não Compensa', ok: 'Aceitável', good: 'Boa Entrega', great: 'Excelente Entrega' };
 
+    /* ---------- Ordenação da listagem ---------- */
+    var RANK_CLASSE = { bad: 1, ok: 2, good: 3, great: 4 };
+    function valorOrdem(e, campo){
+      if (campo === 'resultado'){ var k = classeDe(e); return k ? RANK_CLASSE[k] : null; }
+      return e[campo] == null ? null : e[campo];
+    }
+    function compararEntregas(a, b){
+      var o = LISTA.ordem, va = valorOrdem(a, o.campo), vb = valorOrdem(b, o.campo);
+      if (va !== vb){
+        if (va == null) return 1;  // vazios sempre no fim
+        if (vb == null) return -1;
+        var c = va < vb ? -1 : 1;
+        return o.dir === 'asc' ? c : -c;
+      }
+      // desempate: mais novo primeiro; mesma data: a linha mais embaixo na planilha primeiro
+      return a.data < b.data ? 1 : a.data > b.data ? -1 : b.linha - a.linha;
+    }
+    // Clique no cabeçalho: mesma coluna inverte a ordem; outra coluna começa crescente (Data: mais novo primeiro)
+    function ordenarPor(campo){
+      var o = LISTA.ordem;
+      if (o.campo === campo) o.dir = o.dir === 'asc' ? 'desc' : 'asc';
+      else { o.campo = campo; o.dir = campo === 'data' ? 'desc' : 'asc'; }
+      LISTA.pagina = 1;
+      renderEntregas();
+    }
+    var ICO_ORD = {
+      nenhum: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9 4-4 4 4M8 15l4 4 4-4"/></svg>',
+      asc:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 14 5-5 5 5"/></svg>',
+      desc:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg>'
+    };
+    function thOrdenavel(rotulo, campo, classe){
+      var o = LISTA.ordem, ativo = o.campo === campo;
+      var titulo = 'Ordenar por ' + rotulo + (ativo ? (o.dir === 'asc' ? ' (crescente)' : ' (decrescente)') : '');
+      return '<th' + (classe ? ' class="' + classe + '"' : '') + ' aria-sort="' + (ativo ? (o.dir === 'asc' ? 'ascending' : 'descending') : 'none') + '">' +
+        '<button type="button" class="ord' + (ativo ? ' ativo' : '') + '" onclick="ordenarPor(\'' + campo + '\')" title="' + titulo + '">' +
+        rotulo + (ativo ? ICO_ORD[o.dir] : ICO_ORD.nenhum) + '</button></th>';
+    }
+
     function renderTabelaPC(pagina){
-      var cab = ['Data', 'Valor', 'Dist.', 'Consumo', 'Preço', 'Comb.', 'Manut.', 'Custo/km', 'Custo', 'Lucro/km', 'Lucro'];
+      var cab = [['Data', 'data'], ['Valor', 'valor'], ['Dist.', 'distancia'], ['Consumo', 'consumo'], ['Preço', 'preco'],
+                 ['Comb.', 'combustivel'], ['Manut.', 'manutencao'], ['Custo/km', 'custoKm'], ['Custo', 'custoTotal'],
+                 ['Lucro/km', 'lucroKm'], ['Lucro', 'lucro']];
       var linhas = pagina.map(function(e){
         var k = classeDe(e), cor = k ? 'c-' + k : '';
         var dis = LISTA.ocupado ? ' disabled' : '';
@@ -2235,8 +2370,8 @@
         '</tr>';
       });
       return '<div class="tabela-pc-wrap"><table class="tabela-pc"><thead><tr>' +
-        cab.map(function(c){ return '<th>' + c + '</th>'; }).join('') +
-        '<th class="t-res">Resultado</th><th class="t-acoes">Ações</th>' +
+        cab.map(function(c){ return thOrdenavel(c[0], c[1]); }).join('') +
+        thOrdenavel('Resultado', 'resultado', 't-res') + '<th class="t-acoes">Ações</th>' +
         '</tr></thead><tbody>' + linhas.join('') + '</tbody></table></div>';
     }
 
@@ -2312,15 +2447,15 @@
       var cfg = STATE.config;
       if (e){
         document.getElementById('reg-data').value = e.data;
-        document.getElementById('reg-valor').value = e.valor == null ? '' : e.valor;
+        escreverValor('reg-valor', e.valor);
         document.getElementById('reg-distancia').value = e.distancia == null ? '' : e.distancia;
         document.getElementById('reg-consumo').value = e.consumo == null ? '' : e.consumo;
-        document.getElementById('reg-preco').value = e.preco == null ? '' : e.preco;
+        escreverValor('reg-preco', e.preco);
       } else {
         document.getElementById('reg-data').value = hoje();
         document.getElementById('reg-valor').value = '';
         document.getElementById('reg-consumo').value = cfg ? cfg.ultimoConsumo : '';
-        document.getElementById('reg-preco').value = cfg ? cfg.ultimoPreco : '';
+        escreverValor('reg-preco', cfg ? cfg.ultimoPreco : null);
       }
       recalcRegistrar();
       document.getElementById('folha-bd').classList.add('show');
@@ -2332,10 +2467,10 @@
       var dados = {
         plataforma: LISTA.plat,
         data: document.getElementById('reg-data').value,
-        valorRecebido: document.getElementById('reg-valor').value,
+        valorRecebido: lerValor('reg-valor'),
         distancia: document.getElementById('reg-distancia').value,
         consumo: document.getElementById('reg-consumo').value,
-        precoCombustivel: document.getElementById('reg-preco').value
+        precoCombustivel: lerValor('reg-preco')
       };
       if (e){ dados.linha = e.linha; dados.esperado = esperadoDe(e); }
 
@@ -2369,7 +2504,7 @@
     function abrirCalculadora(prefixo){
       CALC.prefixo = prefixo;
       var atual = document.getElementById(prefixo + '-valor').value;
-      CALC.expr = atual ? String(atual).replace('.', ',') : '';
+      CALC.expr = atual ? atual.replace(/\./g, '') : ''; // "1.000,50" -> "1000,50"
       atualizarVisorCalc();
       document.getElementById('calc-backdrop').classList.add('show');
       // Se não couber abaixo do campo, rola a página pra deixar o campo mais no alto
@@ -2448,7 +2583,7 @@
         var r = calcAvaliar(e);
         if (!isFinite(r)){ toast('Conta inválida', true); return; }
         var campo = document.getElementById(CALC.prefixo + '-valor');
-        campo.value = (Math.round(r * 100) / 100).toFixed(2);
+        campo.value = moedaTxt(Math.round(r * 100) / 100);
         campo.dispatchEvent(new Event('input', { bubbles: true })); // recalcula o resultado
         fecharCalculadora();
         return;
@@ -2545,11 +2680,11 @@
         carregarEntregas();
         preencherConfigForm(cfg);
         document.getElementById('reg-consumo').value = cfg.ultimoConsumo;
-        document.getElementById('reg-preco').value = cfg.ultimoPreco;
+        escreverValor('reg-preco', cfg.ultimoPreco);
         document.getElementById('rap-consumo').value = cfg.ultimoConsumo;
-        document.getElementById('rap-preco').value = cfg.ultimoPreco;
+        escreverValor('rap-preco', cfg.ultimoPreco);
         document.getElementById('cobrar-consumo').value = cfg.ultimoConsumo;
-        document.getElementById('cobrar-preco').value = cfg.ultimoPreco;
+        escreverValor('cobrar-preco', cfg.ultimoPreco);
         atualizarFaixasCobrar();
         recalcRegistrar();
         recalcRapido();
