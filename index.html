@@ -578,6 +578,28 @@
     .confirma p{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px;line-height:1.45;}
     .btn-perigo{background:var(--bad);color:#fff;}
 
+    /* Tela de login (Supabase) */
+    #login{
+      position:fixed;inset:0;z-index:120;
+      background:var(--asphalt);
+      display:none;align-items:center;justify-content:center;
+      padding:calc(24px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+      overflow-y:auto;
+    }
+    #login.show{display:flex;}
+    .login-box{width:100%;max-width:360px;}
+    .login-marca{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px;text-align:center;}
+    .login-marca svg{width:64px;height:64px;}
+    .login-marca h1{color:#fff;font-size:22px;font-weight:700;letter-spacing:-0.01em;}
+    .login-marca p{margin:0;color:#B9C0CC;font-size:13px;}
+    .login-box .card{margin-bottom:0;}
+    .login-box .field:first-of-type{margin-top:0;}
+    .login-box .btn-primary{margin-top:18px;}
+    .login-erro{display:none;margin:14px 0 0;padding:10px 12px;border-radius:10px;background:var(--bad-bg);color:var(--bad);font-size:13px;font-weight:600;line-height:1.4;}
+    .conta-linha{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .conta-email{font-size:13.5px;font-weight:600;color:var(--ink);word-break:break-all;}
+    .conta-linha .btn{width:auto;padding:10px 18px;margin:0;flex-shrink:0;}
+
     /* Sem zoom por toque duplo / pinça */
     html, body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
 
@@ -782,7 +804,7 @@
         max-width:860px;
         display:grid; grid-template-columns:1fr 1fr; column-gap:16px; align-items:start;
       }
-      #config-backdrop .modal-header{ grid-column:1 / -1; }
+      #config-backdrop .modal-header, #config-backdrop .conta-card{ grid-column:1 / -1; }
 
       /* ---- Mouse: destaque ao passar por cima ---- */
       .pill:not(.selected):hover{ border-color:var(--ink-soft); }
@@ -1116,6 +1138,14 @@
           <button class="btn btn-primary" onclick="salvarConfig()">Salvar configurações</button>
         </div>
       </div>
+
+      <div class="card conta-card">
+        <h2>Conta</h2>
+        <div class="conta-linha">
+          <div><div class="config-desc" style="margin:0 0 2px;">Conectado como</div><div class="conta-email" id="conta-email">—</div></div>
+          <button class="btn btn-ghost" onclick="sairDaConta()">Sair</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1327,6 +1357,35 @@
     </div>
   </div>
 
+  <!-- ===================== LOGIN (Supabase) ===================== -->
+  <div id="login" role="dialog" aria-label="Entrar">
+    <div class="login-box">
+      <div class="login-marca">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M32 11c-8.5 0-15 6.6-15 14.7 0 10.8 15 27.3 15 27.3s15-16.5 15-27.3C47 17.6 40.5 11 32 11z" fill="#F2B705"/>
+          <circle cx="32" cy="25.5" r="6.4" fill="#1C2430"/>
+          <rect x="8" y="57" width="11" height="4" rx="2" fill="#F2B705"/>
+          <rect x="26.5" y="57" width="11" height="4" rx="2" fill="#F2B705"/>
+          <rect x="45" y="57" width="11" height="4" rx="2" fill="#F2B705"/>
+        </svg>
+        <h1>Painel de Entregas</h1>
+        <p>Entre para ver e registrar suas entregas.</p>
+      </div>
+      <form class="card" onsubmit="return entrarComSenha(event)">
+        <div class="field">
+          <label for="login-email">E-mail</label>
+          <div class="input-wrap"><input type="email" id="login-email" autocomplete="username" inputmode="email" autocapitalize="off" spellcheck="false"></div>
+        </div>
+        <div class="field">
+          <label for="login-senha">Senha</label>
+          <div class="input-wrap"><input type="password" id="login-senha" autocomplete="current-password"></div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="login-entrar">Entrar</button>
+        <p class="login-erro" id="login-erro" role="alert"></p>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
@@ -1340,54 +1399,196 @@
       }, { passive: false });
     })();
   </script>
+  <!-- Biblioteca oficial do Supabase (versão fixa) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
   <script>
     /* ===================================================================
-       PONTE COM O APPS SCRIPT (versão GitHub Pages)
-       Fora do Apps Script o objeto google.script.run não existe. Este bloco
-       cria um substituto com a mesma forma de uso, que envia cada chamada
-       para a API (Api.gs) publicada no Apps Script. O resto da página não
-       precisou mudar.
+       PONTE COM O BANCO (Supabase)
+       O resto da página continua chamando google.script.run.xxx() como na
+       época da planilha. Este bloco cria um substituto com a mesma forma de
+       uso, mas que lê e grava no banco do Supabase.
+       Antes de qualquer chamada, a pessoa precisa estar logada (e-mail e senha).
     =================================================================== */
-    // Cole aqui a URL da implantação do Apps Script (termina em /exec).
-    var API_URL = 'https://script.google.com/macros/s/AKfycbz6Xn_x1vXu00FCGyYFX4W74fe18ppezEeWcKrEQ65qZ5KvwMmxeVaMZ4HmcjGQiZ-Trg/exec';
 
-    var CHAVE_CODIGO = 'painel_entregas_codigo';
+    // >>> Cole aqui os dados do seu projeto (Supabase > Project Settings > API). <<<
+    // Os dois podem ficar no site: quem protege os dados são as regras do 04_acesso.sql.
+    // NUNCA cole aqui a chave "service_role" / "secret".
+    var SUPABASE_URL = 'https://bwxliwyxxpqcyitzoclf.supabase.co/rest/v1/';             // ex.: https://abcdefghijkl.supabase.co
+    var SUPABASE_CHAVE_PUBLICA = 'sb_publishable_ngjgWHb_FcflANnHyDnlVw_SEI_lK5R'; // "anon public" ou "publishable"
 
-    // O código de acesso NÃO fica no código-fonte (o repositório é público).
-    // Ele é pedido uma vez e fica guardado só neste aparelho/navegador.
-    function obterCodigoAcesso(){
-      var codigo = null;
-      try { codigo = localStorage.getItem(CHAVE_CODIGO); } catch (e) {}
-      if (!codigo){
-        codigo = (window.prompt('Digite o código de acesso do Painel de Entregas:') || '').trim();
-        try { if (codigo) localStorage.setItem(CHAVE_CODIGO, codigo); } catch (e) {}
+    var sb = null;
+    var LOGIN = { liberar: null, email: '' };
+    LOGIN.pronto = new Promise(function(ok){ LOGIN.liberar = ok; });
+
+    /* ---------- Tela de login ---------- */
+    function mostrarLogin(msgErro){
+      document.getElementById('login').classList.add('show');
+      var erro = document.getElementById('login-erro');
+      erro.textContent = msgErro || '';
+      erro.style.display = msgErro ? 'block' : 'none';
+    }
+    function esconderLogin(){ document.getElementById('login').classList.remove('show'); }
+
+    function entrarComSenha(ev){
+      if (ev) ev.preventDefault();
+      if (!sb) return false;
+      var email = document.getElementById('login-email').value.trim();
+      var senha = document.getElementById('login-senha').value;
+      var btn = document.getElementById('login-entrar');
+      if (!email || !senha){ mostrarLogin('Preencha e-mail e senha.'); return false; }
+      btn.disabled = true; btn.textContent = 'Entrando…';
+      sb.auth.signInWithPassword({ email: email, password: senha }).then(function(r){
+        btn.disabled = false; btn.textContent = 'Entrar';
+        if (r.error){ mostrarLogin(traduzirErro(r.error)); return; }
+        document.getElementById('login-senha').value = '';
+        liberarSessao(r.data.session);
+      }).catch(function(err){
+        btn.disabled = false; btn.textContent = 'Entrar';
+        mostrarLogin(traduzirErro(err));
+      });
+      return false;
+    }
+
+    function liberarSessao(sessao){
+      // Trocou de login depois que a página já carregou (ex.: login sem acesso): recomeça do zero
+      if (LOGIN.liberado){ location.reload(); return; }
+      LOGIN.liberado = true;
+      LOGIN.email = (sessao && sessao.user && sessao.user.email) || '';
+      var el = document.getElementById('conta-email');
+      if (el) el.textContent = LOGIN.email;
+      esconderLogin();
+      LOGIN.liberar(sessao);
+    }
+
+    function sairDaConta(){
+      if (!sb) return;
+      sb.auth.signOut().finally(function(){ location.reload(); });
+    }
+
+    (function iniciarLogin(){
+      var configurado = SUPABASE_URL.indexOf('COLE_AQUI') < 0 && SUPABASE_CHAVE_PUBLICA.indexOf('COLE_AQUI') < 0;
+      if (!window.supabase || !configurado){
+        mostrarLogin(!window.supabase
+          ? 'Não foi possível carregar o Supabase. Confira a internet e recarregue a página.'
+          : 'Site ainda não configurado: preencha SUPABASE_URL e SUPABASE_CHAVE_PUBLICA no index.html.');
+        document.getElementById('login-entrar').disabled = true;
+        return;
       }
-      return codigo;
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_CHAVE_PUBLICA, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+      });
+      // Já logado neste aparelho? Entra direto.
+      sb.auth.getSession().then(function(r){
+        if (r.data && r.data.session) liberarSessao(r.data.session);
+        else mostrarLogin();
+      });
+      // Saiu (ou a sessão expirou de vez): recarrega e volta para a tela de login.
+      sb.auth.onAuthStateChange(function(evento){
+        if (evento === 'SIGNED_OUT') location.reload();
+      });
+    })();
+
+    /* ---------- Mensagens de erro em português ---------- */
+    function traduzirErro(err){
+      var m = String((err && (err.message || err.error_description || err.msg)) || err || '');
+      if (/invalid login credentials/i.test(m)) return 'E-mail ou senha incorretos.';
+      if (/email not confirmed/i.test(m)) return 'E-mail ainda não confirmado no Supabase.';
+      if (/failed to fetch|networkerror|load failed|network request failed/i.test(m)) return 'Sem conexão com o banco. Confira a internet e tente de novo.';
+      if (/row-level security|permission denied/i.test(m)) return 'Este login não tem permissão para alterar os dados.';
+      if (/check constraint/i.test(m) && /configuracoes/i.test(m)) return 'As faixas precisam estar em ordem: Não Compensa < Aceitável < Boa Entrega.';
+      if (/check constraint/i.test(m)) return 'Algum valor está inválido (ex.: distância ou consumo).';
+      if (/jwt/i.test(m)) return 'Sua sessão expirou. Entre de novo.';
+      return m || 'Erro ao falar com o banco.';
     }
 
-    function esquecerCodigoAcesso(){
-      try { localStorage.removeItem(CHAVE_CODIGO); } catch (e) {}
+    /* ---------- Ações (mesmos nomes que a página já usa) ---------- */
+    function n(v){ return v == null ? null : Number(v); }
+    function verificar(r){ if (r.error) throw r.error; return r.data; }
+    function exigirNumero(v, nome){
+      var x = Number(v);
+      if (v === '' || v == null || !isFinite(x)) throw new Error('Informe ' + nome + '.');
+      return x;
     }
+    function dadosDaEntrega(d){
+      return {
+        data: d.data,
+        valor: exigirNumero(d.valorRecebido, 'o valor recebido'),
+        distancia: exigirNumero(d.distancia, 'a distância'),
+        consumo: exigirNumero(d.consumo, 'o consumo'),
+        preco_combustivel: exigirNumero(d.precoCombustivel, 'o preço do combustível')
+      };
+    }
+
+    var ACOES_BANCO = {
+      getConfig: async function(){
+        var c = verificar(await sb.from('configuracoes').select('*').eq('id', 1).maybeSingle());
+        if (!c) throw new Error('Este login não tem acesso aos dados. Confira o e-mail cadastrado no 04_acesso.sql.');
+        var p = verificar(await sb.from('plataformas').select('nome').eq('ativa', true).order('ordem'));
+        return {
+          manutencao: n(c.manutencao_km), depreciacao: n(c.depreciacao_km),
+          limiteNaoCompensa: n(c.limite_nao_compensa), limiteAceitavel: n(c.limite_aceitavel), limiteBoa: n(c.limite_boa),
+          ultimoConsumo: n(c.ultimo_consumo), ultimoPreco: n(c.ultimo_preco),
+          plataformas: p.map(function(x){ return x.nome; })
+        };
+      },
+
+      saveConfig: async function(novo){
+        var campos = { manutencao: 'manutencao_km', depreciacao: 'depreciacao_km', limiteNaoCompensa: 'limite_nao_compensa',
+                       limiteAceitavel: 'limite_aceitavel', limiteBoa: 'limite_boa' };
+        var alterar = {};
+        Object.keys(campos).forEach(function(k){ var v = Number(novo[k]); if (novo[k] !== '' && novo[k] != null && isFinite(v)) alterar[campos[k]] = v; });
+        verificar(await sb.from('configuracoes').update(alterar).eq('id', 1).select('id'));
+        return ACOES_BANCO.getConfig();
+      },
+
+      // As contas (custo, lucro, resultado) vêm prontas da visão entregas_calculadas
+      listarEntregas: async function(d){
+        var linhas = verificar(await sb.from('entregas_calculadas').select('*')
+          .eq('plataforma', d.plataforma).order('data', { ascending: false }).order('id', { ascending: false }));
+        return { entregas: linhas.map(function(e){
+          return {
+            linha: e.id, data: e.data, valor: n(e.valor), distancia: n(e.distancia), consumo: n(e.consumo),
+            preco: n(e.preco_combustivel), combustivel: n(e.custo_combustivel), manutencao: n(e.custo_manutencao),
+            custoKm: n(e.custo_km), custoTotal: n(e.custo_total), lucroKm: n(e.lucro_km), lucro: n(e.lucro),
+            classificacao: e.resultado, recebido: !!e.recebido
+          };
+        }) };
+      },
+
+      // Manutenção, depreciação e faixas são copiadas das configurações pelo próprio banco
+      novaEntrega: async function(d){
+        var reg = dadosDaEntrega(d); reg.plataforma = d.plataforma;
+        verificar(await sb.from('entregas').insert(reg).select('id'));
+        return true;
+      },
+
+      editarEntrega: async function(d){
+        var r = verificar(await sb.from('entregas').update(dadosDaEntrega(d)).eq('id', d.linha).select('id'));
+        if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
+        return true;
+      },
+
+      excluirEntrega: async function(d){
+        var r = verificar(await sb.from('entregas').delete().eq('id', d.linha).select('id'));
+        if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
+        return true;
+      },
+
+      marcarRecebido: async function(d){
+        var r = verificar(await sb.from('entregas').update({ recebido: !!d.recebido }).eq('id', d.linha).select('id'));
+        if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
+        return true;
+      }
+    };
 
     function chamarApi(acao, dados){
-      // Corpo em texto simples: evita a verificação extra (preflight) de CORS,
-      // que o Apps Script não responde.
-      return fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ acao: acao, dados: dados, codigo: obterCodigoAcesso() })
-      })
-      .catch(function(){
-        // Sem resposta do Apps Script (URL errada, implantação sem acesso "Qualquer pessoa" ou sem nova versão).
-        throw new Error('Não foi possível conectar ao Apps Script. Confira a URL /exec e a implantação.');
-      })
-      .then(function(r){ return r.json(); })
-      .then(function(resp){
-        if (!resp.ok){
-          if (resp.erro === 'nao_autorizado') esquecerCodigoAcesso();
-          throw new Error(resp.mensagem || 'Erro ao falar com a planilha.');
-        }
-        return resp.resultado;
-      });
+      return LOGIN.pronto
+        .then(function(){ return ACOES_BANCO[acao](dados); })
+        .catch(function(err){
+          var msg = traduzirErro(err);
+          if (acao === 'getConfig' && /n[ãa]o tem acesso/.test(msg)) mostrarLogin(msg + ' Entre com o login autorizado.');
+          throw new Error(msg);
+        });
     }
 
     function criarRunner_(aoSucesso, aoFalhar){
@@ -1395,7 +1596,7 @@
         withSuccessHandler: function(fn){ return criarRunner_(fn, aoFalhar); },
         withFailureHandler: function(fn){ return criarRunner_(aoSucesso, fn); }
       };
-      ['getConfig', 'saveConfig', 'saveEntrega', 'getRecentEntregas', 'listarEntregas', 'novaEntrega', 'editarEntrega', 'excluirEntrega', 'marcarRecebido'].forEach(function(acao){
+      Object.keys(ACOES_BANCO).forEach(function(acao){
         runner[acao] = function(dados){
           chamarApi(acao, dados)
             .then(function(res){ if (aoSucesso) aoSucesso(res); })
