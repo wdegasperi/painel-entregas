@@ -881,6 +881,36 @@
       #panel-rapido .card, #panel-rapido .result{ padding:22px 26px; }
       #rap-bloco-lucro > .card, #rap-bloco-cobrar > .card{ column-gap:18px; }
     }
+
+    /* ===== PC: botão de esconder/mostrar a coluna da esquerda ===== */
+    @media (min-width:900px){
+      header .lateral-btn{
+        display:flex; align-items:center; justify-content:center; flex-shrink:0;
+        width:32px; height:32px; margin-right:4px; padding:0;
+        border-radius:9px; border:1px solid rgba(255,255,255,0.16); background:rgba(255,255,255,0.08);
+        color:#fff; cursor:pointer;
+      }
+      header .lateral-btn:hover{ background:rgba(255,255,255,0.16); }
+      header .lateral-btn svg{ width:17px; height:17px; }
+      /* subtítulo alinhado com o ponto amarelo do título (botão 32px + 4px + espaço 10px) */
+      header > p{ margin-left:46px; }
+
+      /* Coluna da esquerda escondida: abas, plataformas e faixas somem; a área principal ocupa a largura toda */
+      body.lateral-recolhida nav.tabs{ display:none; }
+      body.lateral-recolhida main{ padding-top:24px; }
+      body.lateral-recolhida #panel-registrar.active,
+      body.lateral-recolhida #panel-rapido.active{ grid-template-columns:0 minmax(0,1fr); column-gap:0; }
+      body.lateral-recolhida #panel-registrar > .card:first-child,
+      body.lateral-recolhida #faixas-pc{ display:none; }
+
+      /* ===== Tabela: Resultado e Ações ficam fixos à direita quando há rolagem lateral ===== */
+      .tabela-pc{ border-collapse:separate; border-spacing:0; }
+      .tabela-pc th.t-acoes, .tabela-pc td.t-acoes{ position:sticky; right:0; z-index:1; }
+      .tabela-pc th.t-res, .tabela-pc td.t-res{ position:sticky; right:var(--w-acoes, 108px); z-index:1; }
+      .tabela-pc td.t-res, .tabela-pc td.t-acoes{ background:#fff; }
+      /* sombra só quando a tabela está rolando, pra mostrar onde começam as colunas fixas */
+      .tabela-pc-wrap.rola th.t-res, .tabela-pc-wrap.rola td.t-res{ box-shadow:-10px 0 10px -10px rgba(28,36,48,0.35); }
+    }
   </style>
 </head>
 <body>
@@ -901,7 +931,7 @@
   </div>
 
   <header>
-    <div class="brand"><span class="brand-dot"></span><h1>Painel de Entregas</h1></div>
+    <div class="brand"><button type="button" class="lateral-btn so-pc" id="lateral-btn" onclick="alternarLateral()" aria-expanded="true" aria-label="Esconder coluna da esquerda" title="Esconder coluna da esquerda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button><span class="brand-dot"></span><h1>Painel de Entregas</h1></div>
     <p>Registre rotas e veja na hora se compensa rodar.</p>
     <button class="gear-btn" onclick="abrirConfig()" aria-label="Configurações">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -2513,7 +2543,33 @@
         '</div>';
     }
 
-    function renderEntregas(){ renderEntregasInterno(); ajustarColunasFixos(); ajustarLinhaTopo(); }
+    function renderEntregas(){ renderEntregasInterno(); ajustarColunasFixos(); marcarRolagemTabela(); ajustarLinhaTopo(); }
+
+    /* Resultado e Ações ficam presos à direita na rolagem lateral: o Resultado precisa saber a largura de Ações */
+    function marcarRolagemTabela(){
+      var w = document.querySelector('.tabela-pc-wrap');
+      if (!w) return;
+      var th = w.querySelector('th.t-acoes');
+      if (th && th.offsetWidth) w.querySelector('table').style.setProperty('--w-acoes', th.offsetWidth + 'px');
+      w.classList.toggle('rola', w.scrollWidth > w.clientWidth + 1);
+    }
+    var esperaRolagem = null;
+    window.addEventListener('resize', function(){ clearTimeout(esperaRolagem); esperaRolagem = setTimeout(marcarRolagemTabela, 200); });
+
+    /* PC: esconder/mostrar a coluna da esquerda (abas, plataformas, faixas). A escolha fica guardada neste navegador. */
+    var CHAVE_LATERAL = 'painel_entregas_lateral_recolhida';
+    function aplicarLateral(recolhida){
+      document.body.classList.toggle('lateral-recolhida', recolhida);
+      var b = document.getElementById('lateral-btn'), t = recolhida ? 'Mostrar coluna da esquerda' : 'Esconder coluna da esquerda';
+      b.title = t; b.setAttribute('aria-label', t); b.setAttribute('aria-expanded', String(!recolhida));
+    }
+    function alternarLateral(){
+      var recolhida = !document.body.classList.contains('lateral-recolhida');
+      aplicarLateral(recolhida);
+      try { localStorage.setItem(CHAVE_LATERAL, recolhida ? '1' : '0'); } catch (e) {}
+      if (LISTA.plat) renderEntregas(); // a tabela ganha/perde largura: refaz colunas e rolagem
+    }
+    try { if (localStorage.getItem(CHAVE_LATERAL) === '1') aplicarLateral(true); } catch (e) {}
     function renderEntregasInterno(){
       var elLista = document.getElementById('lista'), elTot = document.getElementById('totais');
       document.getElementById('lista-titulo').innerHTML = 'Entregas' + (LISTA.plat ? '<span class="tit-plat"> · ' + esc(LISTA.plat) + '</span>' : '') +
@@ -2631,11 +2687,20 @@
       asc:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 14 5-5 5 5"/></svg>',
       desc:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg>'
     };
+    // Legenda que aparece ao passar o mouse no nome da coluna
+    var LEGENDA_COLUNA = {
+      data: 'Data', valor: 'Valor Recebido', distancia: 'Distância', consumo: 'Consumo (km/L)',
+      preco: 'Valor do Combustível (R$/L)', manutencaoKm: 'Custo Manutenção (R$/km)', depreciacaoKm: 'Custo Depreciação (R$/km)',
+      combustivel: 'Cálculo Combustível', manutencao: 'Custo Total de Manutenção', custoKm: 'Custo por km (R$/km)',
+      custoTotal: 'Custo Total', lucroKm: 'Lucro por km (R$/km)', lucro: 'Lucro Total', resultado: 'Compensa ou não'
+    };
     function thOrdenavel(rotulo, campo, classe){
       var o = LISTA.ordem, ativo = o.campo === campo;
-      var titulo = 'Ordenar por ' + rotulo + (ativo ? (o.dir === 'asc' ? ' (crescente)' : ' (decrescente)') : '');
+      var legenda = LEGENDA_COLUNA[campo] || rotulo;
+      var titulo = legenda;
+      var ariaOrdem = 'Ordenar por ' + legenda + (ativo ? (o.dir === 'asc' ? ' (crescente)' : ' (decrescente)') : '');
       return '<th' + (classe ? ' class="' + classe + '"' : '') + ' aria-sort="' + (ativo ? (o.dir === 'asc' ? 'ascending' : 'descending') : 'none') + '">' +
-        '<button type="button" class="ord' + (ativo ? ' ativo' : '') + '" onclick="ordenarPor(\'' + campo + '\')" title="' + titulo + '">' +
+        '<button type="button" class="ord' + (ativo ? ' ativo' : '') + '" onclick="ordenarPor(\'' + campo + '\')" title="' + titulo + '" aria-label="' + ariaOrdem + '">' +
         rotulo + (ativo ? ICO_ORD[o.dir] : ICO_ORD.nenhum) + '</button></th>';
     }
 
@@ -2675,9 +2740,9 @@
 
     function renderTabelaPC(pagina){
       var ocultos = LISTA.fixosOcultos;
-      var cab1 = [['Data', 'data'], ['Valor', 'valor'], ['Dist.', 'distancia'], ['Consumo', 'consumo'], ['Preço', 'preco']];
-      var cab2 = [['Comb.', 'combustivel'], ['Total manut.', 'manutencao'], ['Custo/km', 'custoKm'], ['Custo', 'custoTotal'],
-                  ['Lucro/km', 'lucroKm'], ['Lucro', 'lucro']];
+      var cab1 = [['Data', 'data'], ['Valor', 'valor'], ['Dist.', 'distancia'], ['Consumo', 'consumo'], ['V. Comb.', 'preco']];
+      var cab2 = [['C. Comb.', 'combustivel'], ['T. Manut.', 'manutencao'], ['Custo/km', 'custoKm'], ['Custo T.', 'custoTotal'],
+                  ['Lucro/km', 'lucroKm'], ['Lucro T.', 'lucro']];
       var thFixos = ocultos
         ? '<th class="col-oculta"><button type="button" class="fixos-toggle" onclick="alternarColunasFixos()" title="Mostrar colunas Manut. e Deprec." aria-label="Mostrar colunas Manut. e Deprec.">' + ICO_MOSTRAR + '</button></th>'
         : thOrdenavel('Manut.', 'manutencaoKm') +
