@@ -600,6 +600,12 @@
     .conta-email{font-size:13.5px;font-weight:600;color:var(--ink);word-break:break-all;}
     .conta-linha .btn{width:auto;padding:10px 18px;margin:0;flex-shrink:0;}
 
+    /* Opção "Calcular custos fixos" (nova entrega, edição e verificação rápida) */
+    .check-fixos{display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;user-select:none;}
+    .check-fixos input{width:18px;height:18px;margin:1px 0 0;flex-shrink:0;accent-color:var(--asphalt);cursor:pointer;}
+    .check-fixos .titulo{display:block;font-size:13px;font-weight:700;color:var(--ink);}
+    .check-fixos .hint{margin-top:2px;}
+
     /* Sem zoom por toque duplo / pinça */
     html, body{touch-action:manipulation;-webkit-text-size-adjust:100%;}
 
@@ -733,6 +739,19 @@
       .tabela-pc tr.recebido td:first-child{ box-shadow:inset 4px 0 0 var(--recebido); }
       .tabela-pc tr.recebido .b-rec{ background:var(--recebido); color:#fff; }
       .tabela-pc tbody tr:not(.recebido):hover td{ background:#FAF9F6; }
+      /* Botão de ocultar/mostrar as colunas Manut. e Deprec. */
+      .tabela-pc th .fixos-toggle{
+        border:none; background:rgba(255,255,255,0.14); color:#fff; cursor:pointer;
+        width:18px; height:18px; padding:0; margin-left:4px; border-radius:5px;
+        display:inline-flex; align-items:center; justify-content:center; vertical-align:middle;
+      }
+      .tabela-pc th .fixos-toggle:hover{ background:rgba(255,255,255,0.28); }
+      .tabela-pc th .fixos-toggle svg{ width:11px; height:11px; }
+      .tabela-pc th.col-oculta{ width:20px; padding-left:1px; padding-right:1px; text-align:center; }
+      .tabela-pc th.col-oculta .fixos-toggle{ margin:0; width:20px; }
+      /* Colunas ocultas: uma linha só no meio (como no Excel), alinhada com o botão do cabeçalho */
+      .tabela-pc td.col-oculta{ padding:0; width:6px; position:relative; }
+      .tabela-pc td.col-oculta::after{ content:''; position:absolute; top:0; bottom:0; left:50%; width:2px; margin-left:-1px; background:var(--line); }
 
       /* ---- Verificação Rápida: lateral ---- */
       /* Linha 1: (esquerda vazia, ocupada pelas abas) | botões de modo, centralizados
@@ -764,7 +783,7 @@
       #rap-bloco-lucro > .card, #rap-bloco-cobrar > .card{ grid-area:form; display:grid; column-gap:12px; align-items:end; }
       #rap-bloco-lucro > .card{ grid-template-columns:repeat(4, minmax(0,1fr)); }
       #rap-bloco-cobrar > .card{ grid-template-columns:repeat(3, minmax(0,1fr)); }
-      #panel-rapido .card > h2, #panel-rapido .card > .config-desc, #rap-bloco-cobrar .categorias{ grid-column:1 / -1; }
+      #panel-rapido .card > h2, #panel-rapido .card > .config-desc, #rap-bloco-cobrar .categorias, #panel-rapido .card > .check-fixos{ grid-column:1 / -1; }
       #rap-bloco-lucro > .card > h2{ margin-bottom:6px; }
       #rap-bloco-lucro > .card > .config-desc{ margin-bottom:0; }
       #panel-rapido .row2{ display:contents; }
@@ -803,7 +822,11 @@
       #config-backdrop .modal-sheet{
         max-width:860px;
         display:grid; grid-template-columns:1fr 1fr; column-gap:16px; align-items:start;
+        grid-template-areas:"head head" "custos faixas" "padrao faixas" "conta conta";
       }
+      #config-backdrop .cfg-custos{ grid-area:custos; }
+      #config-backdrop .cfg-padrao{ grid-area:padrao; }
+      #config-backdrop .cfg-faixas{ grid-area:faixas; }
       #config-backdrop .modal-header, #config-backdrop .conta-card{ grid-column:1 / -1; }
 
       /* ---- Mouse: destaque ao passar por cima ---- */
@@ -816,6 +839,8 @@
     @media (min-width:900px) and (max-width:1439px){
       nav.tabs{ width:220px; }
       #panel-registrar.active, #panel-rapido.active{ grid-template-columns:220px minmax(0,1fr); }
+      .tabela-pc{ font-size:12px; }
+      .tabela-pc td.forte{ font-size:13px; }
       .tabela-pc th{ padding:11px 4px; }
       .tabela-pc td{ padding:0 4px; }
       .tabela-pc th:first-child, .tabela-pc td:first-child{ padding-left:10px; }
@@ -849,8 +874,8 @@
       nav.tabs{ width:280px; }
       #panel-registrar.active, #panel-rapido.active{ grid-template-columns:280px minmax(0,1fr); column-gap:32px; }
       .tabela-pc{ font-size:13px; }
-      .tabela-pc th{ font-size:11.5px; padding:12px 14px; }
-      .tabela-pc td{ padding:0 14px; height:42px; }
+      .tabela-pc th{ font-size:11.5px; padding:12px 11px; }
+      .tabela-pc td{ padding:0 11px; height:42px; }
       .tabela-pc th:first-child, .tabela-pc td:first-child{ padding-left:18px; }
       .tabela-pc td.forte{ font-size:14px; }
       #panel-rapido .card, #panel-rapido .result{ padding:22px 26px; }
@@ -958,7 +983,7 @@
       <div id="rap-bloco-lucro">
         <div class="card">
           <h2>Vale a pena essa rota?</h2>
-          <p class="config-desc">Calcula na hora, sem salvar nada na planilha. Ideal pra decidir se aceita a corrida.</p>
+          <p class="config-desc">Calcula na hora, sem salvar nada. Ideal pra decidir se aceita a corrida.</p>
 
           <div class="row2">
             <div class="field">
@@ -1002,10 +1027,11 @@
               </div>
             </div>
           </div>
+          <label class="check-fixos"><input type="checkbox" id="rap-fixos" checked onchange="recalcularPorPrefixo('rap')"><span><span class="titulo">Calcular custos fixos</span><span class="hint" id="rap-fixos-hint"></span></span></label>
         </div>
 
         <div class="result state-empty" id="rap-result">
-          <div class="verdict" id="rap-verdict">Preencha os dados acima</div>
+          <div class="verdict" id="rap-verdict">Preencha os dados</div>
           <div class="lucro-km" id="rap-lucro-km">—</div>
           <div class="breakdown">
             <div class="item"><div class="label">Lucro total</div><div class="value" id="rap-lucro-total">—</div></div>
@@ -1066,6 +1092,7 @@
               </div>
             </div>
           </div>
+          <label class="check-fixos"><input type="checkbox" id="cobrar-fixos" checked onchange="recalcularPorPrefixo('cobrar')"><span><span class="titulo">Calcular custos fixos</span><span class="hint" id="cobrar-fixos-hint"></span></span></label>
         </div>
 
         <div class="result state-empty" id="cobrar-result">
@@ -1092,9 +1119,9 @@
         <button class="modal-close" onclick="fecharConfig()" aria-label="Fechar">✕</button>
       </div>
 
-      <div class="card">
+      <div class="card cfg-custos">
         <h2>Custos fixos por km</h2>
-        <p class="config-desc">Usados em todo cálculo, sem precisar digitar a cada entrega. Ajuste quando revisar seus gastos reais com o carro.</p>
+        <p class="config-desc">Entram no cálculo quando a opção "Calcular custos fixos" está marcada (na nova entrega, na edição e na verificação rápida). Desmarcada, a conta usa só o combustível. Ajuste quando revisar seus gastos reais com o carro.</p>
 
         <div class="row2">
           <div class="field">
@@ -1116,7 +1143,30 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card cfg-padrao">
+        <h2>Consumo e combustível</h2>
+        <p class="config-desc">Já vêm preenchidos na nova entrega e na verificação rápida. Dá pra mudar em cada entrega, sem alterar estes valores.</p>
+
+        <div class="row2">
+          <div class="field">
+            <label for="cfg-consumo">Consumo</label>
+            <div class="input-wrap">
+              <input type="number" inputmode="decimal" step="0.1" id="cfg-consumo" placeholder="0,0">
+              <span class="suffix">km/L</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="cfg-preco">Preço do combustível</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="cfg-preco" placeholder="0,00">
+              <span class="suffix">/L</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card cfg-faixas">
         <h2>Faixas de lucro por km</h2>
         <p class="config-desc">Define os limites de "Não Compensa / Aceitável / Boa / Excelente" usados nos dois cálculos.</p>
 
@@ -1206,11 +1256,11 @@
             </div>
           </div>
         </div>
-        <p class="hint" id="reg-fixos-hint"></p>
+        <label class="check-fixos"><input type="checkbox" id="reg-fixos" checked onchange="recalcularPorPrefixo('reg')"><span><span class="titulo">Calcular custos fixos</span><span class="hint" id="reg-fixos-hint"></span></span></label>
       </div>
 
       <div class="result state-empty" id="reg-result">
-        <div class="verdict" id="reg-verdict">Preencha os dados acima</div>
+        <div class="verdict" id="reg-verdict">Preencha os dados</div>
         <div class="lucro-km" id="reg-lucro-km">—</div>
         <div class="breakdown">
           <div class="item"><div class="label">Lucro total</div><div class="value" id="reg-lucro-total">—</div></div>
@@ -1474,7 +1524,16 @@
         document.getElementById('login-entrar').disabled = true;
         return;
       }
-      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_CHAVE_PUBLICA, {
+      // Usa só o começo do endereço (https://xxxx.supabase.co): se colarem com "/rest/v1/"
+      // ou outra coisa no final, o login dá "Invalid path specified in request URL".
+      var urlBase = SUPABASE_URL.trim();
+      try { urlBase = new URL(urlBase).origin; } catch (e) {}
+      if (/^https:\/\/(www\.)?supabase\.com$/i.test(urlBase)){
+        mostrarLogin('SUPABASE_URL está com o endereço do painel. Use https://SEU-CODIGO.supabase.co (o código está no fim do endereço do painel).');
+        document.getElementById('login-entrar').disabled = true;
+        return;
+      }
+      sb = window.supabase.createClient(urlBase, SUPABASE_CHAVE_PUBLICA.trim(), {
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
       });
       // Já logado neste aparelho? Entra direto.
@@ -1492,12 +1551,16 @@
     function traduzirErro(err){
       var m = String((err && (err.message || err.error_description || err.msg)) || err || '');
       if (/invalid login credentials/i.test(m)) return 'E-mail ou senha incorretos.';
+      if (/invalid path specified/i.test(m)) return 'Endereço do Supabase incorreto: a SUPABASE_URL deve ser só https://SEU-CODIGO.supabase.co, sem nada depois.';
+      if (/invalid api key|no api key/i.test(m)) return 'Chave pública do Supabase incorreta: confira SUPABASE_CHAVE_PUBLICA no index.html.';
       if (/email not confirmed/i.test(m)) return 'E-mail ainda não confirmado no Supabase.';
       if (/failed to fetch|networkerror|load failed|network request failed/i.test(m)) return 'Sem conexão com o banco. Confira a internet e tente de novo.';
       if (/row-level security|permission denied/i.test(m)) return 'Este login não tem permissão para alterar os dados.';
+      if (/configuracoes_padroes_positivos/i.test(m)) return 'Consumo e preço do combustível precisam ser maiores que zero.';
       if (/check constraint/i.test(m) && /configuracoes/i.test(m)) return 'As faixas precisam estar em ordem: Não Compensa < Aceitável < Boa Entrega.';
       if (/check constraint/i.test(m)) return 'Algum valor está inválido (ex.: distância ou consumo).';
       if (/jwt/i.test(m)) return 'Sua sessão expirou. Entre de novo.';
+      if (/calcular_custos_fixos|excluido|consumo_padrao|preco_padrao/i.test(m) && /column|coluna/i.test(m)) return 'O banco ainda não foi atualizado: rode o 05_ajustes.sql no Supabase.';
       return m || 'Erro ao falar com o banco.';
     }
 
@@ -1515,7 +1578,8 @@
         valor: exigirNumero(d.valorRecebido, 'o valor recebido'),
         distancia: exigirNumero(d.distancia, 'a distância'),
         consumo: exigirNumero(d.consumo, 'o consumo'),
-        preco_combustivel: exigirNumero(d.precoCombustivel, 'o preço do combustível')
+        preco_combustivel: exigirNumero(d.precoCombustivel, 'o preço do combustível'),
+        calcular_custos_fixos: d.fixos !== false
       };
     }
 
@@ -1527,14 +1591,15 @@
         return {
           manutencao: n(c.manutencao_km), depreciacao: n(c.depreciacao_km),
           limiteNaoCompensa: n(c.limite_nao_compensa), limiteAceitavel: n(c.limite_aceitavel), limiteBoa: n(c.limite_boa),
-          ultimoConsumo: n(c.ultimo_consumo), ultimoPreco: n(c.ultimo_preco),
+          ultimoConsumo: n(c.consumo_padrao), ultimoPreco: n(c.preco_padrao),  // consumo e preço padrão (Configurações)
           plataformas: p.map(function(x){ return x.nome; })
         };
       },
 
       saveConfig: async function(novo){
         var campos = { manutencao: 'manutencao_km', depreciacao: 'depreciacao_km', limiteNaoCompensa: 'limite_nao_compensa',
-                       limiteAceitavel: 'limite_aceitavel', limiteBoa: 'limite_boa' };
+                       limiteAceitavel: 'limite_aceitavel', limiteBoa: 'limite_boa',
+                       consumoPadrao: 'consumo_padrao', precoPadrao: 'preco_padrao' };
         var alterar = {};
         Object.keys(campos).forEach(function(k){ var v = Number(novo[k]); if (novo[k] !== '' && novo[k] != null && isFinite(v)) alterar[campos[k]] = v; });
         verificar(await sb.from('configuracoes').update(alterar).eq('id', 1).select('id'));
@@ -1550,7 +1615,13 @@
             linha: e.id, data: e.data, valor: n(e.valor), distancia: n(e.distancia), consumo: n(e.consumo),
             preco: n(e.preco_combustivel), combustivel: n(e.custo_combustivel), manutencao: n(e.custo_manutencao),
             custoKm: n(e.custo_km), custoTotal: n(e.custo_total), lucroKm: n(e.lucro_km), lucro: n(e.lucro),
-            classificacao: e.resultado, recebido: !!e.recebido
+            classificacao: e.resultado, recebido: !!e.recebido,
+            // manutenção e depreciação por km que entraram na conta (0 se a opção estava desmarcada)
+            manutencaoKm: n(e.manutencao_km_usada), depreciacaoKm: n(e.depreciacao_km_usada),
+            fixos: e.calcular_custos_fixos !== false,
+            // valores gravados na entrega (usados na tela de edição)
+            cfgEntrega: { manutencao: n(e.manutencao_km), depreciacao: n(e.depreciacao_km), limiteNaoCompensa: n(e.limite_nao_compensa),
+                          limiteAceitavel: n(e.limite_aceitavel), limiteBoa: n(e.limite_boa) }
           };
         }) };
       },
@@ -1563,19 +1634,20 @@
       },
 
       editarEntrega: async function(d){
-        var r = verificar(await sb.from('entregas').update(dadosDaEntrega(d)).eq('id', d.linha).select('id'));
+        var r = verificar(await sb.from('entregas').update(dadosDaEntrega(d)).eq('id', d.linha).eq('excluido', false).select('id'));
         if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
         return true;
       },
 
       excluirEntrega: async function(d){
-        var r = verificar(await sb.from('entregas').delete().eq('id', d.linha).select('id'));
+        // Exclusão lógica: só marca como excluída (some do site, mas fica guardada no banco)
+        var r = verificar(await sb.from('entregas').update({ excluido: true }).eq('id', d.linha).eq('excluido', false).select('id'));
         if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
         return true;
       },
 
       marcarRecebido: async function(d){
-        var r = verificar(await sb.from('entregas').update({ recebido: !!d.recebido }).eq('id', d.linha).select('id'));
+        var r = verificar(await sb.from('entregas').update({ recebido: !!d.recebido }).eq('id', d.linha).eq('excluido', false).select('id'));
         if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
         return true;
       }
@@ -1720,7 +1792,7 @@
       var lucroKm = document.getElementById(prefix+'-lucro-km');
       if (!r){
         box.className = 'result state-empty';
-        verdict.textContent = 'Preencha os dados acima';
+        verdict.textContent = 'Preencha os dados';
         lucroKm.textContent = '—';
         document.getElementById(prefix+'-custo-km').textContent = '—';
         document.getElementById(prefix+'-custo-total').textContent = '—';
@@ -1932,6 +2004,7 @@
 
     /* ---------- Limpar campos ---------- */
     function limparCamposComuns(prefixo){
+      document.getElementById(prefixo + '-fixos').checked = true;
       document.getElementById(prefixo + '-valor').value = '';
       resetarKmDistancia(prefixo);
       var cfg = STATE.config;
@@ -1950,12 +2023,29 @@
       recalcRapido();
     }
 
+    /* ---------- Opção "Calcular custos fixos" ----------
+       Monta a configuração usada na conta: marcada = manutenção e depreciação entram;
+       desmarcada = ficam de fora (só combustível). Na edição usa os valores gravados
+       na própria entrega (os da época), e não os das Configurações. */
+    function cfgDoCalculo(prefixo){
+      var base = (prefixo === 'reg' && LISTA.edicaoCfg) || STATE.config;
+      if (!base) return null;
+      var marcado = document.getElementById(prefixo + '-fixos').checked;
+      var hint = document.getElementById(prefixo + '-fixos-hint');
+      hint.textContent = marcado
+        ? 'Manutenção ' + fmt(base.manutencao) + '/km + depreciação ' + fmt(base.depreciacao) + '/km entram na conta.'
+        : 'Só o combustível entra na conta (manutenção e depreciação ficam de fora).';
+      return { manutencao: marcado ? base.manutencao : 0, depreciacao: marcado ? base.depreciacao : 0,
+               limiteNaoCompensa: base.limiteNaoCompensa, limiteAceitavel: base.limiteAceitavel, limiteBoa: base.limiteBoa };
+    }
+
     function recalcRegistrar(){
       var valor = lerValor('reg-valor');
       var distancia = parseFloat(document.getElementById('reg-distancia').value);
       var consumo = parseFloat(document.getElementById('reg-consumo').value);
       var preco = lerValor('reg-preco');
-      var r = calcularLocal(valor, distancia, consumo, preco, STATE.config);
+      var cfg = cfgDoCalculo('reg');
+      var r = cfg ? calcularLocal(valor, distancia, consumo, preco, cfg) : null;
       if (r) r.distanciaEcho = distancia.toLocaleString('pt-BR') + ' km';
       pintarResultado('reg', r);
       document.getElementById('reg-salvar').disabled = !r;
@@ -1967,7 +2057,8 @@
       var distancia = parseFloat(document.getElementById('rap-distancia').value);
       var consumo = parseFloat(document.getElementById('rap-consumo').value);
       var preco = lerValor('rap-preco');
-      var r = calcularLocal(valor, distancia, consumo, preco, STATE.config);
+      var cfg = cfgDoCalculo('rap');
+      var r = cfg ? calcularLocal(valor, distancia, consumo, preco, cfg) : null;
       if (r) r.distanciaEcho = distancia.toLocaleString('pt-BR') + ' km';
       pintarResultado('rap', r);
     }
@@ -2024,7 +2115,7 @@
       var distancia = parseFloat(document.getElementById('cobrar-distancia').value);
       var consumo = parseFloat(document.getElementById('cobrar-consumo').value);
       var preco = lerValor('cobrar-preco');
-      var cfg = STATE.config;
+      var cfg = cfgDoCalculo('cobrar');
 
       if (!categoriaSelecionada || !cfg || !(distancia > 0) || !(consumo > 0) || !(preco > 0)){
         box.className = 'result state-empty';
@@ -2051,6 +2142,7 @@
 
     function limparCobrar(){
       resetarKmDistancia('cobrar');
+      document.getElementById('cobrar-fixos').checked = true;
       var cfg = STATE.config;
       document.getElementById('cobrar-consumo').value = cfg ? cfg.ultimoConsumo : '';
       escreverValor('cobrar-preco', cfg ? cfg.ultimoPreco : null);
@@ -2066,8 +2158,8 @@
       escreverValor('cfg-limite1', cfg.limiteNaoCompensa);
       escreverValor('cfg-limite2', cfg.limiteAceitavel);
       escreverValor('cfg-limite3', cfg.limiteBoa);
-      document.getElementById('reg-fixos-hint').textContent =
-        'Manutenção R$ ' + cfg.manutencao.toFixed(2) + '/km + Depreciação R$ ' + cfg.depreciacao.toFixed(2) + '/km já entram no cálculo automaticamente.';
+      document.getElementById('cfg-consumo').value = cfg.ultimoConsumo == null ? '' : cfg.ultimoConsumo;
+      escreverValor('cfg-preco', cfg.ultimoPreco);
 
       // Card "Faixas de lucro por km" (só aparece no PC, na Verificação Rápida)
       document.getElementById('faixas-pc-lista').innerHTML = [
@@ -2079,7 +2171,7 @@
         return '<div class="faixa-linha"><span class="' + f[0] + '"><span class="ponto"></span>' + f[1] + '</span><span class="lim">' + f[2] + '/km</span></div>';
       }).join('');
       document.getElementById('faixas-pc-fixos').textContent =
-        'Custos fixos: manutenção ' + fmt(cfg.manutencao) + '/km + depreciação ' + fmt(cfg.depreciacao) + '/km, além do combustível.';
+        'Custos fixos (quando "Calcular custos fixos" está marcado): manutenção ' + fmt(cfg.manutencao) + '/km + depreciação ' + fmt(cfg.depreciacao) + '/km, além do combustível.';
     }
 
     function salvarConfig(){
@@ -2088,8 +2180,11 @@
         depreciacao: lerValor('cfg-depreciacao'),
         limiteNaoCompensa: lerValor('cfg-limite1'),
         limiteAceitavel: lerValor('cfg-limite2'),
-        limiteBoa: lerValor('cfg-limite3')
+        limiteBoa: lerValor('cfg-limite3'),
+        consumoPadrao: parseFloat(document.getElementById('cfg-consumo').value),
+        precoPadrao: lerValor('cfg-preco')
       };
+      if (!(novo.consumoPadrao > 0) || !(novo.precoPadrao > 0)){ toast('Informe o consumo e o preço do combustível.', true); return; }
       google.script.run
         .withSuccessHandler(function(cfg){
           STATE.config = cfg;
@@ -2097,6 +2192,7 @@
           toast('Configurações salvas ✓');
           recalcRegistrar();
           recalcRapido();
+          recalcularCobrar();
         })
         .withFailureHandler(function(err){ toast(err.message || 'Erro ao salvar', true); })
         .saveConfig(novo);
@@ -2417,7 +2513,7 @@
         '</div>';
     }
 
-    function renderEntregas(){ renderEntregasInterno(); ajustarLinhaTopo(); }
+    function renderEntregas(){ renderEntregasInterno(); ajustarColunasFixos(); ajustarLinhaTopo(); }
     function renderEntregasInterno(){
       var elLista = document.getElementById('lista'), elTot = document.getElementById('totais');
       document.getElementById('lista-titulo').innerHTML = 'Entregas' + (LISTA.plat ? '<span class="tit-plat"> · ' + esc(LISTA.plat) + '</span>' : '') +
@@ -2483,13 +2579,15 @@
               '<div><div class="t">Distância</div><div class="v">' + kmTxt(e.distancia) + ' km</div></div>' +
               '<div><div class="t">Consumo</div><div class="v">' + kmTxt(e.consumo) + ' km/L</div></div>' +
               '<div><div class="t">Combustível</div><div class="v">' + (e.preco == null ? '—' : fmt(e.preco) + '/L') + '</div></div>' +
-              '<div><div class="t">Custo comb.</div><div class="v c-bad">' + mo(e.combustivel) + '</div></div>' +
-              '<div><div class="t">Manutenção</div><div class="v c-bad">' + mo(e.manutencao) + '</div></div>' +
+              '<div><div class="t">Custo manutenção</div><div class="v c-bad">' + mo(e.manutencaoKm) + '</div></div>' +
+              '<div><div class="t">Custo Depreciação</div><div class="v c-bad">' + mo(e.depreciacaoKm) + '</div></div>' +
+              '<div><div class="t">Total Manutenção</div><div class="v c-bad">' + mo(e.manutencao) + '</div></div>' +
+              '<div><div class="t">Custo combustível</div><div class="v c-bad">' + mo(e.combustivel) + '</div></div>' +
               '<div><div class="t">Custo/km</div><div class="v c-bad">' + mo(e.custoKm) + '</div></div>' +
               '<div><div class="t">Custo total</div><div class="v c-bad">' + mo(e.custoTotal) + '</div></div>' +
               '<div><div class="t">Lucro/km</div><div class="v' + cor + '">' + mo(e.lucroKm) + '</div></div>' +
               '<div><div class="t">Lucro total</div><div class="v' + cor + '">' + mo(e.lucro) + '</div></div>' +
-              (e.classificacao ? '<div class="cheio"><div class="t">Compensa ou não</div><div class="v' + cor + '">' + esc(e.classificacao) + '</div></div>' : '') +
+              '<div><div class="t">Resultado</div><div class="v' + cor + '">' + esc(e.classificacao || TEXTO_CLASSE[k] || '—') + '</div></div>' +
             '</div>' +
             '<div class="acoes">' +
               '<button class="b-rec" onclick="alternarRecebido(' + e.linha + ')"' + dis + '>' + ICO_OK + rotuloRec + '</button>' +
@@ -2541,10 +2639,50 @@
         rotulo + (ativo ? ICO_ORD[o.dir] : ICO_ORD.nenhum) + '</button></th>';
     }
 
+    /* Colunas Manut./Deprec. (valores por km usados na conta): podem ser ocultadas, como no Excel.
+       Se você escolheu mostrar/ocultar, a escolha fica guardada neste navegador.
+       Sem escolha: aparecem quando a tabela cabe inteira na tela; se não couber, começam ocultas. */
+    var CHAVE_FIXOS_OCULTOS = 'painel_entregas_ocultar_fixos';
+    LISTA.fixosEscolha = null; // null = sem escolha; true = ocultar; false = mostrar
+    try { var guardada = localStorage.getItem(CHAVE_FIXOS_OCULTOS); if (guardada === '1' || guardada === '0') LISTA.fixosEscolha = guardada === '1'; } catch (e) {}
+    LISTA.fixosOcultos = LISTA.fixosEscolha === true;
+    function alternarColunasFixos(){
+      LISTA.fixosEscolha = !LISTA.fixosOcultos;
+      LISTA.fixosOcultos = LISTA.fixosEscolha;
+      try { localStorage.setItem(CHAVE_FIXOS_OCULTOS, LISTA.fixosOcultos ? '1' : '0'); } catch (e) {}
+      renderEntregas();
+    }
+    // Sem escolha guardada: mostra as colunas e oculta só se a tabela passar da largura da tela
+    function ajustarColunasFixos(){
+      if (LISTA.fixosEscolha !== null) return;
+      var precisaRender = LISTA.fixosOcultos;
+      LISTA.fixosOcultos = false;
+      if (precisaRender) renderEntregasInterno();
+      var wrap = document.querySelector('.tabela-pc-wrap');
+      if (wrap && wrap.clientWidth && wrap.scrollWidth > wrap.clientWidth + 1){
+        LISTA.fixosOcultos = true;
+        renderEntregasInterno();
+      }
+    }
+    var esperaRedimensionar = null;
+    window.addEventListener('resize', function(){
+      if (LISTA.fixosEscolha !== null) return;
+      clearTimeout(esperaRedimensionar);
+      esperaRedimensionar = setTimeout(function(){ ajustarColunasFixos(); ajustarLinhaTopo(); }, 150);
+    });
+    var ICO_MOSTRAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6-5 6 5 6M15 6l5 6-5 6"/></svg>';
+    var ICO_OCULTAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 5 6-5 6M20 6l-5 6 5 6"/></svg>';
+
     function renderTabelaPC(pagina){
-      var cab = [['Data', 'data'], ['Valor', 'valor'], ['Dist.', 'distancia'], ['Consumo', 'consumo'], ['Preço', 'preco'],
-                 ['Comb.', 'combustivel'], ['Manut.', 'manutencao'], ['Custo/km', 'custoKm'], ['Custo', 'custoTotal'],
-                 ['Lucro/km', 'lucroKm'], ['Lucro', 'lucro']];
+      var ocultos = LISTA.fixosOcultos;
+      var cab1 = [['Data', 'data'], ['Valor', 'valor'], ['Dist.', 'distancia'], ['Consumo', 'consumo'], ['Preço', 'preco']];
+      var cab2 = [['Comb.', 'combustivel'], ['Total manut.', 'manutencao'], ['Custo/km', 'custoKm'], ['Custo', 'custoTotal'],
+                  ['Lucro/km', 'lucroKm'], ['Lucro', 'lucro']];
+      var thFixos = ocultos
+        ? '<th class="col-oculta"><button type="button" class="fixos-toggle" onclick="alternarColunasFixos()" title="Mostrar colunas Manut. e Deprec." aria-label="Mostrar colunas Manut. e Deprec.">' + ICO_MOSTRAR + '</button></th>'
+        : thOrdenavel('Manut.', 'manutencaoKm') +
+          thOrdenavel('Deprec.', 'depreciacaoKm').replace('</button></th>',
+            '</button><button type="button" class="fixos-toggle" onclick="alternarColunasFixos()" title="Ocultar colunas Manut. e Deprec." aria-label="Ocultar colunas Manut. e Deprec.">' + ICO_OCULTAR + '</button></th>');
       var linhas = pagina.map(function(e){
         var k = classeDe(e), cor = k ? 'c-' + k : '';
         var dis = LISTA.ocupado ? ' disabled' : '';
@@ -2556,6 +2694,8 @@
           '<td>' + (e.distancia == null ? '—' : kmTxt(e.distancia) + ' km') + '</td>' +
           '<td>' + (e.consumo == null ? '—' : kmTxt(e.consumo) + ' km/L') + '</td>' +
           '<td>' + mo(e.preco) + '</td>' +
+          (ocultos ? '<td class="col-oculta"></td>'
+                   : '<td class="c-bad">' + mo(e.manutencaoKm) + '</td><td class="c-bad">' + mo(e.depreciacaoKm) + '</td>') +
           '<td class="c-bad">' + mo(e.combustivel) + '</td>' +
           '<td class="c-bad">' + mo(e.manutencao) + '</td>' +
           '<td class="c-bad">' + mo(e.custoKm) + '</td>' +
@@ -2571,7 +2711,8 @@
         '</tr>';
       });
       return '<div class="tabela-pc-wrap"><table class="tabela-pc"><thead><tr>' +
-        cab.map(function(c){ return thOrdenavel(c[0], c[1]); }).join('') +
+        cab1.map(function(c){ return thOrdenavel(c[0], c[1]); }).join('') + thFixos +
+        cab2.map(function(c){ return thOrdenavel(c[0], c[1]); }).join('') +
         thOrdenavel('Resultado', 'resultado', 't-res') + '<th class="t-acoes">Ações</th>' +
         '</tr></thead><tbody>' + linhas.join('') + '</tbody></table></div>';
     }
@@ -2613,7 +2754,7 @@
       var e = achar(linha); if (!e) return;
       LISTA.excluir = linha;
       document.getElementById('conf-txt').textContent =
-        dataBR(e.data) + ' · ' + mo(e.valor) + ' · ' + kmTxt(e.distancia) + ' km. A linha será removida da planilha e não dá pra desfazer por aqui.';
+        dataBR(e.data) + ' · ' + mo(e.valor) + ' · ' + kmTxt(e.distancia) + ' km. A entrega será removida e não será possível desfazer a exclusão.';
       document.getElementById('conf-bd').classList.add('show');
     }
     function fecharConf(){ document.getElementById('conf-bd').classList.remove('show'); }
@@ -2646,6 +2787,9 @@
 
       resetarKmDistancia('reg');
       var cfg = STATE.config;
+      // Edição: conta com os custos fixos e faixas gravados na entrega; nova: com os das Configurações
+      LISTA.edicaoCfg = e ? e.cfgEntrega : null;
+      document.getElementById('reg-fixos').checked = e ? e.fixos !== false : true;
       if (e){
         document.getElementById('reg-data').value = e.data;
         escreverValor('reg-valor', e.valor);
@@ -2671,7 +2815,8 @@
         valorRecebido: lerValor('reg-valor'),
         distancia: document.getElementById('reg-distancia').value,
         consumo: document.getElementById('reg-consumo').value,
-        precoCombustivel: lerValor('reg-preco')
+        precoCombustivel: lerValor('reg-preco'),
+        fixos: document.getElementById('reg-fixos').checked
       };
       if (e){ dados.linha = e.linha; dados.esperado = esperadoDe(e); }
 
@@ -2680,12 +2825,8 @@
       var run = google.script.run
         .withSuccessHandler(function(){
           btn.textContent = rotulo; recalcRegistrar();
-          if (STATE.config){
-            STATE.config.ultimoConsumo = parseFloat(dados.consumo);
-            STATE.config.ultimoPreco = parseFloat(dados.precoCombustivel);
-          }
           fecharFolha();
-          toast(e ? 'Entrega atualizada ✓' : 'Entrega salva na planilha ✓');
+          toast(e ? 'Entrega atualizada ✓' : 'Entrega salva ✓');
           carregarEntregas();
         })
         .withFailureHandler(function(err){
@@ -2859,7 +3000,7 @@
         atualizarDistanciaManual('cobrar');
       } else if (id === 'cobrar-consumo' || id === 'cobrar-preco') {
         recalcularCobrar();
-      } else if (e.target.closest('#panel-registrar')) {
+      } else if (e.target.closest('#panel-registrar') || e.target.closest('#folha-bd')) {
         recalcRegistrar();
       } else if (e.target.closest('#panel-rapido')) {
         recalcRapido();
