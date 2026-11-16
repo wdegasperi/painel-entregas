@@ -911,6 +911,189 @@
       /* sombra só quando a tabela está rolando, pra mostrar onde começam as colunas fixas */
       .tabela-pc-wrap.rola th.t-res, .tabela-pc-wrap.rola td.t-res{ box-shadow:-10px 0 10px -10px rgba(28,36,48,0.35); }
     }
+
+    /* ===================================================================
+       REPASSES (3ª aba): faturamento por plataforma e período
+    =================================================================== */
+    /* Três abas no celular: cada uma do tamanho do seu texto ("Verificação Rápida" é a maior) */
+    nav.tabs button{ flex:1 1 auto; white-space:nowrap; padding:11px 6px; }
+    .pill-todas{ background:var(--asphalt); color:#fff; display:flex; align-items:center; justify-content:center; }
+    .pill-todas svg{ width:13px; height:13px; }
+    .pill.selected .pill-todas{ background:#fff; color:var(--asphalt); }
+    /* Celular: botões de plataforma um pouco menores (6 botões em 2 linhas de 3) */
+    #rp-plataformas .pills-linha{ gap:6px; }
+    #rp-plataformas .pill{ padding:4px 11px 4px 4px; font-size:12.5px; gap:6px; }
+    #rp-plataformas .pill-badge{ width:22px; height:22px; }
+    @media (max-width:374px){
+      #rp-plataformas .pills-linha{ gap:5px; }
+      #rp-plataformas .pill{ padding:3px 9px 3px 3px; font-size:12px; gap:5px; }
+      #rp-plataformas .pill-badge{ width:20px; height:20px; }
+    }
+    .rp-btn-fat svg{ width:15px; height:15px; }
+    .rp-filtros{ display:flex; flex-direction:column; gap:8px; }
+    /* Pagamento (de / até) e Período na mesma linha */
+    .rp-linha{ display:flex; align-items:flex-end; gap:8px; }
+    .rp-linha .rp-periodo{ flex:1 1 0; min-width:0; }
+    .field.rp-periodo{ margin-top:0; }
+    .rp-periodo label{ font-size:11.5px; margin-bottom:4px; white-space:nowrap; }
+    .rp-periodo .input-wrap{ height:32px; border-radius:9px; }
+    .input-wrap select{
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 10px center; background-size:12px; padding-right:30px; cursor:pointer;
+    }
+    .field .rp-periodo-sel{ height:100%; padding:0 26px 0 8px; font-size:13px; font-weight:600; background-position:right 8px center; text-overflow:ellipsis; }
+    .rp-pag .periodo-rotulo{ display:none; }
+    .rp-aviso{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background:var(--ok-bg); border:1px solid #EFD3A6; color:#7A4D0C; border-radius:12px;
+      padding:9px 10px 9px 12px; margin:0 0 10px; font-size:12.5px; font-weight:600; line-height:1.4;
+    }
+    .rp-aviso button{ flex-shrink:0; border:1.5px solid #E2B877; background:#fff; color:#7A4D0C; border-radius:9px; padding:6px 10px; font-size:12px; font-weight:700; cursor:pointer; }
+    /* Celular: cabeçalho de cada plataforma, com o subtotal */
+    .rp-grupo-cel{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; margin:16px 2px 7px; }
+    .rp-grupo-cel:first-child{ margin-top:2px; }
+    .rp-grupo-cel .nome{ display:flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-size:14.5px; font-weight:700; }
+    .rp-grupo-cel .nome img, .rp-g img{ width:20px; height:20px; border-radius:50%; flex-shrink:0; }
+    .rp-grupo-cel .qtd{ font-family:'Inter',sans-serif; font-size:11.5px; font-weight:600; color:var(--ink-soft); }
+    .rp-grupo-cel .sub{ text-align:right; line-height:1.25; }
+    .rp-grupo-cel .sub .v{ font-family:'Space Grotesk',sans-serif; font-size:14.5px; font-weight:700; }
+    .rp-grupo-cel .sub .t{ font-size:11px; font-weight:600; color:var(--ink-soft); }
+    .e-row.parcial{ border-left-color:var(--ok); }
+    .rp-prev{ font-size:10.5px; font-weight:600; color:var(--ink-soft); margin-left:4px; }
+    .grade .dois{ grid-column:span 2; }
+    .zero{ color:var(--ink-soft) !important; font-weight:600; }
+    .totais .mini.cinco{ grid-template-columns:repeat(3,1fr); }
+    .totais .rotulo-dir{ text-align:right; }
+
+    /* Janela Faturamento (regras por plataforma) */
+    #fat-bd .config-desc{ margin-top:-4px; }
+    .fat-plat{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-bottom:10px; }
+    .fat-cab{ display:flex; align-items:center; gap:8px; }
+    .fat-cab img{ width:24px; height:24px; border-radius:50%; }
+    .fat-cab .nome{ flex:1; font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; }
+    .fat-add{ border:1.5px solid var(--line); background:var(--paper); border-radius:9px; padding:6px 10px; font-size:12px; font-weight:700; color:var(--ink); cursor:pointer; }
+    .fat-regra{ display:flex; align-items:center; gap:10px; padding:10px 0 2px; margin-top:8px; border-top:1px dashed var(--line); cursor:pointer; }
+    .fat-regra .txt{ flex:1; min-width:0; }
+    .fat-regra .tit{ font-size:13px; font-weight:700; color:var(--ink); }
+    .fat-regra .sub{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; line-height:1.4; }
+    .fat-regra.antiga .tit, .fat-regra.antiga .sub{ color:#9AA2AD; }
+    .fat-regra .ed{ width:30px; height:30px; border-radius:9px; border:1.5px solid var(--line); background:#fff; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .fat-regra .ed svg{ width:14px; height:14px; }
+    .tag-vigor{ display:inline-block; font-size:10px; font-weight:700; background:var(--great-bg); color:var(--great); padding:2px 7px; border-radius:999px; margin-left:6px; vertical-align:1px; }
+    .tag-vigor.futura{ background:var(--good-bg); color:var(--good); }
+    .fat-vazio{ margin:8px 0 0; }
+
+    /* Janela Nova/Editar regra */
+    .regra-bd, .rp-bd{ z-index:32; }
+    #regra-tipo{ margin-top:2px; }
+    #regra-tipo button{ font-size:11.5px; padding:7px 4px; }
+    .regra-exemplo{ background:var(--paper-2); border-radius:10px; padding:10px 12px; font-size:12.5px; color:var(--ink); margin-top:14px; line-height:1.5; }
+    .per-item{ border:1px solid var(--line); border-radius:12px; padding:2px 12px 12px; margin-top:10px; background:var(--paper); }
+    .per-cab{ display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:12px; font-weight:700; color:var(--ink-soft); }
+    .per-cab button{ border:none; background:none; color:var(--bad); font-size:12px; font-weight:700; cursor:pointer; padding:2px 0; }
+    .per-item .field{ margin-top:8px; }
+    /* Início e Fim lado a lado; Pagamento embaixo (no PC, os três na mesma linha) */
+    .per-item .row3{ display:grid; grid-template-columns:1fr 1fr; column-gap:10px; }
+    .per-item .row3 .field:last-child{ grid-column:1 / -1; }
+    .per-item .field input{ background:#fff; }
+    .btn-add-per{ margin-top:10px; padding:10px; font-size:13.5px; }
+    .regra-acoes .btn{ margin-top:8px; }
+    .regra-acoes .btn-primary{ margin-top:14px; }
+    .btn-perigo-ghost{ background:transparent; color:var(--bad); border:1.5px solid #EBC7C4; }
+
+    /* Janela Editar repasse */
+    .rp-bd .result{ margin-bottom:12px; }
+
+    @media (max-width:899px){ #tab-btn-rapido{ order:1; } #tab-btn-repasses{ order:2; } }
+    @media (max-width:359px){ nav.tabs button{ font-size:12.5px; padding:11px 4px; } }
+
+    /* ---------- Repasses no PC ---------- */
+    @media (min-width:900px){
+      /* Abas: Entregas e Repasses lado a lado; Verificação Rápida embaixo (mesmos 86px de altura) */
+      nav.tabs{ display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+      nav.tabs button{ padding:0 8px; }
+      #tab-btn-rapido{ grid-column:1 / -1; }
+
+      #panel-repasses.active{
+        display:grid; grid-template-columns:260px minmax(0,1fr); grid-template-rows:auto 1fr;
+        column-gap:24px; align-items:start; grid-template-areas:"plat main" ". main";
+      }
+      #panel-repasses > .card:first-child{ grid-area:plat; margin-top:100px; }
+      #panel-repasses > .col-principal{ grid-area:main; }
+      #rp-plataformas .pills-linha{ flex-direction:column; align-items:stretch; }
+      #rp-plataformas .pill{ width:100%; padding:7px 12px 7px 7px; font-size:14px; gap:7px; }
+      #rp-plataformas .pills-linha{ gap:8px; }
+      #rp-plataformas .pill-badge{ width:26px; height:26px; }
+
+      /* Linha 1: título ... Faturamento | Linha 2: Todas/A receber/Recebidos · Período · Pagamento */
+      #panel-repasses .lista-topo{
+        display:grid; grid-template-columns:auto auto auto 1fr auto; align-items:center;
+        grid-template-rows:36px 38px; grid-template-areas:"tit tit tit tit tit" "filtro pag periodo . fat";
+        row-gap:12px; column-gap:28px; margin:0 0 14px;
+      }
+      #panel-repasses .lista-linha1, #panel-repasses .rp-filtros, #panel-repasses .rp-linha{ display:contents; }
+      #rp-titulo{ grid-area:tit; font-size:19px; }
+      #panel-repasses .rp-btn-fat{ grid-area:fat; }
+      #rp-filtro{ grid-area:filtro; width:300px; }
+      #panel-repasses .rp-periodo{ grid-area:periodo; display:flex; align-items:center; gap:8px; }
+      #panel-repasses .rp-periodo label{ margin:0; font-size:12px; font-weight:600; }
+      #panel-repasses .rp-periodo .input-wrap{ width:230px; height:32px; }
+      #panel-repasses .rp-periodo-sel{ font-size:13.5px; padding:0 30px 0 10px; background-position:right 10px center; }
+      #panel-repasses .rp-pag{ grid-area:pag; align-items:center; gap:8px; }
+      #panel-repasses .rp-pag .periodo-rotulo{ display:inline; font-size:12px; font-weight:600; color:var(--ink-soft); white-space:nowrap; margin-right:2px; }
+      #panel-repasses .field.dt-campo{ display:flex; align-items:center; width:auto; }
+      #panel-repasses .dt-campo label{
+        position:absolute; width:1px; height:1px; margin:0; padding:0; overflow:hidden;
+        clip:rect(0 0 0 0); white-space:nowrap; border:0;
+      }
+      #panel-repasses .dt-campo .input-wrap{ width:104px; }
+
+      /* Tabela: linha da plataforma e linha de total da plataforma */
+      .tabela-pc tr.rp-grupo td{ background:var(--paper); height:36px; border-top:1px solid var(--line); }
+      .tabela-pc tbody tr.rp-grupo:first-child td{ border-top:none; }
+      .rp-g{ display:inline-flex; align-items:center; gap:8px; font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:700; }
+      .rp-g .qtd{ font-family:'Inter',sans-serif; font-size:11.5px; font-weight:600; color:var(--ink-soft); }
+      .tabela-pc tr.rp-sub td{ background:var(--asphalt); color:#fff; font-weight:700; border-top:none; }
+      .tabela-pc tr.rp-sub td:first-child{ color:#B9C0CC; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em; }
+      .tabela-pc tr.rp-sub td.c-great, .tabela-pc tr.rp-sub td.c-bad{ color:#fff; }
+      .tabela-pc tr.rp-sub .zero{ color:#B9C0CC !important; }
+      .tabela-pc tr.rp-parcial td:first-child{ box-shadow:inset 4px 0 0 var(--ok); }
+
+      /* Total geral: faixa abaixo da tabela, com 5 valores */
+      .col-principal > .totais .mini.cinco{ grid-template-columns:repeat(5, minmax(0,1fr)); flex:2 1 0; }
+
+      /* Janelas */
+      #fat-bd .modal-sheet{ max-width:860px; }
+      #fat-lista{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+      #fat-lista .fat-plat{ margin:0; }
+      .regra-bd .modal-sheet, .rp-bd .modal-sheet{ max-width:560px; }
+      .per-item .row3{ grid-template-columns:1fr 1fr 1fr; }
+      .per-item .row3 .field:last-child{ grid-column:auto; }
+    }
+    @media (min-width:900px) and (max-width:1439px){
+      #panel-repasses.active{ grid-template-columns:220px minmax(0,1fr); }
+      #panel-repasses .lista-topo{ column-gap:22px; }
+      #rp-filtro{ width:280px; }
+      #panel-repasses .rp-periodo .input-wrap{ width:190px; }
+    }
+    /* Notebook menor: Pagamento e Período descem para uma terceira linha */
+    @media (min-width:900px) and (max-width:1319px){
+      #panel-repasses .lista-topo{
+        grid-template-columns:auto auto 1fr auto; grid-template-rows:36px 38px 32px;
+        grid-template-areas:"tit tit tit tit" "filtro filtro . fat" "pag periodo . .";
+      }
+      #panel-repasses > .card:first-child{ margin-top:144px; }
+    }
+    @media (min-width:1600px){
+      #panel-repasses.active{ grid-template-columns:280px minmax(0,1fr); column-gap:32px; }
+      #rp-lista .tabela-pc th{ padding:12px 8px; }
+      #rp-lista .tabela-pc td{ padding:0 8px; }
+      #rp-lista .tabela-pc th:first-child, #rp-lista .tabela-pc td:first-child{ padding-left:16px; }
+    }
+    @media (min-width:900px){
+      body.lateral-recolhida #panel-repasses.active{ grid-template-columns:0 minmax(0,1fr); column-gap:0; }
+      body.lateral-recolhida #panel-repasses > .card:first-child{ display:none; }
+    }
   </style>
 </head>
 <body>
@@ -940,6 +1123,7 @@
 
   <nav class="tabs">
     <button id="tab-btn-registrar" class="active" onclick="showTab('registrar')">Entregas</button>
+    <button id="tab-btn-repasses" onclick="showTab('repasses')">Repasses</button>
     <button id="tab-btn-rapido" onclick="showTab('rapido')">Verificação Rápida</button>
   </nav>
 
@@ -984,6 +1168,53 @@
       <div id="lista"><div class="vazio">Carregando lançamentos…</div></div>
       </div>
       <div class="totais" id="totais" style="display:none;"></div>
+    </section>
+
+    <!-- ===================== TAB: REPASSES ===================== -->
+    <section id="panel-repasses" class="panel">
+      <div class="card">
+        <h2>Plataformas</h2>
+        <div class="pills" id="rp-plataformas"></div>
+      </div>
+
+      <div class="col-principal">
+        <div class="lista-topo">
+          <div class="lista-linha1">
+            <h3 id="rp-titulo">Repasses</h3>
+            <button type="button" class="btn-nova-mini rp-btn-fat" onclick="abrirFaturamento()" title="Como cada plataforma fatura e paga">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              <span class="txt">Faturamento</span>
+            </button>
+          </div>
+          <div class="rp-filtros">
+            <div class="rp-linha">
+              <div class="dt-grupo rp-pag">
+                <span class="periodo-rotulo">Pagamento</span>
+                <div class="field dt-campo">
+                  <label for="rp-pag-ini">Pagamento de</label>
+                  <div class="input-wrap"><input type="text" id="rp-pag-ini" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" aria-haspopup="dialog"></div>
+                </div>
+                <div class="field dt-campo">
+                  <label for="rp-pag-fim">Pagamento até</label>
+                  <div class="input-wrap"><input type="text" id="rp-pag-fim" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" autocomplete="off" aria-haspopup="dialog"></div>
+                </div>
+              </div>
+              <div class="field rp-periodo">
+                <label for="rp-periodo">Período</label>
+                <div class="input-wrap"><select id="rp-periodo" class="rp-periodo-sel"><option value="">Todos os períodos</option></select></div>
+              </div>
+            </div>
+            <div class="filtro" id="rp-filtro">
+              <button data-f="todos" class="active">Todas</button>
+              <button data-f="areceber">A receber</button>
+              <button data-f="recebidos">Recebidos</button>
+            </div>
+          </div>
+        </div>
+        <div id="rp-aviso"></div>
+        <div id="rp-lista"><div class="vazio">Carregando repasses…</div></div>
+        <div class="totais" id="rp-totais" style="display:none;"></div>
+      </div>
     </section>
 
     <!-- ===================== TAB: VERIFICAÇÃO RÁPIDA ===================== -->
@@ -1305,6 +1536,85 @@
     </div>
   </div>
 
+  <!-- ===================== MODAL: FATURAMENTO (regras por plataforma) ===================== -->
+  <div class="modal-backdrop" id="fat-bd" onclick="if(event.target===this) fecharFaturamento()">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Faturamento</h2>
+        <button class="modal-close" onclick="fecharFaturamento()" aria-label="Fechar">✕</button>
+      </div>
+      <p class="config-desc">Como cada plataforma junta as entregas num repasse e quando paga. Cada regra vale a partir da data "desde"; para mudar o jeito de faturar, crie uma regra nova com a data da mudança (as antigas continuam valendo para as entregas antigas).</p>
+      <div id="fat-lista"></div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: NOVA / EDITAR REGRA ===================== -->
+  <div class="modal-backdrop regra-bd" id="regra-bd" onclick="if(event.target===this) fecharRegra()">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2><span id="regra-titulo">Nova regra</span><span class="plat-tag" id="regra-plat"></span></h2>
+        <button class="modal-close" onclick="fecharRegra()" aria-label="Fechar">✕</button>
+      </div>
+      <div class="card">
+        <div class="filtro" id="regra-tipo">
+          <button type="button" data-t="semanal">Semanal</button>
+          <button type="button" data-t="quinzenal">Quinzenal</button>
+          <button type="button" data-t="mensal">Mensal</button>
+          <button type="button" data-t="personalizado">Personalizado</button>
+        </div>
+        <div class="field">
+          <label for="regra-desde">Vale desde</label>
+          <div class="input-wrap"><input type="date" id="regra-desde"></div>
+        </div>
+        <div id="regra-params"></div>
+        <div class="regra-exemplo" id="regra-exemplo"></div>
+      </div>
+      <div class="regra-acoes">
+        <button class="btn btn-primary" id="regra-salvar" onclick="salvarRegraForm()">Salvar regra</button>
+        <button class="btn btn-perigo-ghost" id="regra-excluir" onclick="excluirRegraForm()">Excluir regra</button>
+        <button class="btn btn-ghost" onclick="fecharRegra()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: EDITAR REPASSE (bônus, taxas, pagamento) ===================== -->
+  <div class="modal-backdrop rp-bd" id="rp-bd" onclick="if(event.target===this) fecharRepasse()">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2>Repasse<span class="plat-tag" id="rp-ed-plat"></span></h2>
+        <button class="modal-close" onclick="fecharRepasse()" aria-label="Fechar">✕</button>
+      </div>
+      <p class="config-desc" id="rp-ed-info"></p>
+      <div class="card">
+        <div class="row2">
+          <div class="field">
+            <label for="rp-ed-bonus">Bônus</label>
+            <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="rp-ed-bonus" placeholder="0,00"></div>
+          </div>
+          <div class="field">
+            <label for="rp-ed-taxas">Taxas</label>
+            <div class="input-wrap"><span class="prefix">R$</span><input type="text" inputmode="numeric" autocomplete="off" class="moeda" id="rp-ed-taxas" placeholder="0,00"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rp-ed-pag">Data de pagamento</label>
+          <div class="input-wrap"><input type="date" id="rp-ed-pag"></div>
+        </div>
+        <p class="hint" id="rp-ed-prev"></p>
+      </div>
+      <div class="result state-empty">
+        <div class="breakdown">
+          <div class="item"><div class="label">Repasse</div><div class="value" id="rp-ed-repasse">—</div></div>
+          <div class="item"><div class="label">Custo total</div><div class="value" id="rp-ed-custo">—</div></div>
+          <div class="item"><div class="label">Total a receber</div><div class="value" id="rp-ed-receber">—</div></div>
+          <div class="item"><div class="label">Lucro total</div><div class="value" id="rp-ed-lucro">—</div></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="rp-ed-salvar" onclick="salvarRepasseForm()">Salvar</button>
+      <button class="btn btn-ghost" onclick="fecharRepasse()">Cancelar</button>
+    </div>
+  </div>
+
   <!-- ===================== CONFIRMAR EXCLUSÃO ===================== -->
   <div class="modal-backdrop conf-bd" id="conf-bd" onclick="if(event.target===this) fecharConf()">
     <div class="confirma">
@@ -1493,8 +1803,8 @@
     // >>> Cole aqui os dados do seu projeto (Supabase > Project Settings > API). <<<
     // Os dois podem ficar no site: quem protege os dados são as regras do 04_acesso.sql.
     // NUNCA cole aqui a chave "service_role" / "secret".
-    var SUPABASE_URL = 'https://bwxliwyxxpqcyitzoclf.supabase.co';             // ex.: https://abcdefghijkl.supabase.co
-    var SUPABASE_CHAVE_PUBLICA = 'sb_publishable_ngjgWHb_FcflANnHyDnlVw_SEI_lK5R'; // "anon public" ou "publishable"
+    var SUPABASE_URL = 'https://fjvoaronhxmylxwowjyz.supabase.co';             // ex.: https://abcdefghijkl.supabase.co
+    var SUPABASE_CHAVE_PUBLICA = 'sb_publishable_AeNBAta1naCFB7rnOIXxuQ_P07QsYqh'; // "anon public" ou "publishable"
 
     var sb = null;
     var LOGIN = { liberar: null, email: '' };
@@ -1591,6 +1901,9 @@
       if (/check constraint/i.test(m)) return 'Algum valor está inválido (ex.: distância ou consumo).';
       if (/jwt/i.test(m)) return 'Sua sessão expirou. Entre de novo.';
       if (/calcular_custos_fixos|excluido|consumo_padrao|preco_padrao/i.test(m) && /column|coluna/i.test(m)) return 'O banco ainda não foi atualizado: rode o 05_ajustes.sql no Supabase.';
+      if (/regras_faturamento|repasses/i.test(m) && /does not exist|could not find|schema cache/i.test(m)) return 'O banco ainda não tem os repasses: rode o 06_repasses.sql no Supabase.';
+      if (/duplicate key/i.test(m) && /regras_faturamento/i.test(m)) return 'Essa plataforma já tem uma regra começando nessa data.';
+      if (/check constraint/i.test(m) && /repasses/i.test(m)) return 'Bônus e taxas não podem ser negativos.';
       return m || 'Erro ao falar com o banco.';
     }
 
@@ -1611,6 +1924,18 @@
         preco_combustivel: exigirNumero(d.precoCombustivel, 'o preço do combustível'),
         calcular_custos_fixos: d.fixos !== false
       };
+    }
+
+    // O Supabase devolve no máximo 1000 linhas por consulta: lê em partes até acabar.
+    // (montar = função que cria a consulta do zero a cada parte)
+    async function lerTudo(montar){
+      var tudo = [], de = 0, passo = 1000;
+      while (true){
+        var parte = verificar(await montar().range(de, de + passo - 1));
+        tudo = tudo.concat(parte);
+        if (parte.length < passo) return tudo;
+        de += passo;
+      }
     }
 
     var ACOES_BANCO = {
@@ -1680,6 +2005,51 @@
         var r = verificar(await sb.from('entregas').update({ recebido: !!d.recebido }).eq('id', d.linha).eq('excluido', false).select('id'));
         if (!r.length) throw new Error('Essa entrega não existe mais (pode ter sido excluída). A lista foi atualizada.');
         return true;
+      },
+
+      /* ---------- Repasses ---------- */
+      // Regras de faturamento, repasses gravados (bônus, taxas, data de pagamento) e as entregas
+      // de todas as plataformas (só o necessário para montar os períodos e as somas)
+      listarRepasses: async function(){
+        var regras = await lerTudo(function(){ return sb.from('regras_faturamento').select('id,plataforma,vigente_desde,tipo,parametros').order('id'); });
+        var reps = await lerTudo(function(){ return sb.from('repasses').select('id,plataforma,inicio,fim,data_pagamento,bonus,taxas').order('id'); });
+        var ents = await lerTudo(function(){ return sb.from('entregas_calculadas').select('id,plataforma,data,valor,custo_combustivel,custo_manutencao,recebido').order('id'); });
+        return {
+          regras: regras.map(function(r){ return { id: r.id, plataforma: r.plataforma, vigenteDesde: r.vigente_desde, tipo: r.tipo, parametros: r.parametros || {} }; }),
+          repasses: reps.map(function(r){ return { id: r.id, plataforma: r.plataforma, inicio: r.inicio, fim: r.fim, dataPagamento: r.data_pagamento, bonus: n(r.bonus), taxas: n(r.taxas) }; }),
+          entregas: ents.map(function(e){ return { id: e.id, plataforma: e.plataforma, data: e.data, valor: n(e.valor), combustivel: n(e.custo_combustivel), manutencao: n(e.custo_manutencao), recebido: !!e.recebido }; })
+        };
+      },
+
+      // Grava bônus, taxas e data de pagamento de um período (cria a linha se ainda não existir)
+      salvarRepasse: async function(d){
+        var reg = { plataforma: d.plataforma, inicio: d.inicio, fim: d.fim,
+                    bonus: Number(d.bonus) || 0, taxas: Number(d.taxas) || 0, data_pagamento: d.dataPagamento || null };
+        verificar(await sb.from('repasses').upsert(reg, { onConflict: 'plataforma,inicio,fim' }).select('id'));
+        return true;
+      },
+
+      // Marca/desmarca como recebidas várias entregas de uma vez (todas as do período do repasse)
+      marcarRecebidoLote: async function(d){
+        if (!d.ids || !d.ids.length) return true;
+        verificar(await sb.from('entregas').update({ recebido: !!d.recebido }).in('id', d.ids).eq('excluido', false).select('id'));
+        return true;
+      },
+
+      salvarRegra: async function(d){
+        var reg = { plataforma: d.plataforma, vigente_desde: d.vigenteDesde, tipo: d.tipo, parametros: d.parametros || {} };
+        if (d.id){
+          var r = verificar(await sb.from('regras_faturamento').update(reg).eq('id', d.id).select('id'));
+          if (!r.length) throw new Error('Essa regra não existe mais. A lista foi atualizada.');
+        } else {
+          verificar(await sb.from('regras_faturamento').insert(reg).select('id'));
+        }
+        return true;
+      },
+
+      excluirRegra: async function(d){
+        verificar(await sb.from('regras_faturamento').delete().eq('id', d.id));
+        return true;
       }
     };
 
@@ -1722,11 +2092,15 @@
     function fmt(n){ return isFinite(n) ? brl.format(n) : '—'; }
 
     function showTab(name){
-      ['registrar','rapido'].forEach(function(t){
+      ['registrar','repasses','rapido'].forEach(function(t){
         document.getElementById('panel-'+t).classList.toggle('active', t===name);
         document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
       });
       if (name === 'registrar') ajustarLinhaTopo();
+      if (name === 'repasses'){
+        // recarrega se ainda não carregou ou se alguma entrega mudou desde a última vez
+        if (!REP.dados || REP.sujo) carregarRepasses(); else renderRepasses();
+      }
     }
 
     function abrirConfig(){ document.getElementById('config-backdrop').classList.add('show'); }
@@ -2322,8 +2696,8 @@
 
     function renderPaginacao(totalPaginas, totalItens){
       var el = document.getElementById('paginacao');
-      // só aparece quando passa da menor opção (10): até 10 lançamentos cabem numa página
-      if (totalItens <= OPCOES_PP[0]){ el.className = 'pagin'; el.innerHTML = ''; LISTA.menuPP = false; return; }
+      // Celular: só aparece quando passa da menor opção (10). PC: sempre que houver lançamentos
+      if (totalItens <= OPCOES_PP[0] && !(totalItens && MQ_PC && MQ_PC.matches)){ el.className = 'pagin'; el.innerHTML = ''; LISTA.menuPP = false; return; }
       el.className = 'pagin show';
       var menu = LISTA.menuPP ? '<div class="pp-menu"><div class="tit">Lançamentos por página</div>' + OPCOES_PP.map(function(n){
         return '<button class="' + (n === LISTA.porPagina ? 'sel' : '') + '" onclick="escolherPorPagina(' + n + ')">' + n + (n === LISTA.porPagina ? ' ✓' : '') + '</button>';
@@ -2376,7 +2750,21 @@
       return o;
     }
     function campoDt(id){ return document.getElementById(id); }
-    function estadoDt(id){ return id === 'dt-ini' ? LISTA.dtIni : LISTA.dtFim; }
+    // Pares de campos de data com calendário: período das Entregas e pagamento dos Repasses
+    var PARES_DT = {
+      'dt-ini':     { par: 'dt-fim',     inicio: true,  estado: function(){ return LISTA; }, kIni: 'dtIni',  kFim: 'dtFim' },
+      'dt-fim':     { par: 'dt-ini',     inicio: false, estado: function(){ return LISTA; }, kIni: 'dtIni',  kFim: 'dtFim' },
+      'rp-pag-ini': { par: 'rp-pag-fim', inicio: true,  estado: function(){ return REP; },   kIni: 'pagIni', kFim: 'pagFim' },
+      'rp-pag-fim': { par: 'rp-pag-ini', inicio: false, estado: function(){ return REP; },   kIni: 'pagIni', kFim: 'pagFim' }
+    };
+    function ehInicioDt(id){ return PARES_DT[id].inicio; }
+    function iniDt(id){ var p = PARES_DT[id]; return p.estado()[p.kIni]; }
+    function fimDt(id){ var p = PARES_DT[id]; return p.estado()[p.kFim]; }
+    function estadoDt(id){ return ehInicioDt(id) ? iniDt(id) : fimDt(id); }
+    // Aplica as datas do par do campo "id" (null = não muda)
+    function definirDatas(id, ini, fim){
+      if (PARES_DT[id].estado() === LISTA) definirPeriodo(ini, fim); else definirPagamento(ini, fim);
+    }
     function mesDe(iso){ var p = iso.split('-'); return { a: +p[0], m: +p[1] }; }
 
     function definirPeriodo(ini, fim){
@@ -2388,8 +2776,8 @@
     function limparPeriodo(){ definirPeriodo('', ''); }
 
     // Escreve nos campos o que está aplicado (sem atrapalhar quem está digitando)
-    function sincronizarCamposData(){
-      ['dt-ini', 'dt-fim'].forEach(function(id){
+    function sincronizarCamposData(ids){
+      (ids || ['dt-ini', 'dt-fim']).forEach(function(id){
         var el = campoDt(id), iso = estadoDt(id);
         if (document.activeElement === el && el.value !== '' && lerBR(el.value) !== iso) return;
         el.value = iso ? dataBR(iso) : '';
@@ -2399,12 +2787,12 @@
     function aoDigitarData(ev){
       var el = ev.target, id = el.id, wrap = el.parentNode;
       var m = mascararData(el.value); if (m !== el.value) el.value = m;
-      if (el.value === ''){ wrap.classList.remove('invalido'); if (estadoDt(id)) definirPeriodo(id === 'dt-ini' ? '' : null, id === 'dt-fim' ? '' : null); }
+      if (el.value === ''){ wrap.classList.remove('invalido'); if (estadoDt(id)) definirDatas(id, ehInicioDt(id) ? '' : null, ehInicioDt(id) ? null : ''); }
       else if (el.value.length === 10){
         var iso = lerBR(el.value);
         wrap.classList.toggle('invalido', !iso);
         if (iso){
-          if (estadoDt(id) !== iso) definirPeriodo(id === 'dt-ini' ? iso : null, id === 'dt-fim' ? iso : null);
+          if (estadoDt(id) !== iso) definirDatas(id, ehInicioDt(id) ? iso : null, ehInicioDt(id) ? null : iso);
           DP.mes = mesDe(iso);
         }
       } else wrap.classList.remove('invalido');
@@ -2418,9 +2806,9 @@
     }
 
     function abrirCalendario(id){
-      var ref = estadoDt(id) || (id === 'dt-fim' ? LISTA.dtIni : LISTA.dtFim) || hoje();
+      var ref = estadoDt(id) || (ehInicioDt(id) ? fimDt(id) : iniDt(id)) || hoje();
       DP.alvo = id; DP.mes = mesDe(ref);
-      ['dt-ini', 'dt-fim'].forEach(function(x){ campoDt(x).parentNode.classList.toggle('ativo', x === id); });
+      Object.keys(PARES_DT).forEach(function(x){ campoDt(x).parentNode.classList.toggle('ativo', x === id); });
       document.getElementById('dp-digitar').hidden = !DP_TOQUE;
       renderCalendario();
       document.getElementById('dp-pop').classList.add('show');
@@ -2429,12 +2817,12 @@
     function fecharCalendario(){
       DP.alvo = null;
       document.getElementById('dp-pop').classList.remove('show');
-      ['dt-ini', 'dt-fim'].forEach(function(x){ campoDt(x).parentNode.classList.remove('ativo'); });
+      Object.keys(PARES_DT).forEach(function(x){ campoDt(x).parentNode.classList.remove('ativo'); });
     }
 
     function renderCalendario(){
       if (!DP.alvo) return;
-      var ini = LISTA.dtIni, fim = LISTA.dtFim, alvo = DP.alvo, h = hoje(), html = '';
+      var alvo = DP.alvo, ini = iniDt(alvo), fim = fimDt(alvo), h = hoje(), html = '';
       document.getElementById('dp-titulo').textContent = MESES[DP.mes.m - 1] + ' ' + DP.mes.a;
       var primeiro = new Date(DP.mes.a, DP.mes.m - 1, 1);
       for (var i = 0; i < 42; i++){
@@ -2446,7 +2834,7 @@
         if (ini && fim && iso > ini && iso < fim) cls += ' faixa';
         if (iso === ini || iso === fim) cls += ' sel';
         // um campo não aceita data "do outro lado" do outro
-        var bloqueado = (alvo === 'dt-fim' && ini && iso < ini) || (alvo === 'dt-ini' && fim && iso > fim);
+        var bloqueado = (!ehInicioDt(alvo) && ini && iso < ini) || (ehInicioDt(alvo) && fim && iso > fim);
         html += '<button type="button" class="' + cls + '" data-iso="' + iso + '"' + (bloqueado ? ' disabled' : '') + '>' + d.getDate() + '</button>';
       }
       document.getElementById('dp-grade').innerHTML = html;
@@ -2471,7 +2859,7 @@
 
     (function iniciarCalendario(){
       var pop = document.getElementById('dp-pop');
-      ['dt-ini', 'dt-fim'].forEach(function(id){
+      Object.keys(PARES_DT).forEach(function(id){
         var el = campoDt(id);
         if (DP_TOQUE) el.setAttribute('inputmode', 'none'); // toque: abre o calendário sem o teclado (botão "Digitar" abre o teclado)
         el.addEventListener('input', aoDigitarData);
@@ -2489,17 +2877,17 @@
           var iso = dia.dataset.iso, id = DP.alvo;
           campoDt(id).value = dataBR(iso);
           fecharCalendario();
-          definirPeriodo(id === 'dt-ini' ? iso : null, id === 'dt-fim' ? iso : null);
+          definirDatas(id, ehInicioDt(id) ? iso : null, ehInicioDt(id) ? null : iso);
         }
       });
       document.getElementById('dp-limpar').addEventListener('click', function(){
-        fecharCalendario(); ['dt-ini', 'dt-fim'].forEach(function(x){ campoDt(x).value = ''; }); limparPeriodo();
+        var id = DP.alvo; fecharCalendario(); [id, PARES_DT[id].par].forEach(function(x){ campoDt(x).value = ''; }); definirDatas(id, '', '');
       });
       document.getElementById('dp-hoje').addEventListener('click', function(){
         var id = DP.alvo, iso = hoje();
-        if ((id === 'dt-fim' && LISTA.dtIni && iso < LISTA.dtIni) || (id === 'dt-ini' && LISTA.dtFim && iso > LISTA.dtFim)) return;
+        if ((!ehInicioDt(id) && iniDt(id) && iso < iniDt(id)) || (ehInicioDt(id) && fimDt(id) && iso > fimDt(id))) return;
         campoDt(id).value = dataBR(iso); fecharCalendario();
-        definirPeriodo(id === 'dt-ini' ? iso : null, id === 'dt-fim' ? iso : null);
+        definirDatas(id, ehInicioDt(id) ? iso : null, ehInicioDt(id) ? null : iso);
       });
       document.getElementById('dp-digitar').addEventListener('click', function(){
         var el = campoDt(DP.alvo); fecharCalendario(); el.blur();
@@ -2547,11 +2935,12 @@
 
     /* Resultado e Ações ficam presos à direita na rolagem lateral: o Resultado precisa saber a largura de Ações */
     function marcarRolagemTabela(){
-      var w = document.querySelector('.tabela-pc-wrap');
-      if (!w) return;
-      var th = w.querySelector('th.t-acoes');
-      if (th && th.offsetWidth) w.querySelector('table').style.setProperty('--w-acoes', th.offsetWidth + 'px');
-      w.classList.toggle('rola', w.scrollWidth > w.clientWidth + 1);
+      document.querySelectorAll('.tabela-pc-wrap').forEach(function(w){
+        if (!w.offsetWidth) return; // aba escondida: mede quando aparecer
+        var th = w.querySelector('th.t-acoes');
+        if (th && th.offsetWidth) w.querySelector('table').style.setProperty('--w-acoes', th.offsetWidth + 'px');
+        w.classList.toggle('rola', w.scrollWidth > w.clientWidth + 1);
+      });
     }
     var esperaRolagem = null;
     window.addEventListener('resize', function(){ clearTimeout(esperaRolagem); esperaRolagem = setTimeout(marcarRolagemTabela, 200); });
@@ -2568,6 +2957,7 @@
       aplicarLateral(recolhida);
       try { localStorage.setItem(CHAVE_LATERAL, recolhida ? '1' : '0'); } catch (e) {}
       if (LISTA.plat) renderEntregas(); // a tabela ganha/perde largura: refaz colunas e rolagem
+      if (REP.dados) renderRepasses();
     }
     try { if (localStorage.getItem(CHAVE_LATERAL) === '1') aplicarLateral(true); } catch (e) {}
     function renderEntregasInterno(){
@@ -2723,7 +3113,7 @@
       var precisaRender = LISTA.fixosOcultos;
       LISTA.fixosOcultos = false;
       if (precisaRender) renderEntregasInterno();
-      var wrap = document.querySelector('.tabela-pc-wrap');
+      var wrap = document.querySelector('#lista .tabela-pc-wrap');
       if (wrap && wrap.clientWidth && wrap.scrollWidth > wrap.clientWidth + 1){
         LISTA.fixosOcultos = true;
         renderEntregasInterno();
@@ -2787,6 +3177,7 @@
     var MQ_PC = window.matchMedia ? window.matchMedia('(min-width:900px)') : null;
     function posicionarLayoutPC(){
       var pc = !!(MQ_PC && MQ_PC.matches);
+      if (LISTA.plat && entregasDaPlataforma()) renderEntregas(); // paginação muda entre PC e celular
 
       var totais = document.getElementById('totais');
       var destinoTotal = pc ? document.querySelector('#panel-registrar .col-principal') : document.getElementById('panel-registrar');
@@ -2804,7 +3195,7 @@
       google.script.run
         .withSuccessHandler(function(){
           LISTA.ocupado = false; LISTA.ocupadoLinha = null;
-          e.recebido = novo; renderEntregas();
+          e.recebido = novo; REP.sujo = true; renderEntregas();
           toast(novo ? 'Marcada como recebida ✓' : 'Voltou para "a receber"');
         })
         .withFailureHandler(function(err){
@@ -2830,7 +3221,7 @@
       google.script.run
         .withSuccessHandler(function(){
           btn.disabled = false; btn.textContent = 'Excluir';
-          fecharConf(); toast('Entrega excluída');
+          fecharConf(); toast('Entrega excluída'); REP.sujo = true;
           carregarEntregas();
         })
         .withFailureHandler(function(err){
@@ -2891,7 +3282,7 @@
         .withSuccessHandler(function(){
           btn.textContent = rotulo; recalcRegistrar();
           fecharFolha();
-          toast(e ? 'Entrega atualizada ✓' : 'Entrega salva ✓');
+          toast(e ? 'Entrega atualizada ✓' : 'Entrega salva ✓'); REP.sujo = true;
           carregarEntregas();
         })
         .withFailureHandler(function(err){
@@ -3031,6 +3422,829 @@
       }
     });
 
+    /* ---------- Repasses: períodos de faturamento ----------
+       Cada plataforma tem regras com "vigente desde" (semanal, quinzenal, mensal ou personalizado).
+       O período de cada entrega sai da regra em vigor na data dela. Repasses já gravados no banco
+       (bônus, taxas, data de pagamento) "congelam" o período: valem antes das regras, assim mudar
+       uma regra depois não mexe no histórico. */
+    var DIAS_SEMANA = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    var DIAS_SEMANA_CURTO = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+
+    function dtDe(iso){ var p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2], 12); }
+    function isoDt(d){ return isoDe(d.getFullYear(), d.getMonth() + 1, d.getDate()); }
+    function somarDias(iso, n){ var d = dtDe(iso); d.setDate(d.getDate() + n); return isoDt(d); }
+    function diasNoMes(a, m){ return new Date(a, m, 0).getDate(); } // m = 1..12
+    // Dia "dia" de um mês (se o mês for mais curto, usa o último dia)
+    function diaDoMes(a, m, dia){ return isoDe(a, m, Math.min(dia, diasNoMes(a, m))); }
+    function mesSeguinte(a, m){ return m === 12 ? { a: a + 1, m: 1 } : { a: a, m: m + 1 }; }
+    // Próxima data (depois de "iso") que cai no dia "dia" do mês
+    function proximoDiaDoMes(iso, dia){
+      var d = dtDe(iso), a = d.getFullYear(), m = d.getMonth() + 1;
+      var neste = diaDoMes(a, m, dia);
+      if (neste > iso) return neste;
+      var s = mesSeguinte(a, m);
+      return diaDoMes(s.a, s.m, dia);
+    }
+    // Próxima data (depois de "iso") que cai no dia da semana "dow" (0 = domingo)
+    function proximoDiaSemana(iso, dow){
+      var d = dtDe(iso), n = (dow - d.getDay() + 7) % 7 || 7;
+      return somarDias(iso, n);
+    }
+
+    // Regra em vigor numa data (regras da plataforma em ordem de "vigente desde")
+    function regraNaData(regras, iso){
+      var r = null;
+      for (var i = 0; i < regras.length; i++) if (regras[i].vigenteDesde <= iso) r = regras[i];
+      return r;
+    }
+
+    // Período (início, fim e pagamento previsto) de uma data, por uma regra
+    function periodoPelaRegra(regra, iso){
+      var p = regra.parametros || {}, d = dtDe(iso), a = d.getFullYear(), m = d.getMonth() + 1, dia = d.getDate();
+      var ini, fim, pag;
+      if (regra.tipo === 'semanal'){
+        var comeco = p.inicioSemana == null ? 1 : +p.inicioSemana;
+        ini = somarDias(iso, -((d.getDay() - comeco + 7) % 7));
+        fim = somarDias(ini, 6);
+        pag = proximoDiaSemana(fim, p.diaPagamento == null ? 3 : +p.diaPagamento);
+      } else if (regra.tipo === 'quinzenal'){
+        var corte = Math.min(Math.max(+p.corte || 15, 1), 27);
+        if (dia <= corte){ ini = isoDe(a, m, 1); fim = isoDe(a, m, corte); pag = proximoDiaDoMes(fim, +p.pagamento1 || 20); }
+        else { ini = isoDe(a, m, corte + 1); fim = isoDe(a, m, diasNoMes(a, m)); pag = proximoDiaDoMes(fim, +p.pagamento2 || 5); }
+      } else if (regra.tipo === 'mensal'){
+        var di = Math.min(Math.max(+p.diaInicio || 1, 1), 28);
+        if (dia >= di) ini = isoDe(a, m, di);
+        else { var ant = m === 1 ? { a: a - 1, m: 12 } : { a: a, m: m - 1 }; ini = isoDe(ant.a, ant.m, di); }
+        var di2 = dtDe(ini), prox = mesSeguinte(di2.getFullYear(), di2.getMonth() + 1);
+        fim = somarDias(isoDe(prox.a, prox.m, di), -1);
+        pag = proximoDiaDoMes(fim, +p.diaPagamento || 5);
+      } else if (regra.tipo === 'personalizado'){
+        var lista = p.periodos || [];
+        for (var i = 0; i < lista.length; i++){
+          if (lista[i].inicio <= iso && iso <= lista[i].fim){ ini = lista[i].inicio; fim = lista[i].fim; pag = lista[i].pagamento || null; break; }
+        }
+        if (!ini) return null;
+      } else return null;
+      return { inicio: ini, fim: fim, previsto: pag };
+    }
+
+    /* Monta os repasses (um por plataforma + período) a partir das entregas.
+       dados = { regras:[{id, plataforma, vigenteDesde, tipo, parametros}],
+                 repasses:[{id, plataforma, inicio, fim, dataPagamento, bonus, taxas}],
+                 entregas:[{id, plataforma, data, valor, combustivel, manutencao, recebido}] }
+       Devolve { lista:[...], semPeriodo:{ plataforma: [entregas] } } */
+    function montarRepasses(dados){
+      var regrasPorPlat = {}, gravadosPorPlat = {}, mapa = {}, lista = [], semPeriodo = {};
+      (dados.regras || []).slice().sort(function(a, b){ return a.vigenteDesde < b.vigenteDesde ? -1 : 1; })
+        .forEach(function(r){ (regrasPorPlat[r.plataforma] = regrasPorPlat[r.plataforma] || []).push(r); });
+      (dados.repasses || []).slice().sort(function(a, b){ return a.inicio < b.inicio ? -1 : a.inicio > b.inicio ? 1 : 0; })
+        .forEach(function(g){ (gravadosPorPlat[g.plataforma] = gravadosPorPlat[g.plataforma] || []).push(g); });
+
+      function pegar(plat, ini, fim){
+        var k = plat + '|' + ini + '|' + fim;
+        if (!mapa[k]){
+          mapa[k] = { chave: k, plataforma: plat, inicio: ini, fim: fim, previsto: null, gravado: null,
+                      entregas: [], repasse: 0, combustivel: 0, manutencao: 0, bonus: 0, taxas: 0 };
+          lista.push(mapa[k]);
+        }
+        return mapa[k];
+      }
+
+      (dados.entregas || []).forEach(function(e){
+        var plat = e.plataforma, rp = null;
+        // 1) período já gravado (congelado) que contém a data
+        var gs = gravadosPorPlat[plat] || [];
+        for (var i = 0; i < gs.length; i++){
+          if (gs[i].inicio <= e.data && e.data <= gs[i].fim){ rp = pegar(plat, gs[i].inicio, gs[i].fim); break; }
+        }
+        // 2) regra em vigor na data (o período não passa para antes/depois da vigência da regra)
+        if (!rp){
+          var regras = regrasPorPlat[plat] || [], regra = regraNaData(regras, e.data);
+          var per = regra ? periodoPelaRegra(regra, e.data) : null;
+          if (per){
+            var idx = regras.indexOf(regra), proxima = regras[idx + 1];
+            if (per.inicio < regra.vigenteDesde) per.inicio = regra.vigenteDesde;
+            if (proxima && per.fim >= proxima.vigenteDesde) per.fim = somarDias(proxima.vigenteDesde, -1);
+            rp = pegar(plat, per.inicio, per.fim);
+            if (!rp.previsto) rp.previsto = per.previsto;
+          }
+        }
+        if (!rp){ (semPeriodo[plat] = semPeriodo[plat] || []).push(e); return; }
+        rp.entregas.push(e);
+        rp.repasse += e.valor || 0; rp.combustivel += e.combustivel || 0; rp.manutencao += e.manutencao || 0;
+      });
+
+      // Dados gravados (bônus, taxas, data de pagamento real)
+      Object.keys(gravadosPorPlat).forEach(function(plat){
+        gravadosPorPlat[plat].forEach(function(g){
+          var rp = mapa[plat + '|' + g.inicio + '|' + g.fim];
+          if (!rp) return; // período sem entregas: não aparece
+          rp.gravado = g; rp.bonus = g.bonus || 0; rp.taxas = g.taxas || 0;
+          if (!rp.previsto){ // período congelado sem regra: tenta prever pela regra da época
+            var regra = regraNaData(regrasPorPlat[plat] || [], g.fim), per = regra ? periodoPelaRegra(regra, g.fim) : null;
+            if (per) rp.previsto = per.previsto;
+          }
+        });
+      });
+
+      lista.forEach(function(rp){
+        rp.pagamento = (rp.gravado && rp.gravado.dataPagamento) || rp.previsto || null;
+        rp.pagamentoReal = !!(rp.gravado && rp.gravado.dataPagamento);
+        rp.qtd = rp.entregas.length;
+        rp.qtdRecebidas = rp.entregas.filter(function(e){ return e.recebido; }).length;
+        rp.recebido = rp.qtd > 0 && rp.qtdRecebidas === rp.qtd;
+        rp.custoTotal = rp.combustivel + rp.manutencao + rp.taxas;
+        rp.aReceber = rp.repasse + rp.bonus - rp.taxas;   // "Total a receber"
+        rp.lucro = rp.repasse + rp.bonus - rp.custoTotal;
+      });
+      return { lista: lista, semPeriodo: semPeriodo };
+    }
+
+    /* ===================================================================
+       REPASSES — telas, filtros e ações
+    =================================================================== */
+    var REP = {
+      dados: null, carregando: false, erro: null, reqId: 0, sujo: false,
+      plats: [],            // plataformas marcadas (vazio = todas)
+      filtro: 'todos',      // todos | areceber | recebidos
+      periodo: '',          // "inicio|fim" (vazio = todos os períodos)
+      pagIni: '', pagFim: '',
+      abertos: {}, ordem: { campo: 'inicio', dir: 'desc' },
+      vis: [], ocupado: null, editando: null, htmlPeriodos: ''
+    };
+    var ICO_TODAS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>';
+    var ICO_LISTA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
+    var TEXTO_STATUS = { rec: 'Recebido', par: 'Parcial', pend: 'A receber', atr: 'Atrasado' };
+    var COR_STATUS = { rec: 'c-great', par: 'c-ok', pend: '', atr: 'c-bad' };
+
+    /* ---------- Plataformas (várias ao mesmo tempo; nenhuma = todas) ---------- */
+    function renderPlataformasRepasse(lista){
+      var wrap = document.getElementById('rp-plataformas');
+      wrap.innerHTML = '';
+      var l1 = document.createElement('div'), l2 = document.createElement('div');
+      l1.className = l2.className = 'pills-linha';
+      wrap.appendChild(l1); wrap.appendChild(l2);
+      ['__todas'].concat(lista).forEach(function(nome, i){
+        var b = document.createElement('div');
+        b.className = 'pill'; b.dataset.value = nome; b.setAttribute('role', 'button');
+        if (nome === '__todas'){
+          b.innerHTML = '<span class="pill-badge pill-todas">' + ICO_TODAS + '</span><span>Todas</span>';
+          b.style.setProperty('--pill-color', 'var(--asphalt)');
+        } else {
+          var ic = PLATFORM_ICONS[nome];
+          b.innerHTML = (ic ? '<img class="pill-badge" src="' + ic + '" alt="">' : '') + '<span>' + esc(nome) + '</span>';
+          aplicarEstiloPill(b);
+        }
+        b.onclick = function(){ alternarPlataformaRepasse(nome); };
+        (i < 3 ? l1 : l2).appendChild(b);
+      });
+      marcarPlataformasRepasse();
+    }
+    function marcarPlataformasRepasse(){
+      document.querySelectorAll('#rp-plataformas .pill').forEach(function(p){
+        var v = p.dataset.value, sel = v === '__todas' ? !REP.plats.length : REP.plats.indexOf(v) >= 0;
+        p.classList.toggle('selected', sel); p.setAttribute('aria-pressed', String(sel));
+      });
+    }
+    function alternarPlataformaRepasse(nome){
+      if (nome === '__todas') REP.plats = [];
+      else {
+        var i = REP.plats.indexOf(nome);
+        if (i >= 0) REP.plats.splice(i, 1); else REP.plats.push(nome);
+        if (REP.plats.length === platsDoSite().length) REP.plats = []; // marcou todas = "Todas"
+      }
+      REP.abertos = {};
+      renderRepasses();
+    }
+    function platsDoSite(){ return (STATE.config && STATE.config.plataformas) || []; }
+    function platsVisiveis(){
+      var todas = platsDoSite();
+      return REP.plats.length ? todas.filter(function(p){ return REP.plats.indexOf(p) >= 0; }) : todas;
+    }
+
+    /* ---------- Carregar ---------- */
+    function carregarRepasses(){
+      var meuId = ++REP.reqId;
+      REP.carregando = true; REP.erro = null; REP.sujo = false;
+      renderRepasses();
+      google.script.run
+        .withSuccessHandler(function(res){
+          if (meuId !== REP.reqId) return;
+          REP.dados = res || { regras: [], repasses: [], entregas: [] };
+          REP.carregando = false;
+          renderRepasses();
+          if (document.getElementById('fat-bd').classList.contains('show')) renderFaturamento();
+        })
+        .withFailureHandler(function(err){
+          if (meuId !== REP.reqId) return;
+          REP.carregando = false;
+          REP.erro = (err && err.message) || 'Não foi possível carregar os repasses.';
+          if (REP.dados) toast(REP.erro, true);
+          renderRepasses();
+          if (document.getElementById('fat-bd').classList.contains('show')) renderFaturamento();
+        })
+        .listarRepasses({});
+    }
+
+    /* ---------- Textos ---------- */
+    function periodoTxtRp(ini, fim){ // "06/10 a 12/10/2025" ou "22/12/2025 a 19/01/2026"
+      return (ini.slice(0, 4) === fim.slice(0, 4) ? dataBR(ini).slice(0, 5) : dataBR(ini)) + ' a ' + dataBR(fim);
+    }
+    function periodoMini(ini, fim){ return dataBR(ini).slice(0, 5) + ' – ' + dataBR(fim).slice(0, 5); }
+    function statusDe(rp){
+      if (rp.recebido) return 'rec';
+      if (rp.qtdRecebidas) return 'par';
+      return rp.pagamento && rp.pagamento < hoje() ? 'atr' : 'pend';
+    }
+    function moZ(n){ return '<span class="' + (n ? '' : 'zero') + '">' + mo(n) + '</span>'; }
+    function pagTxt(rp, curto){
+      if (!rp.pagamento) return '—';
+      if (curto) return dataBR(rp.pagamento).slice(0, 5); // cabeçalho do cartão (celular): só dd/mm
+      return dataBR(rp.pagamento) + (rp.pagamentoReal ? '' : '<span class="rp-prev" title="Data prevista pela regra de faturamento">prev.</span>');
+    }
+    function entregasTxt(rp){ return rp.qtdRecebidas && !rp.recebido ? rp.qtdRecebidas + '/' + rp.qtd : String(rp.qtd); }
+
+    /* ---------- Filtro "Período": só os períodos com entregas das plataformas escolhidas ---------- */
+    function preencherPeriodos(lista){
+      var sel = document.getElementById('rp-periodo'), mapa = {}, chaves = [];
+      lista.forEach(function(rp){
+        var k = rp.inicio + '|' + rp.fim;
+        if (!mapa[k]){ mapa[k] = []; chaves.push(k); }
+        if (mapa[k].indexOf(rp.plataforma) < 0) mapa[k].push(rp.plataforma);
+      });
+      chaves.sort().reverse();
+      if (REP.periodo && !mapa[REP.periodo]) REP.periodo = '';
+      var varias = platsVisiveis().length > 1;
+      var html = '<option value="">Todos</option>' + chaves.map(function(k){
+        var p = k.split('|');
+        return '<option value="' + k + '">' + periodoTxtRp(p[0], p[1]) + (varias ? ' · ' + esc(mapa[k].join(', ')) : '') + '</option>';
+      }).join('');
+      if (html !== REP.htmlPeriodos){ sel.innerHTML = html; REP.htmlPeriodos = html; }
+      sel.value = REP.periodo;
+    }
+
+    /* ---------- Filtro "Pagamento" (de / até): usa o mesmo calendário do período das Entregas ---------- */
+    function definirPagamento(ini, fim){
+      if (ini !== null) REP.pagIni = ini;
+      if (fim !== null) REP.pagFim = fim;
+      REP.abertos = {};
+      renderRepasses();
+    }
+
+    /* ---------- Ordenação (cabeçalhos da tabela no PC) ---------- */
+    var RANK_STATUS = { atr: 0, pend: 1, par: 2, rec: 3 };
+    var LEGENDA_RP = {
+      inicio: 'Período de faturamento', pagamento: 'Data de pagamento ("prev." = prevista pela regra)', qtd: 'Entregas no período (recebidas/total quando parcial)',
+      repasse: 'Repasse (soma dos valores das entregas)', bonus: 'Bônus', combustivel: 'Custo Combustível', manutencao: 'Custo Manutenção',
+      taxas: 'Taxas', custoTotal: 'Custo Total (combustível + manutenção + taxas)', aReceber: 'Total a Receber (repasse + bônus − taxas)',
+      lucro: 'Lucro Total (repasse + bônus − custo total)', status: 'Situação do repasse'
+    };
+    function valorOrdemRp(rp, c){
+      if (c === 'status') return RANK_STATUS[statusDe(rp)];
+      return rp[c] == null ? null : rp[c];
+    }
+    function compararRepasses(a, b){
+      var o = REP.ordem, va = valorOrdemRp(a, o.campo), vb = valorOrdemRp(b, o.campo);
+      if (va !== vb){
+        if (va == null) return 1;
+        if (vb == null) return -1;
+        var c = va < vb ? -1 : 1;
+        return o.dir === 'asc' ? c : -c;
+      }
+      return a.inicio < b.inicio ? 1 : a.inicio > b.inicio ? -1 : 0;
+    }
+    function ordenarRepassesPor(campo){
+      var o = REP.ordem;
+      if (o.campo === campo) o.dir = o.dir === 'asc' ? 'desc' : 'asc';
+      else { o.campo = campo; o.dir = (campo === 'inicio' || campo === 'pagamento') ? 'desc' : 'asc'; }
+      renderRepasses();
+    }
+    function thRp(rotulo, campo, classe){
+      var o = REP.ordem, ativo = o.campo === campo, legenda = LEGENDA_RP[campo] || rotulo;
+      return '<th' + (classe ? ' class="' + classe + '"' : '') + ' aria-sort="' + (ativo ? (o.dir === 'asc' ? 'ascending' : 'descending') : 'none') + '">' +
+        '<button type="button" class="ord' + (ativo ? ' ativo' : '') + '" onclick="ordenarRepassesPor(\'' + campo + '\')" title="' + esc(legenda) + '" aria-label="Ordenar por ' + esc(legenda) + '">' +
+        rotulo + (ativo ? ICO_ORD[o.dir] : ICO_ORD.nenhum) + '</button></th>';
+    }
+
+    /* ---------- Somas ---------- */
+    function somar(lista){
+      var s = { qtd: 0, repasse: 0, bonus: 0, combustivel: 0, manutencao: 0, taxas: 0, custoTotal: 0, aReceber: 0, lucro: 0, recebido: 0, pendente: 0, entregas: 0 };
+      lista.forEach(function(rp){
+        s.qtd++; s.entregas += rp.qtd;
+        ['repasse', 'bonus', 'combustivel', 'manutencao', 'taxas', 'custoTotal', 'aReceber', 'lucro'].forEach(function(k){ s[k] += rp[k]; });
+        if (rp.recebido) s.recebido += rp.aReceber; else s.pendente += rp.aReceber;
+      });
+      return s;
+    }
+
+    /* ---------- Desenhar a tela ---------- */
+    function renderRepasses(){ renderRepassesInterno(); marcarRolagemTabela(); }
+
+    function renderRepassesInterno(){
+      var elLista = document.getElementById('rp-lista'), elTot = document.getElementById('rp-totais'), elAviso = document.getElementById('rp-aviso');
+      marcarPlataformasRepasse();
+      document.querySelectorAll('#rp-filtro button').forEach(function(b){ b.classList.toggle('active', b.dataset.f === REP.filtro); });
+      document.getElementById('rp-titulo').innerHTML = 'Repasses' +
+        (REP.carregando && REP.dados ? '<span class="atualizando" title="atualizando…"></span>' : '');
+      sincronizarCamposData(['rp-pag-ini', 'rp-pag-fim']);
+
+      if (!REP.dados){
+        elTot.style.display = 'none'; elAviso.innerHTML = '';
+        elLista.innerHTML = REP.erro
+          ? '<div class="vazio">' + esc(REP.erro) + '<br><br><button class="btn btn-ghost" style="width:auto;display:inline-block;padding:9px 18px;" onclick="carregarRepasses()">Tentar de novo</button></div>'
+          : '<div class="vazio">Carregando repasses…</div>';
+        return;
+      }
+
+      var plats = platsVisiveis();
+      var montado = montarRepasses(REP.dados);
+      var daPlat = montado.lista.filter(function(rp){ return plats.indexOf(rp.plataforma) >= 0; });
+      preencherPeriodos(daPlat);
+
+      // Aviso: entregas que não caem em nenhum período (plataforma sem regra, ou fora dos períodos personalizados)
+      var semPer = plats.filter(function(p){ return montado.semPeriodo[p]; });
+      if (semPer.length){
+        var qtd = 0;
+        var partes = semPer.map(function(p){
+          var l = montado.semPeriodo[p]; qtd += l.length;
+          var datas = l.map(function(e){ return e.data; }).sort();
+          return esc(p) + ' (' + (datas.length === 1 ? dataBR(datas[0]) : dataBR(datas[0]) + ' a ' + dataBR(datas[datas.length - 1])) + ')';
+        });
+        elAviso.innerHTML = '<div class="rp-aviso"><span>' + qtd + (qtd === 1 ? ' entrega sem período de faturamento: ' : ' entregas sem período de faturamento: ') +
+          partes.join(', ') + '. Ela' + (qtd === 1 ? ' não entra' : 's não entram') + ' nos repasses.</span><button type="button" onclick="abrirFaturamento()">Configurar</button></div>';
+      } else elAviso.innerHTML = '';
+
+      var filtrada = daPlat.filter(function(rp){
+        if (REP.periodo && rp.inicio + '|' + rp.fim !== REP.periodo) return false;
+        if (REP.pagIni && !(rp.pagamento && rp.pagamento >= REP.pagIni)) return false;
+        if (REP.pagFim && !(rp.pagamento && rp.pagamento <= REP.pagFim)) return false;
+        return REP.filtro === 'todos' || (REP.filtro === 'recebidos' ? rp.recebido : !rp.recebido);
+      });
+
+      if (!filtrada.length){
+        elTot.style.display = 'none';
+        var msg;
+        if (REP.pagIni && REP.pagFim && REP.pagIni > REP.pagFim) msg = 'A data inicial do pagamento é depois da final.';
+        else if (!(REP.dados.regras || []).length) msg = 'Nenhum faturamento configurado ainda. Toque em "Faturamento" para dizer como cada plataforma paga.';
+        else if (!daPlat.length) msg = 'Nenhum repasse com entregas ' + (plats.length === 1 ? 'nessa plataforma.' : 'nessas plataformas.');
+        else msg = 'Nenhum repasse nesse filtro.';
+        elLista.innerHTML = '<div class="vazio">' + msg + '</div>';
+        return;
+      }
+
+      // Agrupa por plataforma (na ordem dos botões) e ordena cada grupo
+      var grupos = plats.map(function(p){
+        return { plat: p, itens: filtrada.filter(function(rp){ return rp.plataforma === p; }).sort(compararRepasses) };
+      }).filter(function(g){ return g.itens.length; });
+      REP.vis = [];
+      grupos.forEach(function(g){ g.itens.forEach(function(rp){ rp.i = REP.vis.length; REP.vis.push(rp); }); });
+
+      elLista.innerHTML = '<div class="lista-cel">' + grupos.map(grupoCel).join('') + '</div>' + tabelaRepassesPC(grupos);
+
+      var filtroTxt = { areceber: 'A receber', recebidos: 'Recebidos' }[REP.filtro] || '';
+      var pagTxtF = REP.pagIni && REP.pagFim ? 'pagamento ' + dataBR(REP.pagIni) + ' a ' + dataBR(REP.pagFim)
+                  : REP.pagIni ? 'pagamento a partir de ' + dataBR(REP.pagIni) : REP.pagFim ? 'pagamento até ' + dataBR(REP.pagFim) : '';
+      var perTxt = REP.periodo ? periodoTxtRp(REP.periodo.split('|')[0], REP.periodo.split('|')[1]) : '';
+      renderTotaisRepasses(filtrada, [filtroTxt, perTxt, pagTxtF].filter(Boolean).join(' · '));
+    }
+
+    function iconePlat(p){ var ic = PLATFORM_ICONS[p]; return ic ? '<img src="' + ic + '" alt="">' : '<span class="ponto" style="color:' + (PLATFORM_COLORS[p] || 'var(--ink-soft)') + '"></span>'; }
+
+    /* Celular: cabeçalho da plataforma (com subtotal) + cartões que abrem */
+    function grupoCel(g){
+      var s = somar(g.itens);
+      return '<div class="rp-grupo-cel"><div class="nome">' + iconePlat(g.plat) + esc(g.plat) +
+          '<span class="qtd">· ' + s.qtd + (s.qtd === 1 ? ' repasse' : ' repasses') + '</span></div>' +
+        '<div class="sub"><div class="t">Total a receber</div><div class="v">' + fmt(s.aReceber) + '</div></div></div>' +
+        g.itens.map(itemRepasseCel).join('');
+    }
+    function itemRepasseCel(rp){
+      var st = statusDe(rp), ab = REP.abertos[rp.chave], ocupado = !!REP.ocupado, dis = ocupado ? ' disabled' : '';
+      var corLucro = rp.lucro >= 0 ? ' c-great' : ' c-bad';
+      var rotuloRec = REP.ocupado === rp.chave ? '…' : (rp.recebido ? 'Recebido' : 'Receber');
+      return '<div class="e-row' + (st === 'rec' ? ' recebido' : st === 'par' ? ' parcial' : '') + (ab ? ' open' : '') + '">' +
+        '<div class="e-head" onclick="alternarRepasseAberto(' + rp.i + ')">' +
+          '<span class="e-data">' + periodoMini(rp.inicio, rp.fim) + '</span>' +
+          '<span class="e-meio"><span class="seg">pag. ' + pagTxt(rp, true) + '</span><wbr>' +
+            '<span class="sep">·</span><span class="seg"><b class="' + COR_STATUS[st] + '">' + TEXTO_STATUS[st] + '</b></span></span>' +
+          '<span class="e-valor">' + mo(rp.aReceber) + '</span>' + ICO_SETA +
+        '</div>' +
+        '<div class="e-det">' +
+          '<div class="grade">' +
+            '<div class="dois"><div class="t">Período</div><div class="v">' + dataBR(rp.inicio) + ' a ' + dataBR(rp.fim) + '</div></div>' +
+            '<div><div class="t">Pagamento</div><div class="v' + (st === 'atr' ? ' c-bad' : '') + '">' + pagTxt(rp) + '</div></div>' +
+            '<div><div class="t">Repasse</div><div class="v">' + mo(rp.repasse) + '</div></div>' +
+            '<div><div class="t">Bônus</div><div class="v' + (rp.bonus ? ' c-great' : '') + '">' + moZ(rp.bonus) + '</div></div>' +
+            '<div><div class="t">Taxas</div><div class="v' + (rp.taxas ? ' c-bad' : '') + '">' + moZ(rp.taxas) + '</div></div>' +
+            '<div><div class="t">Custo combustível</div><div class="v c-bad">' + mo(rp.combustivel) + '</div></div>' +
+            '<div><div class="t">Custo manutenção</div><div class="v c-bad">' + mo(rp.manutencao) + '</div></div>' +
+            '<div><div class="t">Custo total</div><div class="v c-bad">' + mo(rp.custoTotal) + '</div></div>' +
+            '<div><div class="t">Total a receber</div><div class="v">' + mo(rp.aReceber) + '</div></div>' +
+            '<div><div class="t">Lucro total</div><div class="v' + corLucro + '">' + mo(rp.lucro) + '</div></div>' +
+            '<div><div class="t">Entregas</div><div class="v">' + rp.qtd + (rp.qtdRecebidas && !rp.recebido ? ' (' + rp.qtdRecebidas + ' receb.)' : '') + '</div></div>' +
+          '</div>' +
+          '<div class="acoes">' +
+            '<button class="b-rec" onclick="alternarRepasseRecebido(' + rp.i + ')"' + dis + '>' + ICO_OK + rotuloRec + '</button>' +
+            '<button onclick="abrirRepasse(' + rp.i + ')"' + dis + '>' + ICO_ED + 'Editar</button>' +
+            '<button onclick="verEntregasRepasse(' + rp.i + ')">' + ICO_LISTA + 'Entregas</button>' +
+          '</div>' +
+        '</div></div>';
+    }
+    function alternarRepasseAberto(i){ var rp = REP.vis[i]; if (!rp) return; REP.abertos[rp.chave] = !REP.abertos[rp.chave]; renderRepasses(); }
+
+    /* PC: uma tabela com as plataformas em blocos (linha da plataforma, repasses e total da plataforma) */
+    function tabelaRepassesPC(grupos){
+      var cab = thRp('Período', 'inicio') + thRp('Pagamento', 'pagamento') + thRp('Qtd.', 'qtd') + thRp('Repasse', 'repasse') +
+        thRp('Bônus', 'bonus') + thRp('C. Comb.', 'combustivel') + thRp('C. Manut.', 'manutencao') + thRp('Taxas', 'taxas') +
+        thRp('Custo T.', 'custoTotal') + thRp('T. Receber', 'aReceber') + thRp('Lucro T.', 'lucro') +
+        thRp('Status', 'status', 't-res') + '<th class="t-acoes">Ações</th>';
+      var corpo = grupos.map(function(g){
+        var s = somar(g.itens);
+        var linhas = g.itens.map(function(rp){
+          var st = statusDe(rp), dis = REP.ocupado ? ' disabled' : '';
+          var rec = REP.ocupado === rp.chave ? '…' : ICO_OK;
+          return '<tr class="' + (st === 'rec' ? 'recebido' : st === 'par' ? 'rp-parcial' : '') + '">' +
+            '<td class="t-data">' + periodoTxtRp(rp.inicio, rp.fim) + '</td>' +
+            '<td class="' + (st === 'atr' ? 'c-bad' : '') + '">' + pagTxt(rp) + '</td>' +
+            '<td>' + entregasTxt(rp) + '</td>' +
+            '<td class="forte">' + mo(rp.repasse) + '</td>' +
+            '<td class="' + (rp.bonus ? 'c-great' : '') + '">' + moZ(rp.bonus) + '</td>' +
+            '<td class="c-bad">' + mo(rp.combustivel) + '</td>' +
+            '<td class="c-bad">' + mo(rp.manutencao) + '</td>' +
+            '<td class="' + (rp.taxas ? 'c-bad' : '') + '">' + moZ(rp.taxas) + '</td>' +
+            '<td class="c-bad">' + mo(rp.custoTotal) + '</td>' +
+            '<td class="forte">' + mo(rp.aReceber) + '</td>' +
+            '<td class="' + (rp.lucro >= 0 ? 'c-great' : 'c-bad') + '">' + mo(rp.lucro) + '</td>' +
+            '<td class="t-res ' + COR_STATUS[st] + '"><span class="ponto"></span>' + TEXTO_STATUS[st] + '</td>' +
+            '<td class="t-acoes"><div>' +
+              '<button class="b-rec" onclick="alternarRepasseRecebido(' + rp.i + ')"' + dis + ' title="' + (rp.recebido ? 'Recebido (clique pra desfazer)' : 'Marcar repasse como recebido (marca todas as entregas)') + '" aria-label="Recebido">' + rec + '</button>' +
+              '<button onclick="abrirRepasse(' + rp.i + ')"' + dis + ' title="Editar bônus, taxas e pagamento" aria-label="Editar">' + ICO_ED + '</button>' +
+              '<button onclick="verEntregasRepasse(' + rp.i + ')" title="Ver as entregas deste período" aria-label="Ver entregas">' + ICO_LISTA + '</button>' +
+            '</div></td>' +
+          '</tr>';
+        }).join('');
+        return '<tr class="rp-grupo"><td colspan="13"><span class="rp-g">' + iconePlat(g.plat) + esc(g.plat) +
+            '<span class="qtd">' + s.qtd + (s.qtd === 1 ? ' repasse' : ' repasses') + ' · ' + s.entregas + (s.entregas === 1 ? ' entrega' : ' entregas') + '</span></span></td></tr>' +
+          linhas +
+          '<tr class="rp-sub"><td colspan="3">Total ' + esc(g.plat) + '</td>' +
+            '<td>' + mo(s.repasse) + '</td><td>' + moZ(s.bonus) + '</td><td>' + mo(s.combustivel) + '</td><td>' + mo(s.manutencao) + '</td>' +
+            '<td>' + moZ(s.taxas) + '</td><td>' + mo(s.custoTotal) + '</td><td>' + mo(s.aReceber) + '</td>' +
+            '<td class="' + (s.lucro >= 0 ? 'c-great' : 'c-bad') + '">' + mo(s.lucro) + '</td><td class="t-res"></td><td class="t-acoes"></td></tr>';
+      }).join('');
+      return '<div class="tabela-pc-wrap"><table class="tabela-pc"><thead><tr>' + cab + '</tr></thead><tbody>' + corpo + '</tbody></table></div>';
+    }
+
+    function renderTotaisRepasses(lista, desc){
+      var s = somar(lista), el = document.getElementById('rp-totais'), plats = platsVisiveis();
+      el.style.display = '';
+      el.innerHTML =
+        '<div class="topo"><div><div class="rotulo">TOTAL GERAL · ' + s.qtd + (s.qtd === 1 ? ' repasse' : ' repasses') + '</div>' +
+          '<div class="plat-nome">' + (REP.plats.length ? esc(plats.join(', ')) : 'Todas as plataformas') + '</div>' +
+          (desc ? '<div class="periodo">' + esc(desc) + '</div>' : '') + '</div>' +
+          '<div><div class="rotulo rotulo-dir">Total a receber</div><div class="grande">' + fmt(s.aReceber) + '</div></div></div>' +
+        '<div class="barra">' +
+          '<div class="bloco rec"><div class="t">✓ Recebido</div><div class="v">' + fmt(s.recebido) + '</div></div>' +
+          '<div class="bloco"><div class="t">A receber</div><div class="v">' + fmt(s.pendente) + '</div></div>' +
+        '</div>' +
+        '<div class="mini cinco">' +
+          '<div><div class="t">Repasse</div><div class="v">' + fmt(s.repasse) + '</div></div>' +
+          '<div><div class="t">Bônus</div><div class="v">' + fmt(s.bonus) + '</div></div>' +
+          '<div><div class="t">Taxas</div><div class="v">' + fmt(s.taxas) + '</div></div>' +
+          '<div><div class="t">Custo total</div><div class="v">' + fmt(s.custoTotal) + '</div></div>' +
+          '<div><div class="t">Lucro total</div><div class="v">' + fmt(s.lucro) + '</div></div>' +
+        '</div>';
+    }
+
+    /* ---------- Ações ---------- */
+    // Marcar o repasse marca TODAS as entregas do período (e desmarcar desmarca todas).
+    // O repasse aparece como recebido quando todas as entregas do período estão recebidas.
+    function alternarRepasseRecebido(i){
+      var rp = REP.vis[i]; if (!rp || REP.ocupado) return;
+      var novo = !rp.recebido;
+      var ids = rp.entregas.filter(function(e){ return e.recebido !== novo; }).map(function(e){ return e.id; });
+      REP.ocupado = rp.chave; renderRepasses();
+      google.script.run
+        .withSuccessHandler(function(){
+          REP.ocupado = null;
+          var mudar = {}; ids.forEach(function(id){ mudar[id] = true; });
+          REP.dados.entregas.forEach(function(e){ if (mudar[e.id]) e.recebido = novo; });
+          invalidarEntregasDe(rp.plataforma);
+          renderRepasses();
+          toast(novo ? 'Repasse recebido ✓ (' + rp.qtd + (rp.qtd === 1 ? ' entrega)' : ' entregas)') : 'Repasse voltou para "a receber"');
+        })
+        .withFailureHandler(function(err){
+          REP.ocupado = null; renderRepasses();
+          toast((err && err.message) || 'Erro ao atualizar', true);
+          carregarRepasses();
+        })
+        .marcarRecebidoLote({ ids: ids, recebido: novo });
+    }
+    // A tela de Entregas guarda as entregas em memória: força recarregar a plataforma alterada
+    function invalidarEntregasDe(plat){
+      delete LISTA.cache[plat];
+      if (LISTA.plat === plat) carregarEntregas();
+    }
+
+    function verEntregasRepasse(i){
+      var rp = REP.vis[i]; if (!rp) return;
+      document.querySelectorAll('#plataformas-registrar .pill').forEach(function(p){ p.classList.toggle('selected', p.dataset.value === rp.plataforma); });
+      LISTA.dtIni = rp.inicio; LISTA.dtFim = rp.fim;
+      aoTrocarPlataforma(rp.plataforma);
+      showTab('registrar');
+      window.scrollTo(0, 0);
+    }
+
+    /* ---------- Editar repasse (bônus, taxas e data de pagamento) ---------- */
+    function abrirRepasse(i){
+      var rp = REP.vis[i]; if (!rp) return;
+      REP.editando = rp;
+      var tag = document.getElementById('rp-ed-plat');
+      tag.textContent = rp.plataforma; tag.style.background = PLATFORM_COLORS[rp.plataforma] || 'var(--asphalt)';
+      document.getElementById('rp-ed-info').textContent = 'Período ' + dataBR(rp.inicio) + ' a ' + dataBR(rp.fim) + ' · ' +
+        rp.qtd + (rp.qtd === 1 ? ' entrega' : ' entregas') + (rp.qtdRecebidas && !rp.recebido ? ' (' + rp.qtdRecebidas + ' recebidas)' : '') + '.';
+      escreverValor('rp-ed-bonus', rp.bonus || null);
+      escreverValor('rp-ed-taxas', rp.taxas || null);
+      document.getElementById('rp-ed-pag').value = rp.pagamentoReal ? rp.pagamento : '';
+      document.getElementById('rp-ed-prev').textContent = rp.previsto
+        ? 'Deixe vazio para usar a data prevista pela regra: ' + dataBR(rp.previsto) + '.'
+        : 'Sem data prevista pela regra: informe quando foi (ou será) pago.';
+      atualizarResumoRepasse();
+      document.getElementById('rp-bd').classList.add('show');
+    }
+    function fecharRepasse(){ document.getElementById('rp-bd').classList.remove('show'); REP.editando = null; }
+    function valorOuZero(id){ var v = lerValor(id); return isNaN(v) ? 0 : v; }
+    function atualizarResumoRepasse(){
+      var rp = REP.editando; if (!rp) return;
+      var b = valorOuZero('rp-ed-bonus'), t = valorOuZero('rp-ed-taxas'), custo = rp.combustivel + rp.manutencao + t;
+      document.getElementById('rp-ed-repasse').textContent = fmt(rp.repasse);
+      document.getElementById('rp-ed-custo').textContent = fmt(custo);
+      document.getElementById('rp-ed-receber').textContent = fmt(rp.repasse + b - t);
+      document.getElementById('rp-ed-lucro').textContent = fmt(rp.repasse + b - custo);
+    }
+    function salvarRepasseForm(){
+      var rp = REP.editando; if (!rp) return;
+      var dados = { plataforma: rp.plataforma, inicio: rp.inicio, fim: rp.fim,
+                    bonus: valorOuZero('rp-ed-bonus'), taxas: valorOuZero('rp-ed-taxas'),
+                    dataPagamento: document.getElementById('rp-ed-pag').value || null };
+      var btn = document.getElementById('rp-ed-salvar');
+      btn.disabled = true; btn.textContent = 'Salvando…';
+      google.script.run
+        .withSuccessHandler(function(){
+          btn.disabled = false; btn.textContent = 'Salvar';
+          // atualiza a cópia local (o período fica "congelado" com estes valores)
+          var lista = REP.dados.repasses, achado = null;
+          for (var i = 0; i < lista.length; i++){
+            if (lista[i].plataforma === dados.plataforma && lista[i].inicio === dados.inicio && lista[i].fim === dados.fim){ achado = lista[i]; break; }
+          }
+          if (!achado){ achado = { plataforma: dados.plataforma, inicio: dados.inicio, fim: dados.fim }; lista.push(achado); }
+          achado.bonus = dados.bonus; achado.taxas = dados.taxas; achado.dataPagamento = dados.dataPagamento;
+          fecharRepasse(); renderRepasses();
+          toast('Repasse atualizado ✓');
+        })
+        .withFailureHandler(function(err){
+          btn.disabled = false; btn.textContent = 'Salvar';
+          toast((err && err.message) || 'Erro ao salvar', true);
+        })
+        .salvarRepasse(dados);
+    }
+
+    /* ---------- Faturamento: regras por plataforma ---------- */
+    var FAT = { regra: null, tipo: 'semanal', param: {}, periodos: [], confirmar: false };
+    var DIAS_PAG = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+    function naDia(d){ return (d === 0 || d === 6 ? 'no ' : 'na ') + DIAS_PAG[d]; }
+
+    function abrirFaturamento(){
+      renderFaturamento();
+      document.getElementById('fat-bd').classList.add('show');
+      if (!REP.dados && !REP.carregando) carregarRepasses();
+    }
+    function fecharFaturamento(){ document.getElementById('fat-bd').classList.remove('show'); }
+
+    function regrasDa(plat){
+      return ((REP.dados && REP.dados.regras) || []).filter(function(r){ return r.plataforma === plat; })
+        .sort(function(a, b){ return a.vigenteDesde < b.vigenteDesde ? -1 : 1; });
+    }
+    function descricaoRegra(r){
+      var p = r.parametros || {};
+      if (r.tipo === 'semanal'){
+        var ini = p.inicioSemana == null ? 1 : +p.inicioSemana;
+        return { tit: 'Semanal · ' + DIAS_SEMANA_CURTO[ini] + ' a ' + DIAS_SEMANA_CURTO[(ini + 6) % 7],
+                 sub: 'pagamento ' + naDia(p.diaPagamento == null ? 3 : +p.diaPagamento) + ' seguinte' };
+      }
+      if (r.tipo === 'quinzenal'){
+        var c = +p.corte || 15;
+        return { tit: 'Quinzenal · dias 1 a ' + c + ' e ' + (c + 1) + ' ao fim do mês',
+                 sub: 'pagamento dia ' + (+p.pagamento1 || 20) + ' (1ª) e dia ' + (+p.pagamento2 || 5) + ' (2ª)' };
+      }
+      if (r.tipo === 'mensal'){
+        var di = +p.diaInicio || 1;
+        return { tit: 'Mensal · ' + (di === 1 ? 'mês fechado (1 ao último dia)' : 'dia ' + di + ' ao dia ' + (di - 1)),
+                 sub: 'pagamento dia ' + (+p.diaPagamento || 5) };
+      }
+      var l = (p.periodos || []).slice().sort(function(a, b){ return a.inicio < b.inicio ? -1 : 1; }), u = l[l.length - 1];
+      return { tit: 'Personalizado · ' + l.length + (l.length === 1 ? ' período' : ' períodos'),
+               sub: u ? 'último: ' + periodoTxtRp(u.inicio, u.fim) + (u.pagamento ? ', pago em ' + dataBR(u.pagamento) : '') : 'nenhum período cadastrado' };
+    }
+
+    function renderFaturamento(){
+      var el = document.getElementById('fat-lista');
+      if (!REP.dados){
+        el.innerHTML = '<div class="vazio">' + (REP.erro ? esc(REP.erro) : 'Carregando…') + '</div>';
+        return;
+      }
+      var h = hoje();
+      el.innerHTML = platsDoSite().map(function(p, k){
+        var rs = regrasDa(p), vigente = regraNaData(rs, h);
+        return '<div class="fat-plat"><div class="fat-cab">' + iconePlat(p) + '<span class="nome">' + esc(p) + '</span>' +
+            '<button type="button" class="fat-add" onclick="novaRegra(' + k + ')">+ Regra</button></div>' +
+          (rs.length ? rs.slice().reverse().map(function(r){
+            var d = descricaoRegra(r), futura = r.vigenteDesde > h;
+            var classe = r === vigente ? '' : futura ? '' : ' antiga';
+            var tag = r === vigente ? '<span class="tag-vigor">em vigor</span>' : futura ? '<span class="tag-vigor futura">futura</span>' : '';
+            return '<div class="fat-regra' + classe + '" onclick="editarRegra(' + r.id + ')" role="button" tabindex="0">' +
+              '<div class="txt"><div class="tit">' + d.tit + tag + '</div><div class="sub">desde ' + dataBR(r.vigenteDesde) + ' · ' + d.sub + '</div></div>' +
+              '<span class="ed">' + ICO_ED + '</span></div>';
+          }).join('') : '<p class="hint fat-vazio">Sem regra: as entregas desta plataforma ficam fora dos repasses.</p>') +
+        '</div>';
+      }).join('');
+    }
+
+    function novaRegra(k){
+      var plat = platsDoSite()[k], rs = regrasDa(plat), ult = rs[rs.length - 1];
+      // sugestão: mesmo tipo da regra atual (só muda a data; personalizado começa sem períodos), ou semanal seg-dom com pagamento na quarta
+      abrirFormRegra(ult ? { plataforma: plat, vigenteDesde: hoje(), tipo: ult.tipo, parametros: ult.tipo === 'personalizado' ? { periodos: [] } : JSON.parse(JSON.stringify(ult.parametros || {})) }
+                         : { plataforma: plat, vigenteDesde: hoje(), tipo: 'semanal', parametros: { inicioSemana: 1, diaPagamento: 3 } });
+    }
+    function editarRegra(id){
+      var r = (REP.dados.regras || []).filter(function(x){ return x.id === id; })[0];
+      if (r) abrirFormRegra(r);
+    }
+    function abrirFormRegra(r){
+      FAT.regra = r; FAT.tipo = r.tipo; FAT.confirmar = false;
+      FAT.param = JSON.parse(JSON.stringify(r.parametros || {}));
+      FAT.periodos = (FAT.param.periodos || []).slice().sort(function(a, b){ return a.inicio < b.inicio ? -1 : 1; });
+      document.getElementById('regra-titulo').textContent = r.id ? 'Editar regra' : 'Nova regra';
+      var tag = document.getElementById('regra-plat');
+      tag.textContent = r.plataforma; tag.style.background = PLATFORM_COLORS[r.plataforma] || 'var(--asphalt)';
+      document.getElementById('regra-desde').value = r.vigenteDesde || hoje();
+      var bEx = document.getElementById('regra-excluir');
+      bEx.style.display = r.id ? '' : 'none'; bEx.textContent = 'Excluir regra';
+      renderParamsRegra();
+      document.getElementById('regra-bd').classList.add('show');
+    }
+    function fecharRegra(){ document.getElementById('regra-bd').classList.remove('show'); }
+
+    function opcoesDias(sel, sufixo){
+      return DIAS_SEMANA.map(function(d, i){ return '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>' + d + (sufixo || '') + '</option>'; }).join('');
+    }
+    function campoNumero(id, rotulo, valor, max){
+      return '<div class="field"><label for="' + id + '">' + rotulo + '</label><div class="input-wrap">' +
+        '<input type="number" inputmode="numeric" min="1" max="' + max + '" step="1" id="' + id + '" value="' + (valor == null ? '' : valor) + '"></div></div>';
+    }
+    function renderParamsRegra(){
+      document.querySelectorAll('#regra-tipo button').forEach(function(b){ b.classList.toggle('active', b.dataset.t === FAT.tipo); });
+      var p = FAT.param, html = '';
+      if (FAT.tipo === 'semanal'){
+        html = '<div class="row2">' +
+          '<div class="field"><label for="rg-ini-sem">Semana começa</label><div class="input-wrap"><select id="rg-ini-sem">' + opcoesDias(p.inicioSemana == null ? 1 : +p.inicioSemana) + '</select></div></div>' +
+          '<div class="field"><label for="rg-pag-sem">Pagamento na próxima</label><div class="input-wrap"><select id="rg-pag-sem">' + opcoesDias(p.diaPagamento == null ? 3 : +p.diaPagamento) + '</select></div></div>' +
+        '</div>';
+      } else if (FAT.tipo === 'quinzenal'){
+        html = campoNumero('rg-corte', '1ª quinzena vai do dia 1 até o dia', p.corte || 15, 27) +
+          '<div class="row2">' + campoNumero('rg-pag1', 'Pagamento da 1ª (dia)', p.pagamento1 || 20, 31) + campoNumero('rg-pag2', 'Pagamento da 2ª (dia)', p.pagamento2 || 5, 31) + '</div>' +
+          '<p class="hint">A 2ª quinzena vai do dia seguinte ao corte até o fim do mês. O pagamento é o próximo dia escolhido depois do fim da quinzena.</p>';
+      } else if (FAT.tipo === 'mensal'){
+        html = '<div class="row2">' + campoNumero('rg-dia-ini', 'Período começa no dia', p.diaInicio || 1, 28) + campoNumero('rg-dia-pag', 'Pagamento no dia', p.diaPagamento || 5, 31) + '</div>' +
+          '<p class="hint">Dia 1 = mês fechado (1 ao último dia). Outro dia, ex. 21 = do dia 21 ao dia 20 do mês seguinte.</p>';
+      } else {
+        html = '<p class="hint" style="margin-top:12px;">Cada período tem início, fim e a data em que foi (ou será) pago. Entregas fora dos períodos ficam sem repasse até você adicionar o período.</p>' +
+          FAT.periodos.map(function(x, i){
+            return '<div class="per-item"><div class="per-cab"><span>Período ' + (i + 1) + '</span><button type="button" onclick="removerPeriodoRegra(' + i + ')">Remover</button></div>' +
+              '<div class="row3">' +
+                '<div class="field"><label for="rg-per-ini-' + i + '">Início</label><div class="input-wrap"><input type="date" id="rg-per-ini-' + i + '" value="' + (x.inicio || '') + '"></div></div>' +
+                '<div class="field"><label for="rg-per-fim-' + i + '">Fim</label><div class="input-wrap"><input type="date" id="rg-per-fim-' + i + '" value="' + (x.fim || '') + '"></div></div>' +
+                '<div class="field"><label for="rg-per-pag-' + i + '">Pagamento</label><div class="input-wrap"><input type="date" id="rg-per-pag-' + i + '" value="' + (x.pagamento || '') + '"></div></div>' +
+              '</div></div>';
+          }).join('') +
+          '<button type="button" class="btn btn-ghost btn-add-per" onclick="adicionarPeriodoRegra()">+ Adicionar período</button>';
+      }
+      document.getElementById('regra-params').innerHTML = html;
+      atualizarExemploRegra();
+    }
+    function coletarParamsRegra(){
+      function num(id){ var el = document.getElementById(id); return el ? parseInt(el.value, 10) : NaN; }
+      if (FAT.tipo === 'semanal') FAT.param = { inicioSemana: num('rg-ini-sem'), diaPagamento: num('rg-pag-sem') };
+      else if (FAT.tipo === 'quinzenal') FAT.param = { corte: num('rg-corte'), pagamento1: num('rg-pag1'), pagamento2: num('rg-pag2') };
+      else if (FAT.tipo === 'mensal') FAT.param = { diaInicio: num('rg-dia-ini'), diaPagamento: num('rg-dia-pag') };
+      else {
+        FAT.periodos = FAT.periodos.map(function(x, i){
+          var g = function(id){ var el = document.getElementById(id); return el ? el.value : ''; };
+          return { inicio: g('rg-per-ini-' + i), fim: g('rg-per-fim-' + i), pagamento: g('rg-per-pag-' + i) };
+        });
+        FAT.param = { periodos: FAT.periodos };
+      }
+    }
+    function mudarTipoRegra(t){
+      coletarParamsRegra();
+      if (t === FAT.tipo) return;
+      FAT.tipo = t;
+      FAT.param = t === 'personalizado' ? { periodos: FAT.periodos } : {};
+      renderParamsRegra();
+    }
+    function adicionarPeriodoRegra(){
+      coletarParamsRegra();
+      var ult = FAT.periodos[FAT.periodos.length - 1];
+      FAT.periodos.push({ inicio: ult && ult.fim ? somarDias(ult.fim, 1) : '', fim: '', pagamento: '' });
+      renderParamsRegra();
+    }
+    function removerPeriodoRegra(i){ coletarParamsRegra(); FAT.periodos.splice(i, 1); renderParamsRegra(); }
+
+    function regraDoForm(){
+      coletarParamsRegra();
+      return { id: FAT.regra && FAT.regra.id, plataforma: FAT.regra.plataforma, vigenteDesde: document.getElementById('regra-desde').value,
+               tipo: FAT.tipo, parametros: FAT.param };
+    }
+    function erroDaRegra(r){
+      var p = r.parametros;
+      function fora(v, a, b){ return !(v >= a && v <= b); }
+      if (!r.vigenteDesde) return 'Informe a partir de quando a regra vale.';
+      if (r.tipo === 'semanal' && (fora(p.inicioSemana, 0, 6) || fora(p.diaPagamento, 0, 6))) return 'Escolha os dias da semana.';
+      if (r.tipo === 'quinzenal' && (fora(p.corte, 1, 27) || fora(p.pagamento1, 1, 31) || fora(p.pagamento2, 1, 31))) return 'Corte entre 1 e 27; dias de pagamento entre 1 e 31.';
+      if (r.tipo === 'mensal' && (fora(p.diaInicio, 1, 28) || fora(p.diaPagamento, 1, 31))) return 'Início entre 1 e 28; pagamento entre 1 e 31.';
+      if (r.tipo === 'personalizado'){
+        if (!p.periodos.length) return 'Adicione pelo menos um período.';
+        for (var i = 0; i < p.periodos.length; i++){
+          var x = p.periodos[i];
+          if (!x.inicio || !x.fim) return 'Período ' + (i + 1) + ': informe início e fim.';
+          if (x.inicio > x.fim) return 'Período ' + (i + 1) + ': o início é depois do fim.';
+        }
+      }
+      return '';
+    }
+    function atualizarExemploRegra(){
+      var r = regraDoForm(), el = document.getElementById('regra-exemplo'), erro = erroDaRegra(r);
+      if (r.tipo === 'personalizado'){
+        el.textContent = 'As entregas entram no período que contém a data delas.';
+        return;
+      }
+      if (erro){ el.textContent = erro; return; }
+      var ref = hoje() >= r.vigenteDesde ? hoje() : r.vigenteDesde, per = periodoPelaRegra(r, ref);
+      el.innerHTML = 'Exemplo: uma entrega em <b>' + dataBR(ref) + '</b> entra no período <b>' + periodoTxtRp(per.inicio, per.fim) +
+        '</b>, com pagamento previsto em <b>' + dataBR(per.previsto) + '</b> (' + DIAS_PAG[dtDe(per.previsto).getDay()] + ').';
+    }
+
+    function salvarRegraForm(){
+      var r = regraDoForm(), erro = erroDaRegra(r);
+      if (erro){ toast(erro, true); return; }
+      if (r.tipo === 'personalizado') r.parametros.periodos.sort(function(a, b){ return a.inicio < b.inicio ? -1 : 1; });
+      var btn = document.getElementById('regra-salvar');
+      btn.disabled = true; btn.textContent = 'Salvando…';
+      google.script.run
+        .withSuccessHandler(function(){
+          btn.disabled = false; btn.textContent = 'Salvar regra';
+          fecharRegra(); toast('Regra salva ✓');
+          carregarRepasses();
+        })
+        .withFailureHandler(function(err){
+          btn.disabled = false; btn.textContent = 'Salvar regra';
+          toast((err && err.message) || 'Erro ao salvar', true);
+        })
+        .salvarRegra(r);
+    }
+    function excluirRegraForm(){
+      var r = FAT.regra, btn = document.getElementById('regra-excluir');
+      if (!r || !r.id) return;
+      if (!FAT.confirmar){ FAT.confirmar = true; btn.textContent = 'Toque de novo para excluir'; return; }
+      btn.disabled = true;
+      google.script.run
+        .withSuccessHandler(function(){
+          btn.disabled = false; fecharRegra(); toast('Regra excluída');
+          carregarRepasses();
+        })
+        .withFailureHandler(function(err){
+          btn.disabled = false; toast((err && err.message) || 'Erro ao excluir', true);
+        })
+        .excluirRegra({ id: r.id });
+    }
+
+    /* ---------- Eventos ---------- */
+    document.getElementById('rp-filtro').addEventListener('click', function(ev){
+      var b = ev.target.closest('button'); if (!b) return;
+      REP.filtro = b.dataset.f; REP.abertos = {}; renderRepasses();
+    });
+    document.getElementById('rp-periodo').addEventListener('change', function(ev){
+      REP.periodo = ev.target.value; REP.abertos = {}; renderRepasses();
+    });
+    document.getElementById('regra-tipo').addEventListener('click', function(ev){
+      var b = ev.target.closest('button'); if (b) mudarTipoRegra(b.dataset.t);
+    });
+    document.getElementById('regra-bd').addEventListener('input', atualizarExemploRegra);
+    document.getElementById('regra-bd').addEventListener('change', atualizarExemploRegra);
+    document.getElementById('fat-lista').addEventListener('keydown', function(ev){
+      if (ev.key === 'Enter' && ev.target.classList.contains('fat-regra')) ev.target.click();
+    });
+    document.getElementById('rp-bd').addEventListener('input', atualizarResumoRepasse);
+
     /* ---------- Abertura ---------- */
     var ABERTURA_INICIO = Date.now();
     function esconderAbertura(){
@@ -3082,6 +4296,7 @@
       google.script.run.withSuccessHandler(function(cfg){
         STATE.config = cfg;
         renderPlataformas(cfg.plataformas);
+        renderPlataformasRepasse(cfg.plataformas);
         LISTA.plat = cfg.plataformas[0];
         atualizarBotaoNova();
         carregarEntregas();
