@@ -1058,6 +1058,15 @@
       .tabela-pc tr.rp-sub td.c-great, .tabela-pc tr.rp-sub td.c-bad{ color:#fff; }
       .tabela-pc tr.rp-sub .zero{ color:#B9C0CC !important; }
       .tabela-pc tr.rp-parcial td:first-child{ box-shadow:inset 4px 0 0 var(--ok); }
+      /* Total da plataforma: mantém a cor escura ao passar o mouse */
+      .tabela-pc tbody tr.rp-sub:hover td{ background:var(--asphalt); }
+      /* Linha da plataforma: clique para recolher/expandir os repasses (o total continua visível) */
+      .tabela-pc tr.rp-grupo{ cursor:pointer; user-select:none; }
+      .tabela-pc tbody tr.rp-grupo:hover td{ background:var(--paper-2); }
+      .tabela-pc tr.rp-grupo:focus-visible td{ box-shadow:inset 0 0 0 2px var(--asphalt); }
+      .rp-seta{ display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; color:var(--ink-soft); transition:transform .15s; }
+      .rp-seta svg{ width:14px; height:14px; }
+      .tabela-pc tr.rp-grupo.recolhido .rp-seta{ transform:rotate(-90deg); }
 
       /* Total geral: faixa abaixo da tabela, com 5 valores */
       .col-principal > .totais .mini.cinco{ grid-template-columns:repeat(5, minmax(0,1fr)); flex:2 1 0; }
@@ -3570,8 +3579,18 @@
       periodo: '',          // "inicio|fim" (vazio = todos os períodos)
       pagIni: '', pagFim: '',
       abertos: {}, ordem: { campo: 'inicio', dir: 'desc' },
-      vis: [], ocupado: null, editando: null, htmlPeriodos: ''
+      vis: [], ocupado: null, editando: null, htmlPeriodos: '',
+      recolhidos: {}        // PC: plataformas com a lista recolhida (só a linha da plataforma e o total aparecem)
     };
+    // A escolha de recolher/expandir fica guardada neste navegador
+    var CHAVE_RP_RECOLHIDOS = 'painel_entregas_repasses_recolhidos';
+    try { REP.recolhidos = JSON.parse(localStorage.getItem(CHAVE_RP_RECOLHIDOS) || '{}') || {}; } catch (e) { REP.recolhidos = {}; }
+    function alternarGrupoRepasse(plat){
+      if (REP.recolhidos[plat]) delete REP.recolhidos[plat]; else REP.recolhidos[plat] = true;
+      try { localStorage.setItem(CHAVE_RP_RECOLHIDOS, JSON.stringify(REP.recolhidos)); } catch (e) {}
+      renderRepasses();
+    }
+    var ICO_SETA_GRUPO = '<span class="rp-seta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
     var ICO_TODAS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>';
     var ICO_LISTA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
     var TEXTO_STATUS = { rec: 'Recebido', par: 'Parcial', pend: 'A receber', atr: 'Atrasado' };
@@ -3859,8 +3878,8 @@
         thRp('Custo T.', 'custoTotal') + thRp('T. Receber', 'aReceber') + thRp('Lucro T.', 'lucro') +
         thRp('Status', 'status', 't-res') + '<th class="t-acoes">Ações</th>';
       var corpo = grupos.map(function(g){
-        var s = somar(g.itens);
-        var linhas = g.itens.map(function(rp){
+        var s = somar(g.itens), recolhido = !!REP.recolhidos[g.plat];
+        var linhas = recolhido ? '' : g.itens.map(function(rp){
           var st = statusDe(rp), dis = REP.ocupado ? ' disabled' : '';
           var rec = REP.ocupado === rp.chave ? '…' : ICO_OK;
           return '<tr class="' + (st === 'rec' ? 'recebido' : st === 'par' ? 'rp-parcial' : '') + '">' +
@@ -3883,7 +3902,11 @@
             '</div></td>' +
           '</tr>';
         }).join('');
-        return '<tr class="rp-grupo"><td colspan="13"><span class="rp-g">' + iconePlat(g.plat) + esc(g.plat) +
+        var acao = (recolhido ? 'Expandir' : 'Recolher') + ' os repasses de ' + esc(g.plat);
+        return '<tr class="rp-grupo' + (recolhido ? ' recolhido' : '') + '" data-plat="' + esc(g.plat) + '" onclick="alternarGrupoRepasse(this.dataset.plat)"' +
+            ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();alternarGrupoRepasse(this.dataset.plat);}"' +
+            ' tabindex="0" role="button" aria-expanded="' + !recolhido + '" title="' + acao + '" aria-label="' + acao + '">' +
+            '<td colspan="13"><span class="rp-g">' + ICO_SETA_GRUPO + iconePlat(g.plat) + esc(g.plat) +
             '<span class="qtd">' + s.qtd + (s.qtd === 1 ? ' repasse' : ' repasses') + ' · ' + s.entregas + (s.entregas === 1 ? ' entrega' : ' entregas') + '</span></span></td></tr>' +
           linhas +
           '<tr class="rp-sub"><td colspan="3">Total ' + esc(g.plat) + '</td>' +
